@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 const colorSeed = Color(0xFFF0112C);
@@ -20,10 +21,10 @@ class AppTheme {
       ///* Texts
       textTheme: TextTheme(
           titleLarge: GoogleFonts.roboto()
-              .copyWith(fontSize: 40, fontWeight: FontWeight.bold),
+              .copyWith(fontSize: 36.sp, fontWeight: FontWeight.bold),
           titleMedium: GoogleFonts.roboto()
-              .copyWith(fontSize: 30, fontWeight: FontWeight.bold),
-          titleSmall: GoogleFonts.roboto().copyWith(fontSize: 20)),
+              .copyWith(fontSize: 26.sp, fontWeight: FontWeight.bold),
+          titleSmall: GoogleFonts.roboto().copyWith(fontSize: 18.sp)),
 
       ///* Scaffold Background Color
       scaffoldBackgroundColor: isDarkMode
@@ -42,6 +43,6 @@ class AppTheme {
             ? scaffoldBackgroundColorDark
             : scaffoldBackgroundColorLight,
         titleTextStyle: GoogleFonts.roboto()
-            .copyWith(fontSize: 25, fontWeight: FontWeight.bold),
+            .copyWith(fontSize: 24.sp, fontWeight: FontWeight.bold),
       ));
 }
