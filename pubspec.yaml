@@ -40,7 +40,7 @@ flutter:
 
   ### ASSETS ###
   assets:
-    # - .env
+    - .env
     - assets/
     - assets/icons/
     - assets/images/
