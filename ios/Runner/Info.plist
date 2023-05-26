@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Fullfit App</string>
+	<string>FullFit</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -39,9 +39,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>FullFit necesita acceder a tu camara para poder actualizar la foto de tu perfil</string>
+	<string>FullFit necesita acceder a tu camara para actualizar la foto de tu perfil.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>FullFit necesita acceder a tus fotos para actualizar la foto de tu perfil</string>
+	<string>FullFit necesita acceder a tus fotos para actualizar la foto de tu perfil.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
