@@ -16,16 +16,12 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       designSize: const Size(375, 812),
-      builder: (context, child) => MaterialApp(
+      builder: (context, child) => MaterialApp.router(
         debugShowCheckedModeBanner: false,
         theme: AppTheme().getTheme(),
         builder: GlobalConfig.materialAppBuilder(),
         scaffoldMessengerKey: GlobalConfig.scaffoldMessengerKey,
-        home: const Scaffold(
-          body: Center(
-            child: Text('Hello World!'),
-          ),
-        ),
+        routerConfig: appRouter,
       ),
     );
   }

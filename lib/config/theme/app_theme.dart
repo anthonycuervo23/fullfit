@@ -42,7 +42,9 @@ class AppTheme {
         color: isDarkMode
             ? scaffoldBackgroundColorDark
             : scaffoldBackgroundColorLight,
-        titleTextStyle: GoogleFonts.roboto()
-            .copyWith(fontSize: 24.sp, fontWeight: FontWeight.bold),
+        titleTextStyle: GoogleFonts.roboto().copyWith(
+            fontSize: 24.sp,
+            fontWeight: FontWeight.bold,
+            color: isDarkMode ? Colors.white : Colors.black54),
       ));
 }
