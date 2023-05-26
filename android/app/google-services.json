@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "818361824638",
+    "project_id": "fullfit-5febc",
+    "storage_bucket": "fullfit-5febc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:818361824638:android:96ba6f99e7cf41280aef2f",
+        "android_client_info": {
+          "package_name": "com.ifp.fullfit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "818361824638-pv8g1edlpboqpmau1upf9hqs74ucdcd2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ifp.fullfit",
+            "certificate_hash": "dcbdd69cdacfda8203fb7fcc3b5f41b5907a3fa1"
+          }
+        },
+        {
+          "client_id": "818361824638-h14gtre3gqjlleil59tutsqqi59jiepj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4iqEt-SEFawQQRtthN9RoZyB_IxOVpHU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "818361824638-h14gtre3gqjlleil59tutsqqi59jiepj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "818361824638-4spm5ok1oe59m94n0pah3mvqm6t81t3r.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ifp.fullfit"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
