@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fullfit_app/features/shared/widgets/widgets.dart';
+import 'package:fullfit_app/presentation/widgets/widgets.dart';
 import 'package:go_router/go_router.dart';
 
 class MainScreen extends StatelessWidget {

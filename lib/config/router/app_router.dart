@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fullfit_app/features/auth/presentation/presentation.dart';
-import 'package:fullfit_app/features/nutrition/presentation/presentation.dart';
-import 'package:fullfit_app/features/profile/presentation/presentation.dart';
-import 'package:fullfit_app/features/shared/shared.dart';
-import 'package:fullfit_app/features/workouts/presentation/presentation.dart';
+import 'package:fullfit_app/presentation/screens/screens.dart';
 import 'package:go_router/go_router.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey =
