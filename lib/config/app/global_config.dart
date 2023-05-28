@@ -10,9 +10,9 @@ class GlobalConfig {
 
   static Future init() async {
     WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
     await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     await Environment.initEnv();
-    await Firebase.initializeApp();
     _CustomLoader();
     // FirebaseAuth.instance.authStateChanges().listen((user) {
     //   if (user == null) {
