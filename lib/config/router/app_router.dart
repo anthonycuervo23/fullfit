@@ -10,12 +10,18 @@ final GlobalKey<NavigatorState> _sectionNavigatorKey =
 
 final appRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
-  initialLocation: '/',
+  initialLocation: '/intro',
   routes: [
     //* primera pantalla
     GoRoute(
       path: '/splash',
       builder: (context, state) => const CheckAuthStatusScreen(),
+    ),
+
+    //* Pantalla de introducción
+    GoRoute(
+      path: '/intro',
+      builder: (context, state) => const IntroScreen(),
     ),
 
     //* Rutas de autenticación

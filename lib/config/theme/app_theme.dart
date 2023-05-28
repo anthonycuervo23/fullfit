@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-const colorSeed = Color(0xFFF0112C);
-const scaffoldBackgroundColorLight = Color(0xFFF8F7F7);
-const scaffoldBackgroundColorDark = Color(0xFF121212);
+// const colorSeed = Color(0xFFF0112C);
+// const colorSeed = Color(0xFFE74646);
+const colorSeed = Color(0xFF8A58EF);
+// const scaffoldBackgroundColorLight = Color.fromARGB(255, 252, 246, 246);
+const scaffoldBackgroundColorLight = Color(0xffF4F6FA);
+const scaffoldBackgroundColorDark = Color.fromARGB(255, 19, 13, 31);
 
 class AppTheme {
   final bool isDarkMode;
@@ -20,11 +23,15 @@ class AppTheme {
 
       ///* Texts
       textTheme: TextTheme(
-          titleLarge: GoogleFonts.roboto()
-              .copyWith(fontSize: 36.sp, fontWeight: FontWeight.bold),
-          titleMedium: GoogleFonts.roboto()
-              .copyWith(fontSize: 26.sp, fontWeight: FontWeight.bold),
-          titleSmall: GoogleFonts.roboto().copyWith(fontSize: 18.sp)),
+        titleLarge: GoogleFonts.roboto()
+            .copyWith(fontSize: 36.sp, fontWeight: FontWeight.bold),
+        titleMedium: GoogleFonts.roboto()
+            .copyWith(fontSize: 26.sp, fontWeight: FontWeight.bold),
+        titleSmall: GoogleFonts.roboto().copyWith(fontSize: 18.sp),
+        bodyLarge: GoogleFonts.roboto(),
+        bodyMedium: GoogleFonts.roboto(),
+        bodySmall: GoogleFonts.roboto(),
+      ),
 
       ///* Scaffold Background Color
       scaffoldBackgroundColor: isDarkMode
