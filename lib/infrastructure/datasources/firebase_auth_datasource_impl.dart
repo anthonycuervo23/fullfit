@@ -94,7 +94,6 @@ class FirebaseAuthDatasourceImpl extends AuthDataSource {
     } catch (e) {
       closure(false);
       debugPrint(e.toString());
-      throw Exception(e);
     }
   }
 

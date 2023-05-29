@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fullfit_app/domain/entities/entities.dart';
 import 'package:fullfit_app/domain/repositories/auth_repository.dart';
 import 'package:fullfit_app/presentation/providers/providers.dart';
 
@@ -48,29 +47,21 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   Future<void> loginWithEmailPassword(String email, String password) async {
-    try {
-      await _authRepository.performLoginWithEmailPassword(email, password,
-          (success) {
-        if (success) {
-          _userNotifier.setUser();
-          state = state.copyWith(
-            status: AuthStatus.authenticated,
-            errorMessage: '',
-          );
-        } else {
-          state = state.copyWith(
-            status: AuthStatus.unauthenticated,
-            errorMessage: 'No se ha podio iniciar sesión',
-          );
-        }
-      });
-    } catch (e) {
-      debugPrint(e.toString());
-      state = state.copyWith(
-        status: AuthStatus.unauthenticated,
-        errorMessage: 'No se ha podio iniciar sesión',
-      );
-    }
+    await _authRepository.performLoginWithEmailPassword(email, password,
+        (success) {
+      if (success) {
+        _userNotifier.setUser();
+        state = state.copyWith(
+          status: AuthStatus.authenticated,
+          errorMessage: '',
+        );
+      } else {
+        state = state.copyWith(
+          status: AuthStatus.unauthenticated,
+          errorMessage: 'Email o contraseña incorrectos',
+        );
+      }
+    });
   }
 
   Future<void> logout() async {

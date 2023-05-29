@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:fullfit_app/presentation/providers/providers.dart';
 import 'package:fullfit_app/presentation/widgets/widgets.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -24,9 +26,22 @@ class LoginScreen extends StatelessWidget {
 class _LoginForm extends ConsumerWidget {
   const _LoginForm();
 
+  void showSnackbar(BuildContext context, String message) {
+    Fluttertoast.cancel();
+    Fluttertoast.showToast(msg: message);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = Theme.of(context).colorScheme;
+
+    final loginForm = ref.watch(loginFormProvider);
+
+    ref.listen(authProvider, (previous, next) {
+      if (next.errorMessage.isEmpty) return;
+      showSnackbar(context, next.errorMessage);
+    });
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -40,8 +55,9 @@ class _LoginForm extends ConsumerWidget {
           hint: 'Correo electrónico',
           prefixIcon: Icons.email_outlined,
           keyboardType: TextInputType.emailAddress,
-          onChanged: (p0) => debugPrint(p0),
-          onFieldSubmitted: (p0) => debugPrint(p0),
+          onChanged: ref.read(loginFormProvider.notifier).onEmailChanged,
+          errorMessage:
+              loginForm.isFormPosted ? loginForm.email.errorMessage : null,
         ),
         SizedBox(height: 20.h),
         //* password textfield
@@ -49,8 +65,11 @@ class _LoginForm extends ConsumerWidget {
           hint: 'Contraseña',
           prefixIcon: Icons.lock_outline,
           obscureText: true,
-          onChanged: (p0) => debugPrint(p0),
-          onFieldSubmitted: (p0) => debugPrint(p0),
+          onChanged: ref.read(loginFormProvider.notifier).onPasswordChanged,
+          onFieldSubmitted: (p0) =>
+              ref.read(loginFormProvider.notifier).onFormSubmitted(),
+          errorMessage:
+              loginForm.isFormPosted ? loginForm.password.errorMessage : null,
         ),
         SizedBox(height: 50.h),
         const Text('Inicia sesión con'),
@@ -97,7 +116,9 @@ class _LoginForm extends ConsumerWidget {
         ),
         SizedBox(height: 80.h),
         CustomBigButton(
-          onPressed: () {},
+          onPressed: loginForm.isPosting
+              ? null
+              : ref.read(loginFormProvider.notifier).onFormSubmitted,
           child: const Text('Continuar'),
         ),
         SizedBox(height: 20.h),
