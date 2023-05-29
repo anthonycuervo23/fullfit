@@ -7,27 +7,34 @@ import 'package:fullfit_app/presentation/providers/providers.dart';
 //PROVIDER
 final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
   final authRepository = ref.watch(authRepositoryProvider);
-  return AuthNotifier(authRepository: authRepository);
+  final userNotifier = ref.watch(userProvider.notifier);
+
+  return AuthNotifier(
+    authRepository: authRepository,
+    userNotifier: userNotifier,
+  );
 });
 
 //NOTIFIER
 class AuthNotifier extends StateNotifier<AuthState> {
   final AuthRepository _authRepository;
-  AuthNotifier({required AuthRepository authRepository})
+  final PersonNotifier _userNotifier;
+  AuthNotifier(
+      {required AuthRepository authRepository,
+      required PersonNotifier userNotifier})
       : _authRepository = authRepository,
+        _userNotifier = userNotifier,
         super(AuthState()) {
-    checkIfUserIsLoggedIn();
+    Future.microtask(() => checkIfUserIsLoggedIn());
   }
 
   Future<void> checkIfUserIsLoggedIn() async {
     try {
-      final bool isLoggedIn = _authRepository.isUserLoggedIn();
-      if (isLoggedIn) {
-        final Person person = await _authRepository.getLoggedInUser();
+      if (_authRepository.isUserLogged) {
+        await _userNotifier.setUser();
         state = state.copyWith(
           status: AuthStatus.authenticated,
           errorMessage: '',
-          person: person,
         );
       } else {
         state = state.copyWith(
@@ -42,13 +49,21 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   Future<void> loginWithEmailPassword(String email, String password) async {
     try {
-      final Person person =
-          await _authRepository.loginWithEmailPassword(email, password);
-      state = state.copyWith(
-        status: AuthStatus.authenticated,
-        errorMessage: '',
-        person: person,
-      );
+      await _authRepository.performLoginWithEmailPassword(email, password,
+          (success) {
+        if (success) {
+          _userNotifier.setUser();
+          state = state.copyWith(
+            status: AuthStatus.authenticated,
+            errorMessage: '',
+          );
+        } else {
+          state = state.copyWith(
+            status: AuthStatus.unauthenticated,
+            errorMessage: 'No se ha podio iniciar sesión',
+          );
+        }
+      });
     } catch (e) {
       debugPrint(e.toString());
       state = state.copyWith(
@@ -59,11 +74,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   Future<void> logout() async {
-    await _authRepository.logout();
+    await _authRepository.performLogout();
+    _userNotifier.clearUser();
     state = state.copyWith(
       status: AuthStatus.unauthenticated,
       errorMessage: '',
-      person: null,
     );
   }
 }
@@ -73,23 +88,19 @@ enum AuthStatus { checking, authenticated, unauthenticated }
 
 class AuthState {
   final AuthStatus status;
-  final Person? person;
   final String errorMessage;
 
   AuthState({
     this.status = AuthStatus.checking,
-    this.person,
     this.errorMessage = '',
   });
 
   AuthState copyWith({
     AuthStatus? status,
-    Person? person,
     String? errorMessage,
   }) =>
       AuthState(
         status: status ?? this.status,
-        person: person ?? this.person,
         errorMessage: errorMessage ?? this.errorMessage,
       );
 }

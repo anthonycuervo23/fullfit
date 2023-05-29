@@ -115,7 +115,7 @@ class _IntroScreenState extends State<IntroScreen> {
                     TextSpan(
                       text: 'Iniciar sesión',
                       recognizer: TapGestureRecognizer()
-                        ..onTap = () => context.push('/login'),
+                        ..onTap = () => context.go('/login'),
                       style: textStyles.bodyMedium?.copyWith(
                         color: colors.primary,
                         fontWeight: FontWeight.w500,

@@ -18,7 +18,13 @@ class TopIconRow extends StatelessWidget {
       children: <Widget>[
         IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: onBackPressed ?? () => context.pop(),
+          onPressed: onBackPressed ??
+              () {
+                if (context.canPop()) {
+                  return context.pop();
+                }
+                context.go('/intro');
+              },
         ),
         Image.asset(
           'assets/images/app_logo2.png',

@@ -10,7 +10,7 @@ class CustomLoginTextfield extends StatefulWidget {
   final TextInputType? keyboardType;
   final Function(String)? onChanged;
   final String? Function(String?)? validator;
-  final void Function()? onFieldSubmitted;
+  final void Function(String)? onFieldSubmitted;
   const CustomLoginTextfield({
     super.key,
     this.hint,
@@ -47,7 +47,7 @@ class _CustomLoginTextfieldState extends State<CustomLoginTextfield> {
     return TextFormField(
       onChanged: widget.onChanged,
       validator: widget.validator,
-      onFieldSubmitted: (_) => widget.onFieldSubmitted?.call(),
+      onFieldSubmitted: widget.onFieldSubmitted,
       obscureText: widget.obscureText ? _obscureText : false,
       keyboardType: widget.keyboardType,
       obscuringCharacter: '●',

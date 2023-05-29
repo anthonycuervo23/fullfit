@@ -12,7 +12,7 @@ final GlobalKey<NavigatorState> _sectionNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: 'sectionNav');
 
 final goRouterProvider = Provider((ref) {
-  final goRouterNotifier = ref.watch(goRouterNotifierProvider);
+  final goRouterNotifier = ref.read(goRouterNotifierProvider);
 
   return GoRouter(
       refreshListenable: goRouterNotifier,
