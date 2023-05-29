@@ -11,6 +11,9 @@ class PersonMapper {
       age: doc.data()?['age'] ?? 0,
       height: doc.data()?['age'] ?? 0.0,
       weight: doc.data()?['age'] ?? 0.0,
+      email: doc.data()?['email'] ?? '--',
+      gender: doc.data()?['gender'] ?? '--',
+      profilePic: doc.data()?['photoURL'] ?? '--',
     );
   }
 
