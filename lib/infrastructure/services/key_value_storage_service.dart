@@ -10,6 +10,8 @@ const String didLoggedOutOrFailedBiometricAuthKey =
 
 const String loginTypeKey = 'login_type_key';
 
+const String isOnboardingCompletedKey = 'is_onboarding_completed_key';
+
 abstract class KeyValueStorageService {
   void setKeyValue<T>(String key, T value);
   T? getValue<T>(String key);

@@ -36,6 +36,7 @@ dependencies:
   permission_handler: ^10.2.0
   shared_preferences: ^2.1.1
   smooth_page_indicator: ^1.1.0
+  step_progress_indicator: ^1.0.2
   twitter_login: ^4.4.0
 
 ### PAQUETES DE DESARROLLO ###
