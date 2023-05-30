@@ -14,13 +14,12 @@ class WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
   Widget build(BuildContext context) {
     final user = ref.watch(userProvider.notifier).user;
 
-    final authNotifier = ref.watch(authProvider.notifier);
     return Scaffold(
       appBar: AppBar(
         title: const Text('WorkoutsScreen'),
       ),
       body: Center(
-        child: Text('${authNotifier.state.status}'),
+        child: Text('${user?.email}'),
       ),
     );
   }

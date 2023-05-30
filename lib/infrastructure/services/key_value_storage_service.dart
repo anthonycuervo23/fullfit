@@ -8,6 +8,8 @@ const String isRegisteredForPushNotificationsKey =
 const String didLoggedOutOrFailedBiometricAuthKey =
     "did_logged_out_or_failed_biometric_auth_key";
 
+const String loginTypeKey = 'login_type_key';
+
 abstract class KeyValueStorageService {
   void setKeyValue<T>(String key, T value);
   T? getValue<T>(String key);

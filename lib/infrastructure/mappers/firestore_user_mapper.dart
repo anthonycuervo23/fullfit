@@ -4,16 +4,17 @@ import 'package:fullfit_app/domain/entities/entities.dart';
 class PersonMapper {
   static Person firestoreUserToEntity(
       DocumentSnapshot<Map<String, dynamic>> doc) {
+    final data = doc.data();
     return Person(
       id: doc.id,
-      name: doc.data()?['name'] ?? '--',
-      lastname: doc.data()?['age'] ?? '--',
-      age: doc.data()?['age'] ?? 0,
-      height: doc.data()?['age'] ?? 0.0,
-      weight: doc.data()?['age'] ?? 0.0,
-      email: doc.data()?['email'] ?? '--',
-      gender: doc.data()?['gender'] ?? '--',
-      profilePic: doc.data()?['photoURL'] ?? '--',
+      name: data?['name'] ?? '--',
+      lastname: data?['lastname'] ?? '--',
+      age: data?['age'] ?? 0,
+      height: double.tryParse(data?['height'].toString() ?? '0') ?? 0.0,
+      weight: double.tryParse(data?['weight'].toString() ?? '0') ?? 0.0,
+      email: data?['email'] ?? '--',
+      gender: data?['gender'] ?? '--',
+      profilePic: data?['photoURL'] ?? '--',
     );
   }
 

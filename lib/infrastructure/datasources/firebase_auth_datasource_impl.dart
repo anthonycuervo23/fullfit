@@ -27,6 +27,7 @@ class FirebaseAuthDatasourceImpl extends AuthDataSource {
   User? _loggedUser;
 
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final AppleAuthProvider _appleProvider = AppleAuthProvider();
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final TwitterLogin _twitterLogin = TwitterLogin(
     apiKey: Environment.twitterApiKey,
@@ -77,7 +78,7 @@ class FirebaseAuthDatasourceImpl extends AuthDataSource {
   Future<void> performLoginWithEmailPassword(
       String email, String password, Function(bool success) closure) async {
     try {
-      final UserCredential _ = await _firebaseAuth.signInWithEmailAndPassword(
+      await _firebaseAuth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -92,18 +93,71 @@ class FirebaseAuthDatasourceImpl extends AuthDataSource {
   }
 
   @override
-  Future<Person> performLoginWithApple() {
-    throw UnimplementedError();
+  Future<void> performLoginWithApple(Function(bool success) closure) async {
+    try {
+      await FirebaseAuth.instance.signInWithProvider(_appleProvider);
+      _hasLoggedWithEmailPassword = false;
+      checkLoggedUser();
+
+      closure(isUserLogged);
+    } catch (e) {
+      closure(false);
+      debugPrint(e.toString());
+    }
   }
 
   @override
-  Future<Person> performLoginWithGoogle() {
-    throw UnimplementedError();
+  Future<void> performLoginWithGoogle(Function(bool success) closure) async {
+    try {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      final GoogleSignInAuthentication? googleAuth =
+          await googleUser?.authentication;
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+
+      await FirebaseAuth.instance.signInWithCredential(credential);
+
+      _hasLoggedWithEmailPassword = false;
+      checkLoggedUser();
+
+      closure(isUserLogged);
+    } catch (e) {
+      closure(false);
+      debugPrint(e.toString());
+    }
   }
 
   @override
-  Future<Person> performLoginWithTwitter() {
-    throw UnimplementedError();
+  Future<void> performLoginWithTwitter(Function(bool success) closure) async {
+    try {
+      final authResult = await _twitterLogin.loginV2();
+      switch (authResult.status) {
+        case TwitterLoginStatus.loggedIn:
+          final AuthCredential twitterAuthCredential =
+              TwitterAuthProvider.credential(
+                  accessToken: authResult.authToken!,
+                  secret: authResult.authTokenSecret!);
+
+          await FirebaseAuth.instance
+              .signInWithCredential(twitterAuthCredential);
+
+          _hasLoggedWithEmailPassword = false;
+          checkLoggedUser();
+
+          closure(isUserLogged);
+          break;
+        case TwitterLoginStatus.cancelledByUser:
+        case TwitterLoginStatus.error:
+        default:
+          closure(false);
+          break;
+      }
+    } catch (e) {
+      closure(false);
+      debugPrint(e.toString());
+    }
   }
 
   @override

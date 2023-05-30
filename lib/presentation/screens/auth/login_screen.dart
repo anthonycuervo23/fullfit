@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:focus_detector/focus_detector.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:fullfit_app/infrastructure/services/services.dart';
@@ -39,7 +38,6 @@ class _LoginForm extends ConsumerWidget {
     ref.listen(authProvider, (previous, next) async {
       if (next.errorMessage.isNotEmpty) {
         Alert.error(context, msg: next.errorMessage);
-        // showSnackbar(context, next.errorMessage);
       }
 
       if (next.status == AuthStatus.checkBiometric) {
@@ -107,18 +105,16 @@ class _LoginForm extends ConsumerWidget {
                 hasBiometricEnabled == true &&
                 !authRepository.didLoggedOutOrFailedBiometricAuth) {
               //* show loading
-              CustomLoader.show();
+              // CustomLoader.show();
               authNotifier.loginWithBiometrics((success) async {
                 if (success) {
                   authRepository.didLoggedOutOrFailedBiometricAuth = false;
 
                   await ref.read(authProvider.notifier).authenticateUser();
-                  CustomLoader.dismiss();
+                  // CustomLoader.dismiss();
                 } else {
                   authRepository.didLoggedOutOrFailedBiometricAuth = true;
-                  CustomLoader.dismiss();
-                  Alert.error(context,
-                      msg: 'Error al iniciar sesión con biometría');
+                  // CustomLoader.dismiss();
                 }
               });
             } else {
@@ -163,7 +159,8 @@ class _LoginForm extends ConsumerWidget {
           children: <Widget>[
             FloatingActionButton(
               elevation: 0,
-              onPressed: () {},
+              onPressed: () =>
+                  authNotifier.loginWithProvider(LoginType.twitter),
               backgroundColor: colors.surface,
               heroTag: 'twitter',
               child: Icon(
@@ -175,7 +172,8 @@ class _LoginForm extends ConsumerWidget {
             Platform.isIOS
                 ? FloatingActionButton(
                     elevation: 0,
-                    onPressed: () {},
+                    onPressed: () =>
+                        authNotifier.loginWithProvider(LoginType.apple),
                     backgroundColor: colors.surface,
                     heroTag: 'apple',
                     child: Icon(
@@ -187,7 +185,7 @@ class _LoginForm extends ConsumerWidget {
             SizedBox(width: 20.w),
             FloatingActionButton(
               elevation: 0,
-              onPressed: () {},
+              onPressed: () => authNotifier.loginWithProvider(LoginType.google),
               backgroundColor: colors.surface,
               heroTag: 'google',
               child: Icon(

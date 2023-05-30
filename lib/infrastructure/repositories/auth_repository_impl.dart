@@ -53,8 +53,8 @@ class AuthRepositoryImpl extends AuthRepository {
   }
 
   @override
-  Future<Person> performLoginWithApple() {
-    return _authDataSource.performLoginWithApple();
+  Future<void> performLoginWithApple(Function(bool success) closure) {
+    return _authDataSource.performLoginWithApple(closure);
   }
 
   @override
@@ -65,13 +65,13 @@ class AuthRepositoryImpl extends AuthRepository {
   }
 
   @override
-  Future<Person> performLoginWithGoogle() {
-    return _authDataSource.performLoginWithGoogle();
+  Future<void> performLoginWithGoogle(Function(bool success) closure) {
+    return _authDataSource.performLoginWithGoogle(closure);
   }
 
   @override
-  Future<Person> performLoginWithTwitter() {
-    return _authDataSource.performLoginWithTwitter();
+  Future<void> performLoginWithTwitter(Function(bool success) closure) {
+    return _authDataSource.performLoginWithTwitter(closure);
   }
 
   @override

@@ -11,9 +11,9 @@ abstract class AuthDataSource {
 
   Future<void> performLoginWithEmailPassword(
       String email, String password, Function(bool success) closure);
-  Future<Person> performLoginWithTwitter();
-  Future<Person> performLoginWithGoogle();
-  Future<Person> performLoginWithApple();
+  Future<void> performLoginWithTwitter(Function(bool success) closure);
+  Future<void> performLoginWithGoogle(Function(bool success) closure);
+  Future<void> performLoginWithApple(Function(bool success) closure);
 
   Future<void> performBiometricLogin();
   Future<bool> performBiometricAuthentication();

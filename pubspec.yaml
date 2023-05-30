@@ -10,6 +10,7 @@ environment:
 dependencies:
   cloud_firestore: ^4.7.1
   cupertino_icons: ^1.0.5
+  device_info_plus: ^9.0.2
   dots_indicator: ^3.0.0
   firebase_auth: ^4.6.1
   firebase_core: ^2.13.0
@@ -31,6 +32,7 @@ dependencies:
   image_picker: ^0.8.7+5
   local_auth: ^2.1.6
   local_auth_android: ^1.0.28
+  package_info_plus: ^4.0.2
   permission_handler: ^10.2.0
   shared_preferences: ^2.1.1
   smooth_page_indicator: ^1.1.0
