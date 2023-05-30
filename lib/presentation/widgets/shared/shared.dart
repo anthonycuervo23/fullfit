@@ -1,3 +1,5 @@
+export 'package:fullfit_app/presentation/widgets/shared/custom_loader.dart';
+export 'package:fullfit_app/presentation/widgets/shared/alert.dart';
 export 'package:fullfit_app/presentation/widgets/shared/app_logo.dart';
 export 'package:fullfit_app/presentation/widgets/shared/top_icon_row.dart';
 export 'package:fullfit_app/presentation/widgets/shared/custom_big_button.dart';

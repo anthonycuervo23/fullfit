@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:focus_detector/focus_detector.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:fullfit_app/infrastructure/services/services.dart';
 import 'package:fullfit_app/presentation/providers/providers.dart';
 import 'package:fullfit_app/presentation/widgets/widgets.dart';
 
@@ -26,20 +28,65 @@ class LoginScreen extends StatelessWidget {
 class _LoginForm extends ConsumerWidget {
   const _LoginForm();
 
-  void showSnackbar(BuildContext context, String message) {
-    Fluttertoast.cancel();
-    Fluttertoast.showToast(msg: message);
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = Theme.of(context).colorScheme;
 
     final loginForm = ref.watch(loginFormProvider);
+    final authRepository = ref.watch(authRepositoryProvider);
+    final authNotifier = ref.watch(authProvider.notifier);
 
-    ref.listen(authProvider, (previous, next) {
+    ref.listen(authProvider, (previous, next) async {
+      if (next.errorMessage.isNotEmpty) {
+        Alert.error(context, msg: next.errorMessage);
+        // showSnackbar(context, next.errorMessage);
+      }
+
+      if (next.status == AuthStatus.checkBiometric) {
+        final hasBiometricEnabled = KeyValueStorageServiceImplementation()
+            .getValue<bool>(hasBiometricLoginEnabledKey);
+        final lastLoggedEmail =
+            KeyValueStorageServiceImplementation().getValue<String>(emailKey);
+        authRepository.didLoggedOutOrFailedBiometricAuth = false;
+        if (authRepository.hasBiometricSupport &&
+            (hasBiometricEnabled == false ||
+                loginForm.email.value != lastLoggedEmail)) {
+          await Alert.promptEnableBiometrics(
+            context,
+            authRepository: authRepository,
+            onEnable: () {
+              Navigator.pop(context);
+              KeyValueStorageServiceImplementation()
+                  .setKeyValue<bool>(hasBiometricLoginEnabledKey, true);
+              authRepository.saveCredentials(
+                  email: loginForm.email.value,
+                  password: loginForm.password.value);
+              KeyValueStorageServiceImplementation()
+                  .setKeyValue<String>(emailKey, loginForm.email.value);
+            },
+            onDisable: () {
+              Navigator.pop(context);
+              KeyValueStorageServiceImplementation()
+                  .setKeyValue<bool>(hasBiometricLoginEnabledKey, false);
+              KeyValueStorageServiceImplementation()
+                  .setKeyValue<String>(emailKey, loginForm.email.value);
+            },
+          );
+        } else if (authRepository.hasBiometricSupport &&
+            hasBiometricEnabled == true) {
+          authRepository.saveCredentials(
+              email: loginForm.email.value, password: loginForm.password.value);
+          KeyValueStorageServiceImplementation()
+              .setKeyValue<String>(emailKey, loginForm.email.value);
+        } else {
+          KeyValueStorageServiceImplementation()
+              .setKeyValue<String>(emailKey, loginForm.email.value);
+        }
+
+        await ref.read(authProvider.notifier).authenticateUser();
+      }
+
       if (next.errorMessage.isEmpty) return;
-      showSnackbar(context, next.errorMessage);
     });
 
     return Column(
@@ -51,13 +98,49 @@ class _LoginForm extends ConsumerWidget {
         const TopIconRow(),
         SizedBox(height: 36.h),
         //* email textfield
-        CustomLoginTextfield(
-          hint: 'Correo electrónico',
-          prefixIcon: Icons.email_outlined,
-          keyboardType: TextInputType.emailAddress,
-          onChanged: ref.read(loginFormProvider.notifier).onEmailChanged,
-          errorMessage:
-              loginForm.isFormPosted ? loginForm.email.errorMessage : null,
+        FocusDetector(
+          onFocusGained: () {
+            final hasBiometricEnabled = KeyValueStorageServiceImplementation()
+                .getValue<bool>(hasBiometricLoginEnabledKey);
+
+            if (authRepository.hasBiometricSupport &&
+                hasBiometricEnabled == true &&
+                !authRepository.didLoggedOutOrFailedBiometricAuth) {
+              //* show loading
+              CustomLoader.show();
+              authNotifier.loginWithBiometrics((success) async {
+                if (success) {
+                  authRepository.didLoggedOutOrFailedBiometricAuth = false;
+
+                  await ref.read(authProvider.notifier).authenticateUser();
+                  CustomLoader.dismiss();
+                } else {
+                  authRepository.didLoggedOutOrFailedBiometricAuth = true;
+                  CustomLoader.dismiss();
+                  Alert.error(context,
+                      msg: 'Error al iniciar sesión con biometría');
+                }
+              });
+            } else {
+              authRepository.didLoggedOutOrFailedBiometricAuth = false;
+            }
+          },
+          onForegroundGained: () {
+            authRepository.didLoggedOutOrFailedBiometricAuth = false;
+          },
+          child: Column(
+            children: [
+              CustomLoginTextfield(
+                hint: 'Correo electrónico',
+                prefixIcon: Icons.email_outlined,
+                keyboardType: TextInputType.emailAddress,
+                onChanged: ref.read(loginFormProvider.notifier).onEmailChanged,
+                errorMessage: loginForm.isFormPosted
+                    ? loginForm.email.errorMessage
+                    : null,
+              ),
+            ],
+          ),
         ),
         SizedBox(height: 20.h),
         //* password textfield

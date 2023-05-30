@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fullfit_app/domain/repositories/auth_repository.dart';
 import 'package:fullfit_app/presentation/providers/providers.dart';
@@ -48,11 +47,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   Future<void> loginWithEmailPassword(String email, String password) async {
     await _authRepository.performLoginWithEmailPassword(email, password,
-        (success) {
+        (success) async {
       if (success) {
-        _userNotifier.setUser();
+        await _userNotifier.setUser();
+
         state = state.copyWith(
-          status: AuthStatus.authenticated,
+          status: AuthStatus.checkBiometric,
           errorMessage: '',
         );
       } else {
@@ -62,6 +62,28 @@ class AuthNotifier extends StateNotifier<AuthState> {
         );
       }
     });
+  }
+
+  Future<void> loginWithBiometrics(Function(bool success) closure) async {
+    try {
+      await _authRepository.performBiometricLogin();
+      await _userNotifier.setUser();
+      closure(true);
+    } catch (e) {
+      state = state.copyWith(
+        status: AuthStatus.unauthenticated,
+        errorMessage: 'No se ha podido iniciar sesión',
+      );
+      closure(false);
+    }
+  }
+
+  Future<void> authenticateUser() async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    state = state.copyWith(
+      status: AuthStatus.authenticated,
+      errorMessage: '',
+    );
   }
 
   Future<void> logout() async {
@@ -75,7 +97,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
 }
 
 //STATE
-enum AuthStatus { checking, authenticated, unauthenticated }
+enum AuthStatus { checking, authenticated, unauthenticated, checkBiometric }
 
 class AuthState {
   final AuthStatus status;

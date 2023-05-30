@@ -110,7 +110,6 @@ final goRouterProvider = Provider((ref) {
             return '/';
           }
         }
-
         return null;
       });
 });

@@ -14,12 +14,10 @@ import 'package:fullfit_app/domain/datasources/datasources.dart';
 
 class FirebaseAuthDatasourceImpl extends AuthDataSource {
   final KeyValueStorageService _storageService;
-  final PersonDatasource _personDatasource;
 
   FirebaseAuthDatasourceImpl(
       {required storageService, required personDatasource})
-      : _storageService = storageService,
-        _personDatasource = personDatasource {
+      : _storageService = storageService {
     checkBiometricSupport();
     checkLoggedUser();
   }
@@ -38,8 +36,6 @@ class FirebaseAuthDatasourceImpl extends AuthDataSource {
 
   final String _emailKey = "email_key";
   final String _passwordKey = "password_key";
-  final String didLoggedOutOrFailedBiometricAuthKey =
-      "did_logged_out_or_failed_biometric_auth";
 
   late final bool _hasBiometricSupport;
   bool _hasLoggedWithEmailPassword = false;
@@ -81,14 +77,12 @@ class FirebaseAuthDatasourceImpl extends AuthDataSource {
   Future<void> performLoginWithEmailPassword(
       String email, String password, Function(bool success) closure) async {
     try {
-      final UserCredential userCredential =
-          await _firebaseAuth.signInWithEmailAndPassword(
+      final UserCredential _ = await _firebaseAuth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
       _hasLoggedWithEmailPassword = true;
       checkLoggedUser();
-      await _personDatasource.getUserData(userId: userCredential.user?.uid);
 
       closure(isUserLogged);
     } catch (e) {
@@ -118,10 +112,6 @@ class FirebaseAuthDatasourceImpl extends AuthDataSource {
       throw Exception('Biometric authentication is not supported');
     }
 
-    if (_hasLoggedWithEmailPassword) {
-      throw Exception('Need to login with email and password first');
-    }
-
     final bool didAuthenticate = await _localAuth.authenticate(
       localizedReason: 'Please authenticate to login',
       authMessages: [
@@ -149,15 +139,15 @@ class FirebaseAuthDatasourceImpl extends AuthDataSource {
           username,
           password,
           (success) => {
-            if (!success) {throw Exception("Error when login")}
+            if (!success) {throw Exception("Error when login with credentials")}
           },
         );
       } else {
         await deleteStoredCredentials();
-        throw Exception("Error when login");
+        throw Exception("Error when login with biometric and credentials");
       }
     } else {
-      throw Exception("Error when login");
+      throw Exception("Error when login with biometric");
     }
   }
 

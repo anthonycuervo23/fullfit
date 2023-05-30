@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
 import 'package:fullfit_app/presentation/inputs/inputs.dart';
 import 'package:fullfit_app/presentation/providers/providers.dart';
+import 'package:fullfit_app/presentation/widgets/widgets.dart';
 
 //PROVIDER
 
@@ -17,7 +18,7 @@ final loginFormProvider =
 
 // NOTIFIER
 class LoginFormNotifier extends StateNotifier<LoginFormState> {
-  final Function(String, String) loginUserCallback;
+  final Future<void> Function(String, String) loginUserCallback;
   LoginFormNotifier({required this.loginUserCallback})
       : super(LoginFormState());
 
@@ -43,12 +44,13 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
     _onTouchEveryField();
 
     if (!state.isValid) return;
-
+    CustomLoader.show();
     state = state.copyWith(isPosting: true);
 
     await loginUserCallback(state.email.value, state.password.value);
 
     state = state.copyWith(isPosting: false);
+    CustomLoader.dismiss();
   }
 
   _onTouchEveryField() {

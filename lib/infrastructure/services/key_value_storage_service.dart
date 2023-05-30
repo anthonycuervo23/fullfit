@@ -1,3 +1,13 @@
+const String emailKey = 'email_key';
+
+const String hasBiometricLoginEnabledKey = "has_biometric_login_enabled_key";
+
+const String isRegisteredForPushNotificationsKey =
+    "is_registered_for_push_notifications_key";
+
+const String didLoggedOutOrFailedBiometricAuthKey =
+    "did_logged_out_or_failed_biometric_auth_key";
+
 abstract class KeyValueStorageService {
   void setKeyValue<T>(String key, T value);
   T? getValue<T>(String key);
