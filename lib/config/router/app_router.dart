@@ -18,7 +18,7 @@ final goRouterProvider = Provider((ref) {
   return GoRouter(
       refreshListenable: goRouterNotifier,
       navigatorKey: _rootNavigatorKey,
-      initialLocation: '/splash',
+      initialLocation: '/onboarding',
       routes: [
         //* primera pantalla
         GoRoute(
@@ -31,10 +31,14 @@ final goRouterProvider = Provider((ref) {
           path: '/intro',
           builder: (context, state) => const IntroScreen(),
         ),
-        //* Pantalla de onboarding
+        //* Rutas de onboarding
         GoRoute(
           path: '/onboarding',
           builder: (context, state) => const OnBoardingScreen(),
+        ),
+        GoRoute(
+          path: '/ready-to-go',
+          builder: (context, state) => const ReadyToGoScreen(),
         ),
 
         //* Rutas de autenticación
@@ -95,40 +99,40 @@ final goRouterProvider = Provider((ref) {
 
         debugPrint('route: $isGoingTo');
 
-        if (isGoingTo == '/splash' && authStatus == AuthStatus.checking) {
-          return null;
-        }
+        // if (isGoingTo == '/splash' && authStatus == AuthStatus.checking) {
+        //   return null;
+        // }
 
-        if (authStatus == AuthStatus.unauthenticated) {
-          if (isGoingTo == '/login' ||
-              isGoingTo == '/register' ||
-              isGoingTo == '/intro') {
-            return null;
-          }
-          return '/intro';
-        }
+        // if (authStatus == AuthStatus.unauthenticated) {
+        //   if (isGoingTo == '/login' ||
+        //       isGoingTo == '/register' ||
+        //       isGoingTo == '/intro') {
+        //     return null;
+        //   }
+        //   return '/intro';
+        // }
 
-        if (authStatus == AuthStatus.authenticated) {
-          // check if user completed onboarding
-          final isOnboardingCompleted =
-              ref.read(keyValueStorageProvider).getValue<bool>(
-                        isOnboardingCompletedKey,
-                      ) ??
-                  false;
+        // if (authStatus == AuthStatus.authenticated) {
+        //   // check if user completed onboarding
+        //   final isOnboardingCompleted =
+        //       ref.read(keyValueStorageProvider).getValue<bool>(
+        //                 isOnboardingCompletedKey,
+        //               ) ??
+        //           false;
 
-          if (!isOnboardingCompleted) {
-            // redirigir a la pantalla de onboarding
-            return '/onboarding';
-          } else {
-            if (isGoingTo == '/login' ||
-                isGoingTo == '/register' ||
-                isGoingTo == '/splash' ||
-                isGoingTo == '/intro') {
-              return '/';
-            }
-            return null;
-          }
-        }
+        //   if (!isOnboardingCompleted) {
+        //     // redirigir a la pantalla de onboarding
+        //     return '/onboarding';
+        //   } else {
+        //     if (isGoingTo == '/login' ||
+        //         isGoingTo == '/register' ||
+        //         isGoingTo == '/splash' ||
+        //         isGoingTo == '/intro') {
+        //       return '/';
+        //     }
+        //     return null;
+        //   }
+        // }
         return null;
       });
 });

@@ -1,3 +1,4 @@
+export 'package:fullfit_app/presentation/widgets/shared/check_box.dart';
 export 'package:fullfit_app/presentation/widgets/shared/custom_loader.dart';
 export 'package:fullfit_app/presentation/widgets/shared/alert.dart';
 export 'package:fullfit_app/presentation/widgets/shared/app_logo.dart';

@@ -81,9 +81,9 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
                       case 5:
                         return const FitnessGoalScreen();
                       case 6:
-                        return const TrainingSpotScreen();
+                        return const TrainingSpotScreen(); //TODO
                       case 7:
-                        return const UserSizesFormScreen();
+                        return const UserSizesFormScreen(); //TODO
                       case 8:
                         return const GenderScreen();
                       case 9:

@@ -8,6 +8,7 @@ environment:
 
 ### PAQUETES ###
 dependencies:
+  card_swiper: ^2.0.4
   cloud_firestore: ^4.7.1
   cupertino_icons: ^1.0.5
   device_info_plus: ^9.0.2

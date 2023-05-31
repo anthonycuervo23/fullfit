@@ -9,3 +9,4 @@ export 'notifications_screen.dart';
 export 'password_screen.dart';
 export 'profile_pic_screen.dart';
 export 'training_spot_screen.dart';
+export 'ready_to_go_screen.dart';

@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class EmailScreen extends StatelessWidget {
   const EmailScreen({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     final textStyles = Theme.of(context).textTheme;
+    final colors = Theme.of(context).colorScheme;
     return SingleChildScrollView(
-      padding: const EdgeInsets.only(top: 53),
+      padding: EdgeInsets.only(top: 53.h),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 73.0),
+            padding: EdgeInsets.symmetric(horizontal: 73.0.w),
             child: Text(
               'Cual es tu correo electronico?',
               textAlign: TextAlign.center,
@@ -20,7 +22,7 @@ class EmailScreen extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 22.0, vertical: 29),
+            padding: EdgeInsets.symmetric(horizontal: 22.0.w, vertical: 29.h),
             child: TextField(
               keyboardType: TextInputType.emailAddress,
               textAlign: TextAlign.center,
@@ -28,11 +30,11 @@ class EmailScreen extends StatelessWidget {
                 filled: true,
                 hintText: 'Ingresa tu correo electronico',
                 hintStyle: textStyles.bodyMedium?.copyWith(
-                  color: Colors.black.withOpacity(0.5),
-                  fontSize: 20,
+                  color: colors.onBackground.withOpacity(0.5),
+                  fontSize: 18.sp,
                 ),
                 contentPadding: const EdgeInsets.all(20),
-                fillColor: Colors.white,
+                fillColor: colors.surface,
                 focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
                     borderSide: BorderSide.none),

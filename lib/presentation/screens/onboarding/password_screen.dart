@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class PasswordScreen extends StatefulWidget {
   const PasswordScreen({super.key});
@@ -26,13 +27,13 @@ class PasswordScreenState extends State<PasswordScreen> {
     final colors = Theme.of(context).colorScheme;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.only(left: 22.0, right: 22, top: 53),
+      padding: EdgeInsets.only(left: 22.0.w, right: 22.0.w, top: 53.0.h),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 50),
+            padding: EdgeInsets.symmetric(horizontal: 50.w),
             child: Text(
               'Ahora configura tu contraseña',
               textAlign: TextAlign.center,
@@ -40,10 +41,10 @@ class PasswordScreenState extends State<PasswordScreen> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 22, bottom: 26),
+            padding: EdgeInsets.only(top: 22.h, bottom: 26.h),
             child: TextField(
               style: textStyles.titleMedium?.copyWith(
-                color: Colors.black.withOpacity(0.5),
+                color: colors.onBackground.withOpacity(0.5),
               ),
               onChanged: (String newPassword) {
                 isLongEnough = newPassword.length >= 8;
@@ -72,14 +73,14 @@ class PasswordScreenState extends State<PasswordScreen> {
                   ),
                 ),
                 filled: true,
-                isDense: true,
+                isDense: false,
                 hintText: 'Ingresa tu contraseña',
                 hintStyle: textStyles.bodyMedium?.copyWith(
-                  color: Colors.black.withOpacity(0.5),
+                  color: colors.onBackground.withOpacity(0.5),
                   fontSize: 20,
                 ),
                 contentPadding: const EdgeInsets.all(8),
-                fillColor: Colors.white,
+                fillColor: colors.surface,
                 focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
                     borderSide: BorderSide.none),
