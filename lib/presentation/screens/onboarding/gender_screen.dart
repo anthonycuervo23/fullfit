@@ -1,23 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fullfit_app/presentation/providers/providers.dart';
 import 'package:fullfit_app/presentation/widgets/widgets.dart';
 
-class GenderScreen extends StatefulWidget {
+class GenderScreen extends ConsumerWidget {
   const GenderScreen({super.key});
 
   @override
-  GenderScreenState createState() => GenderScreenState();
-}
-
-class GenderScreenState extends State<GenderScreen> {
-  int genderSelected = 0;
-  List<Gender> genders = [
-    Gender('Male', '🙋🏼‍♂️'),
-    Gender('Female', '🙋🏼'),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final onboardingProvider = ref.read(onBoardingNotifierProvider.notifier);
+    final onboardingState = ref.watch(onBoardingNotifierProvider);
     final colors = Theme.of(context).colorScheme;
     final textStyles = Theme.of(context).textTheme;
 
@@ -31,7 +24,7 @@ class GenderScreenState extends State<GenderScreen> {
           Padding(
             padding: EdgeInsets.only(left: 28.w, right: 28.w),
             child: Text(
-              'Which one are you?',
+              '¿Cual eres tu?',
               style: textStyles.titleMedium,
             ),
           ),
@@ -39,19 +32,11 @@ class GenderScreenState extends State<GenderScreen> {
             padding: EdgeInsets.symmetric(vertical: 32.h),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: genders
+              children: onboardingState.genders
                   .map(
                     (gender) => GestureDetector(
                       onTap: () {
-                        setState(() {
-                          gender.title == 'Male'
-                              ? genderSelected != 1
-                                  ? genderSelected = 1
-                                  : genderSelected = 0
-                              : genderSelected != 2
-                                  ? genderSelected = 2
-                                  : genderSelected = 0;
-                        });
+                        onboardingProvider.onGenderSelected(gender.title);
                       },
                       child: Card(
                         color: colors.surface,
@@ -64,19 +49,12 @@ class GenderScreenState extends State<GenderScreen> {
                           child: Stack(
                             children: [
                               Padding(
-                                padding: const EdgeInsets.all(24.0),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 24.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: <Widget>[
-                                    Text(
-                                      gender.emoji,
-                                      style: TextStyle(fontSize: 60.sp),
-                                    ),
-                                    SizedBox(height: 33.h),
-                                    Text(
-                                      gender.title,
-                                      style: textStyles.titleMedium,
-                                    ),
+                                    Image.asset(gender.image, height: 120.h),
                                   ],
                                 ),
                               ),
@@ -88,18 +66,11 @@ class GenderScreenState extends State<GenderScreen> {
                                     inactiveColor:
                                         colors.onSurface.withOpacity(0.3),
                                     value: gender.title == 'Male'
-                                        ? genderSelected == 1
-                                        : genderSelected == 2,
+                                        ? onboardingState.genderSelected == 1
+                                        : onboardingState.genderSelected == 2,
                                     onChanged: (value) {
-                                      setState(() {
-                                        gender.title == 'Male'
-                                            ? genderSelected != 1
-                                                ? genderSelected = 1
-                                                : genderSelected = 0
-                                            : genderSelected != 2
-                                                ? genderSelected = 2
-                                                : genderSelected = 0;
-                                      });
+                                      onboardingProvider
+                                          .onGenderSelected(gender.title);
                                     }),
                               ),
                             ],
@@ -114,7 +85,7 @@ class GenderScreenState extends State<GenderScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 23),
             child: Text(
-              'To give you a better experience we need to know your gender',
+              'Para brindarte una mejor experiencia necesitamos saber tu género.',
               textAlign: TextAlign.center,
               style: textStyles.bodyMedium
                   ?.copyWith(color: colors.onSurface.withOpacity(0.5)),
@@ -124,11 +95,4 @@ class GenderScreenState extends State<GenderScreen> {
       ),
     );
   }
-}
-
-class Gender {
-  String title;
-  String emoji;
-
-  Gender(this.title, this.emoji);
 }

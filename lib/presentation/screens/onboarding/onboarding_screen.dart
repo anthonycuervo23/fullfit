@@ -135,14 +135,8 @@ class OnBoardingScreenState extends ConsumerState<OnBoardingScreen>
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
                     return _screens[index].screen;
-                    //     return const FitnessGoalScreen();
-                    //   case 6:
                     //     return const TrainingSpotScreen(); //falta
-                    //   case 7:
                     //     return const UserSizesFormScreen(); //falta
-                    //   case 8:
-                    //     return const GenderScreen();
-                    //   case 9:
                     //     return const NotificationsScreen();
                   }),
             ),

@@ -69,7 +69,7 @@ class FitnessLevelScreen extends ConsumerWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(77.w, 63.h, 77.w, 13.h),
+            padding: EdgeInsets.fromLTRB(70.w, 63.h, 70.w, 13.h),
             child: Text(
               onboardingProvider.fitnessLevel.title,
               style: textStyles.titleSmall,
