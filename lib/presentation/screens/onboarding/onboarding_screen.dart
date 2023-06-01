@@ -243,6 +243,10 @@ class OnBoardingScreenState extends ConsumerState<OnBoardingScreen>
         return onboardingProvider.isEmailValid;
       case ScreenId.password:
         return onboardingProvider.isPasswordValid;
+      case ScreenId.fitnessGoal:
+        return !onboardingProvider.fitnessGoals.values.every((v) => v == false);
+      case ScreenId.gender:
+        return onboardingProvider.genderSelected != 0;
       default:
         return true;
     }
