@@ -30,6 +30,12 @@ class OnBoardingNotifier extends StateNotifier<OnBoardingState> {
       isPasswordValid: Formz.validate([newPassword]),
     );
   }
+
+  onProfilePicChanged(String value) {
+    state = state.copyWith(
+      profilePic: value,
+    );
+  }
 }
 
 //STATE
@@ -40,6 +46,7 @@ class OnBoardingState {
   final bool isPasswordValid;
   final Email email;
   final Password password;
+  final String profilePic;
   //TODO: add more inputs (name, lastname, age, weight, height, etc)
 
   OnBoardingState({
@@ -49,6 +56,7 @@ class OnBoardingState {
     this.isPasswordValid = false,
     this.email = const Email.pure(),
     this.password = const Password.pure(),
+    this.profilePic = 'assets/avatars/avatar1.png',
   });
 
   OnBoardingState copyWith({
@@ -58,6 +66,7 @@ class OnBoardingState {
     bool? isPasswordValid,
     Email? email,
     Password? password,
+    String? profilePic,
   }) {
     return OnBoardingState(
       isPosting: isPosting ?? this.isPosting,
@@ -66,6 +75,7 @@ class OnBoardingState {
       isPasswordValid: isPasswordValid ?? this.isPasswordValid,
       email: email ?? this.email,
       password: password ?? this.password,
+      profilePic: profilePic ?? this.profilePic,
     );
   }
 }

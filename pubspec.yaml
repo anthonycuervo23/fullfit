@@ -56,4 +56,5 @@ flutter:
     - assets/icons/
     - assets/images/
     - assets/loaders/
+    - assets/avatars/
     - google_fonts/roboto/

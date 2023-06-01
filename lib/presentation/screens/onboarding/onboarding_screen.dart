@@ -9,6 +9,29 @@ import 'package:step_progress_indicator/step_progress_indicator.dart';
 
 import 'package:fullfit_app/presentation/widgets/widgets.dart';
 
+enum ScreenId {
+  email,
+  password,
+  biometric,
+  profilePic,
+  fitnessLevel,
+  fitnessGoal,
+  trainingSpot,
+  userSizes,
+  gender,
+  notifications,
+}
+
+class _ScreenBuilder {
+  final ScreenId id;
+  final Widget screen;
+
+  _ScreenBuilder({
+    required this.id,
+    required this.screen,
+  });
+}
+
 class OnBoardingScreen extends ConsumerStatefulWidget {
   const OnBoardingScreen({Key? key}) : super(key: key);
 
@@ -20,34 +43,35 @@ class OnBoardingScreenState extends ConsumerState<OnBoardingScreen>
     with AutomaticKeepAliveClientMixin {
   int stepCount = 0;
   bool hasBiometricSupport = false;
-  List<Widget> screens = [];
-  // List<int> screens = List.generate(10, (index) => index, growable: false);
+  final List<_ScreenBuilder> _screens = [];
   PageController controller = PageController();
 
   // Definimos los constructores de las pantallas
-  List<Widget Function()> screensBuilders = [
-    () => const EmailScreen(),
-    () => const PasswordScreen(),
-    () => const BiometricScreen(),
-    () => const ProfilePicScreen(),
-    () => const FitnessLevelScreen(),
-    () => const FitnessGoalScreen(),
-    () => const TrainingSpotScreen(), //TODO
-    () => const UserSizesFormScreen(), //TODO
-    () => const GenderScreen(),
-    () => const NotificationsScreen(),
+  final List<_ScreenBuilder> _screensBuilders = [
+    _ScreenBuilder(id: ScreenId.email, screen: const EmailScreen()),
+    _ScreenBuilder(id: ScreenId.password, screen: const PasswordScreen()),
+    _ScreenBuilder(id: ScreenId.biometric, screen: const BiometricScreen()),
+    _ScreenBuilder(id: ScreenId.profilePic, screen: const ProfilePicScreen()),
+    _ScreenBuilder(
+        id: ScreenId.fitnessLevel, screen: const FitnessLevelScreen()),
+    _ScreenBuilder(id: ScreenId.fitnessGoal, screen: const FitnessGoalScreen()),
+    _ScreenBuilder(
+        id: ScreenId.trainingSpot, screen: const TrainingSpotScreen()),
+    _ScreenBuilder(id: ScreenId.userSizes, screen: const UserSizesFormScreen()),
+    _ScreenBuilder(id: ScreenId.gender, screen: const GenderScreen()),
+    _ScreenBuilder(
+        id: ScreenId.notifications, screen: const NotificationsScreen()),
   ];
 
   @override
   void initState() {
     super.initState();
     hasBiometricSupport = ref.read(authRepositoryProvider).hasBiometricSupport;
-    for (var screenBuilder in screensBuilders) {
-      if (screenBuilder == (() => const BiometricScreen()) &&
-          !hasBiometricSupport) {
+    for (var screenBuilder in _screensBuilders) {
+      if (screenBuilder.id == ScreenId.biometric && !hasBiometricSupport) {
         continue;
       }
-      screens.add(screenBuilder());
+      _screens.add(screenBuilder);
     }
   }
 
@@ -78,7 +102,7 @@ class OnBoardingScreenState extends ConsumerState<OnBoardingScreen>
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             StepProgressIndicator(
-              totalSteps: screens.length,
+              totalSteps: _screens.length,
               currentStep: stepCount + 1,
               selectedColor: colors.primary,
               size: 8,
@@ -107,33 +131,21 @@ class OnBoardingScreenState extends ConsumerState<OnBoardingScreen>
             Expanded(
               child: PageView.builder(
                   controller: controller,
-                  itemCount: screens.length,
+                  itemCount: _screens.length,
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
-                    switch (index) {
-                      case 0:
-                        return const EmailScreen();
-                      case 1:
-                        return const PasswordScreen();
-                      case 2:
-                        return const BiometricScreen();
-                      case 3:
-                        return const ProfilePicScreen();
-                      case 4:
-                        return const FitnessLevelScreen();
-                      case 5:
-                        return const FitnessGoalScreen();
-                      case 6:
-                        return const TrainingSpotScreen(); //TODO
-                      case 7:
-                        return const UserSizesFormScreen(); //TODO
-                      case 8:
-                        return const GenderScreen();
-                      case 9:
-                        return const NotificationsScreen();
-                      default:
-                        return Container();
-                    }
+                    return _screens[index].screen;
+                    //     return const FitnessLevelScreen();
+                    //   case 5:
+                    //     return const FitnessGoalScreen();
+                    //   case 6:
+                    //     return const TrainingSpotScreen(); //falta
+                    //   case 7:
+                    //     return const UserSizesFormScreen(); //falta
+                    //   case 8:
+                    //     return const GenderScreen();
+                    //   case 9:
+                    //     return const NotificationsScreen();
                   }),
             ),
             Padding(
@@ -142,8 +154,9 @@ class OnBoardingScreenState extends ConsumerState<OnBoardingScreen>
                 onPressed: isCurrentInputValid()
                     ? () async {
                         FocusScope.of(context).unfocus();
-                        if (stepCount != 9) {
-                          if (stepCount == 2) {
+                        if (stepCount != _screens.length - 1) {
+                          final currentScreenId = _screens[stepCount].id;
+                          if (currentScreenId == ScreenId.biometric) {
                             authRepository.didLoggedOutOrFailedBiometricAuth =
                                 false;
                             authRepository
@@ -190,13 +203,15 @@ class OnBoardingScreenState extends ConsumerState<OnBoardingScreen>
               ),
             ),
             Visibility(
-              visible: stepCount == 2 || stepCount == 9,
+              visible: _screens[stepCount].id == ScreenId.biometric ||
+                  _screens[stepCount].id == ScreenId.notifications,
               child: TextButton(
                 onPressed: () {
                   FocusScope.of(context).unfocus();
 
-                  if (stepCount != 9) {
-                    if (stepCount == 2) {
+                  if (stepCount != _screens.length - 1) {
+                    final currentScreenId = _screens[stepCount].id;
+                    if (currentScreenId == ScreenId.biometric) {
                       authRepository.didLoggedOutOrFailedBiometricAuth = false;
                       KeyValueStorageServiceImplementation().setKeyValue<bool>(
                           hasBiometricLoginEnabledKey, false);
@@ -230,10 +245,11 @@ class OnBoardingScreenState extends ConsumerState<OnBoardingScreen>
 
   bool isCurrentInputValid() {
     final onboardingProvider = ref.watch(onBoardingNotifierProvider);
-    switch (stepCount) {
-      case 0:
+    final currentScreenId = _screens[stepCount].id;
+    switch (currentScreenId) {
+      case ScreenId.email:
         return onboardingProvider.isEmailValid;
-      case 1:
+      case ScreenId.password:
         return onboardingProvider.isPasswordValid;
       default:
         return true;

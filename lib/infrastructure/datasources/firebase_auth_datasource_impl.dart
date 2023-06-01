@@ -167,7 +167,8 @@ class FirebaseAuthDatasourceImpl extends AuthDataSource {
   @override
   Future<bool> performBiometricAuthentication() async {
     if (!hasBiometricSupport) {
-      throw Exception('Biometric authentication is not supported');
+      // throw Exception('Biometric authentication is not supported');
+      return false;
     }
 
     try {

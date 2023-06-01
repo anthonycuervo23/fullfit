@@ -1,32 +1,35 @@
 import 'dart:io';
 import 'package:card_swiper/card_swiper.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fullfit_app/presentation/providers/providers.dart';
+import 'package:fullfit_app/presentation/widgets/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 
-class ProfilePicScreen extends StatefulWidget {
+class ProfilePicScreen extends ConsumerStatefulWidget {
   const ProfilePicScreen({super.key});
 
   @override
   ProfilePicScreenState createState() => ProfilePicScreenState();
 }
 
-class ProfilePicScreenState extends State<ProfilePicScreen> {
+class ProfilePicScreenState extends ConsumerState<ProfilePicScreen> {
   File? _image;
   final _imagePicker = ImagePicker();
-  List<dynamic> pics = [
-    '🐵',
-    '👻',
-    '🐱',
-    '👽',
-    '🤠',
-    '🤪',
-    '😍',
-    '🤡',
-    '🐸',
-    '🐲',
-    '🐥',
+  static List<String> pics = [
+    'assets/avatars/avatar1.png',
+    'assets/avatars/avatar2.png',
+    'assets/avatars/avatar3.png',
+    'assets/avatars/avatar4.png',
+    'assets/avatars/avatar5.png',
+    'assets/avatars/avatar6.png',
+    'assets/avatars/avatar7.png',
+    'assets/avatars/avatar8.png',
+    'assets/avatars/avatar9.png',
+    'assets/avatars/avatar10.png',
+    'assets/avatars/avatar11.png',
+    'assets/avatars/avatar12.png',
   ];
   SwiperController controller = SwiperController();
 
@@ -38,24 +41,38 @@ class ProfilePicScreenState extends State<ProfilePicScreen> {
     if (response.file != null) {
       setState(() {
         _image = File(response.file!.path);
-        pics.add(_image);
+        pics.add(_image!.path);
       });
+      ref
+          .read(onBoardingNotifierProvider.notifier)
+          .onProfilePicChanged(_image!.path);
     }
   }
 
   _onCameraClick() {
-    final action = CupertinoActionSheet(
-      message: Text(
-        'This will be visible to other users',
-        style: TextStyle(fontSize: 15.0.sp),
+    final textStyles = Theme.of(context).textTheme;
+    final colors = Theme.of(context).colorScheme;
+    showAdaptiveActionSheet(
+      context: context,
+      title: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'Agregar foto de perfil',
+            style: textStyles.titleSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: colors.onBackground.withOpacity(0.6)),
+          ),
+          SizedBox(height: 20.h),
+          Text('Esta foto será visible para otros usuarios',
+              style: textStyles.bodyMedium?.copyWith(
+                color: colors.onBackground.withOpacity(0.6),
+              )),
+        ],
       ),
-      title: Text(
-        'Add Profile Picture',
-        style: TextStyle(fontSize: 18.0.sp),
-      ),
-      actions: <Widget>[
-        CupertinoActionSheetAction(
-          isDefaultAction: false,
+      actions: [
+        BottomSheetAction(
+          title: const Text('Elegir de la galería'),
           onPressed: () async {
             Navigator.pop(context);
             XFile? image =
@@ -63,17 +80,19 @@ class ProfilePicScreenState extends State<ProfilePicScreen> {
             if (image != null) {
               setState(() {
                 _image = File(image.path);
-                pics.add(_image);
+                pics.add(_image!.path);
               });
               await Future.delayed(const Duration(milliseconds: 300), () {
                 controller.move(pics.length - 1, animation: false);
               });
+              ref
+                  .read(onBoardingNotifierProvider.notifier)
+                  .onProfilePicChanged(_image!.path);
             }
           },
-          child: const Text('Choose from gallery'),
         ),
-        CupertinoActionSheetAction(
-          isDestructiveAction: false,
+        BottomSheetAction(
+          title: const Text('Tomar una foto'),
           onPressed: () async {
             Navigator.pop(context);
             XFile? image =
@@ -81,24 +100,25 @@ class ProfilePicScreenState extends State<ProfilePicScreen> {
             if (image != null) {
               setState(() {
                 _image = File(image.path);
-                pics.add(_image);
+                pics.add(_image!.path);
               });
               await Future.delayed(const Duration(milliseconds: 300), () {
                 controller.move(pics.length - 1, animation: false);
               });
+              ref
+                  .read(onBoardingNotifierProvider.notifier)
+                  .onProfilePicChanged(_image!.path);
             }
           },
-          child: const Text('Take a picture'),
-        )
+        ),
       ],
-      cancelButton: CupertinoActionSheetAction(
-        child: const Text('Cancel'),
+      cancelAction: CancelAction(
+        title: const Text('Cancelar'),
         onPressed: () {
           Navigator.pop(context);
         },
       ),
     );
-    showCupertinoModalPopup(context: context, builder: (context) => action);
   }
 
   @override
@@ -133,6 +153,11 @@ class ProfilePicScreenState extends State<ProfilePicScreen> {
                 SizedBox(
                   height: 100.h,
                   child: Swiper(
+                    onIndexChanged: (value) {
+                      ref
+                          .read(onBoardingNotifierProvider.notifier)
+                          .onProfilePicChanged(pics[value]);
+                    },
                     controller: controller,
                     itemCount: pics.length,
                     loop: true,
@@ -153,14 +178,14 @@ class ProfilePicScreenState extends State<ProfilePicScreen> {
           Padding(
             padding: EdgeInsets.only(top: 30.h),
             child: Text(
-              'Profile Picture',
+              'Foto de perfil',
               style: textStyles.titleMedium,
             ),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(55, 8.0, 55, 32),
             child: Text(
-              'You can select photo from one of this emoji or add your own photo as profile picture',
+              'Puede seleccionar una foto de nuestros amigos bots o agregar tu propia foto como imagen de perfil',
               textAlign: TextAlign.center,
               style: textStyles.bodyMedium?.copyWith(
                 color: colors.onBackground.withOpacity(0.6),
@@ -170,7 +195,7 @@ class ProfilePicScreenState extends State<ProfilePicScreen> {
           GestureDetector(
             onTap: () => _onCameraClick(),
             child: Text(
-              'Add Custom Photo',
+              'Agregar mi foto',
               textAlign: TextAlign.center,
               style: textStyles.bodyMedium?.copyWith(
                 color: colors.primary,
@@ -182,13 +207,15 @@ class ProfilePicScreenState extends State<ProfilePicScreen> {
     );
   }
 
-  buildPicWidget(dynamic pic) {
+  buildPicWidget(String pic) {
     final colors = Theme.of(context).colorScheme;
-    final textStyles = Theme.of(context).textTheme;
     return GestureDetector(
-      onTap: () => controller.move(pics.indexOf(pic),
-          animation:
-              pics.indexOf(pic) != pics.length - 1 && pics.indexOf(pic) != 0),
+      onTap: () {
+        controller.move(pics.indexOf(pic),
+            animation:
+                pics.indexOf(pic) != pics.length - 1 && pics.indexOf(pic) != 0);
+        ref.read(onBoardingNotifierProvider.notifier).onProfilePicChanged(pic);
+      },
       child: Card(
         color: colors.surface,
         elevation: 2,
@@ -201,17 +228,15 @@ class ProfilePicScreenState extends State<ProfilePicScreen> {
             color: colors.surface,
           ),
           child: Center(
-            child: pic is String
-                ? Text(
+            child: pic.contains('assets')
+                ? Image.asset(
                     pic,
-                    style: textStyles.titleMedium?.copyWith(
-                      fontSize: 40.sp,
-                    ),
+                    fit: BoxFit.cover,
                   )
                 : CircleAvatar(
                     radius: 50,
                     backgroundImage: Image.file(
-                      pic,
+                      File(pic),
                     ).image,
                   ),
           ),
