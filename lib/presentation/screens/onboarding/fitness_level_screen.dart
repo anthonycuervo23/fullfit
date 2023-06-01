@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fullfit_app/presentation/providers/providers.dart';
 
-class FitnessLevelScreen extends StatefulWidget {
+class FitnessLevelScreen extends ConsumerWidget {
   const FitnessLevelScreen({Key? key}) : super(key: key);
 
   @override
-  FitnessLevelScreenState createState() => FitnessLevelScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final onboardingProvider = ref.watch(onBoardingNotifierProvider);
 
-class FitnessLevelScreenState extends State<FitnessLevelScreen> {
-  @override
-  Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     final textStyles = Theme.of(context).textTheme;
 
@@ -22,7 +21,7 @@ class FitnessLevelScreenState extends State<FitnessLevelScreen> {
           Padding(
             padding: EdgeInsets.only(bottom: 61.0.h, right: 38.w, left: 38.w),
             child: Text(
-              'What’s your current fitness level?',
+              '¿Cuál es tu condición física actual?',
               textAlign: TextAlign.center,
               style: textStyles.titleMedium,
             ),
@@ -44,7 +43,7 @@ class FitnessLevelScreenState extends State<FitnessLevelScreen> {
                       color: colors.primary.withOpacity(0.1)),
                   child: Center(
                     child: Text(
-                      'Not Fit',
+                      'Muy baja',
                       style: textStyles.bodyMedium?.copyWith(
                         color: colors.primary,
                       ),
@@ -59,7 +58,7 @@ class FitnessLevelScreenState extends State<FitnessLevelScreen> {
                       color: colors.primary.withOpacity(0.1)),
                   child: Center(
                     child: Text(
-                      'Super Fit',
+                      'Excelente',
                       style: textStyles.bodyMedium?.copyWith(
                         color: colors.primary,
                       ),
@@ -72,16 +71,14 @@ class FitnessLevelScreenState extends State<FitnessLevelScreen> {
           Padding(
             padding: EdgeInsets.fromLTRB(77.w, 63.h, 77.w, 13.h),
             child: Text(
-              'Moderate Intensity',
+              onboardingProvider.fitnessLevel.title,
               style: textStyles.titleSmall,
             ),
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 43.w),
-            child: Text(
-                'I always work out regularly two or three times a week.',
-                textAlign: TextAlign.center,
-                style: textStyles.bodyMedium),
+            child: Text(onboardingProvider.fitnessLevel.description,
+                textAlign: TextAlign.center, style: textStyles.bodyMedium),
           ),
         ],
       ),
@@ -89,12 +86,12 @@ class FitnessLevelScreenState extends State<FitnessLevelScreen> {
   }
 }
 
-class _FitnessMeter extends StatefulWidget {
+class _FitnessMeter extends ConsumerStatefulWidget {
   @override
-  State<StatefulWidget> createState() => FitnessMeterState();
+  FitnessMeterState createState() => FitnessMeterState();
 }
 
-class FitnessMeterState extends State<_FitnessMeter> {
+class FitnessMeterState extends ConsumerState<_FitnessMeter> {
   List<double> bars = [];
   late double barPosition = 150;
   double barWidth = 4.15;
@@ -171,6 +168,9 @@ class FitnessMeterState extends State<_FitnessMeter> {
                 setState(() {
                   barPosition = details.globalPosition.dx;
                 });
+                ref
+                    .read(onBoardingNotifierProvider.notifier)
+                    .onFitnessLevelChanged(barPosition);
               }
             },
             child: Card(
