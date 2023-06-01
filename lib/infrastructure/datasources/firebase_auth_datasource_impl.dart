@@ -25,6 +25,7 @@ class FirebaseAuthDatasourceImpl extends AuthDataSource {
   final LocalAuthentication _localAuth = LocalAuthentication();
   final _storage = const FlutterSecureStorage();
   User? _loggedUser;
+  List<BiometricType> _availableBiometrics = [];
 
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final AppleAuthProvider _appleProvider = AppleAuthProvider();
@@ -40,6 +41,9 @@ class FirebaseAuthDatasourceImpl extends AuthDataSource {
 
   late final bool _hasBiometricSupport;
   bool _hasLoggedWithEmailPassword = false;
+
+  @override
+  List<BiometricType> get availableBiometrics => _availableBiometrics;
 
   @override
   set didLoggedOutOrFailedBiometricAuth(
@@ -166,17 +170,21 @@ class FirebaseAuthDatasourceImpl extends AuthDataSource {
       throw Exception('Biometric authentication is not supported');
     }
 
-    final bool didAuthenticate = await _localAuth.authenticate(
-      localizedReason: 'Please authenticate to login',
-      authMessages: [
-        const AndroidAuthMessages(
-          biometricHint: '',
-          signInTitle: 'Login',
-        )
-      ],
-    );
+    try {
+      final bool didAuthenticate = await _localAuth.authenticate(
+        localizedReason: 'Please authenticate to login',
+        authMessages: [
+          const AndroidAuthMessages(
+            biometricHint: '',
+            signInTitle: 'Login',
+          )
+        ],
+      );
 
-    return didAuthenticate;
+      return didAuthenticate;
+    } catch (e) {
+      return false;
+    }
   }
 
   @override
@@ -235,9 +243,8 @@ extension _FirebaseAuthDatasourceImplExtension on FirebaseAuthDatasourceImpl {
     }
   }
 
-  checkBiometricSupport() async {
-    final List<BiometricType> availableBiometrics =
-        await _localAuth.getAvailableBiometrics();
+  Future<void> checkBiometricSupport() async {
+    _availableBiometrics = await _localAuth.getAvailableBiometrics();
     final canCheckBiometrics = await _localAuth.canCheckBiometrics;
     final isDeviceSupported = await _localAuth.isDeviceSupported();
     _hasBiometricSupport = availableBiometrics.isNotEmpty &&

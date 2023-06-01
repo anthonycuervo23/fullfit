@@ -1,15 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fullfit_app/presentation/providers/providers.dart';
 
-class PasswordScreen extends StatefulWidget {
+class PasswordScreen extends ConsumerStatefulWidget {
   const PasswordScreen({super.key});
 
   @override
   PasswordScreenState createState() => PasswordScreenState();
 }
 
-class PasswordScreenState extends State<PasswordScreen> {
+class PasswordScreenState extends ConsumerState<PasswordScreen> {
   bool _obscureText = true,
       isLongEnough = false,
       hasUppercase = false,
@@ -19,6 +21,23 @@ class PasswordScreenState extends State<PasswordScreen> {
     setState(() {
       _obscureText = !_obscureText;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    checkPassword(ref.read(onBoardingNotifierProvider).password.value);
+  }
+
+  void checkPassword(String password) {
+    isLongEnough = password.length >= 8;
+    hasUppercase = password.contains(
+      RegExp('(?=.*[A-Z])'),
+    );
+    hasNumber = password.contains(
+      RegExp('(?=.*\\d)'),
+    );
+    setState(() {});
   }
 
   @override
@@ -42,19 +61,16 @@ class PasswordScreenState extends State<PasswordScreen> {
           ),
           Padding(
             padding: EdgeInsets.only(top: 22.h, bottom: 26.h),
-            child: TextField(
+            child: TextFormField(
               style: textStyles.titleMedium?.copyWith(
                 color: colors.onBackground.withOpacity(0.5),
               ),
+              initialValue: ref.read(onBoardingNotifierProvider).password.value,
               onChanged: (String newPassword) {
-                isLongEnough = newPassword.length >= 8;
-                hasUppercase = newPassword.contains(
-                  RegExp('(?=.*[A-Z])'),
-                );
-                hasNumber = newPassword.contains(
-                  RegExp('(?=.*\\d)'),
-                );
-                setState(() {});
+                checkPassword(newPassword);
+                ref
+                    .watch(onBoardingNotifierProvider.notifier)
+                    .onPasswordChanged(newPassword);
               },
               obscureText: _obscureText,
               textAlignVertical: TextAlignVertical.center,
@@ -122,7 +138,7 @@ class PasswordScreenState extends State<PasswordScreen> {
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                      color: isLongEnough
+                      color: hasUppercase
                           ? colors.primary
                           : colors.onSurface.withOpacity(0.5),
                       borderRadius: BorderRadius.circular(4),
@@ -146,7 +162,7 @@ class PasswordScreenState extends State<PasswordScreen> {
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                      color: isLongEnough
+                      color: hasNumber
                           ? colors.primary
                           : colors.onSurface.withOpacity(0.5),
                       borderRadius: BorderRadius.circular(4),

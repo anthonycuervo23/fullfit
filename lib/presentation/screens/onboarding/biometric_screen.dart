@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fullfit_app/presentation/providers/providers.dart';
+import 'package:local_auth_android/local_auth_android.dart';
 
-class BiometricScreen extends StatefulWidget {
+class BiometricScreen extends ConsumerWidget {
   const BiometricScreen({super.key});
 
   @override
-  BiometricScreenState createState() => BiometricScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authRepository = ref.watch(authRepositoryProvider);
 
-class BiometricScreenState extends State<BiometricScreen> {
-  @override
-  Widget build(BuildContext context) {
+    bool isFaceId() =>
+        authRepository.availableBiometrics.contains(BiometricType.face) ||
+        authRepository.availableBiometrics.contains(BiometricType.strong);
+
     final colors = Theme.of(context).colorScheme;
     final textStyles = Theme.of(context).textTheme;
     return SingleChildScrollView(
@@ -29,20 +33,22 @@ class BiometricScreenState extends State<BiometricScreen> {
               );
             },
             blendMode: BlendMode.srcIn,
-            //TODO: Cambiar el icono dependiendo del tipo de biometría disponible
-            //TODO: usar fontawesome
-            child: Icon(Icons.fingerprint, size: 124.w),
+            child: isFaceId()
+                ? Icon(Icons.face, size: 124.w)
+                : Icon(Icons.fingerprint, size: 124.w),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(24, 31, 24, 8),
             child: Text(
-              'Habilitar Touch ID',
+              isFaceId() ? 'Habilitar Face ID' : 'Habilitar Touch ID',
               textAlign: TextAlign.center,
               style: textStyles.titleMedium,
             ),
           ),
           Text(
-            'Si habilitas Touch ID, no necesitas ingresar tu contraseña cuando inicies sesión.',
+            isFaceId()
+                ? 'Si habilitas Face ID, no necesitas ingresar tu contraseña cuando inicies sesión.'
+                : 'Si habilitas Touch ID, no necesitas ingresar tu contraseña cuando inicies sesión.',
             textAlign: TextAlign.center,
             style: textStyles.bodyMedium?.copyWith(
               color: colors.onBackground.withOpacity(0.6),

@@ -1,10 +1,12 @@
 import 'package:fullfit_app/domain/entities/entities.dart';
+import 'package:local_auth_android/local_auth_android.dart';
 
 abstract class AuthDataSource {
   bool get isUserLogged;
   bool get hasLoggedWithEmailPassword;
   bool get hasBiometricSupport;
   bool get didLoggedOutOrFailedBiometricAuth;
+  List<BiometricType> get availableBiometrics;
   set didLoggedOutOrFailedBiometricAuth(bool didLoggedOutOrFailedBiometricAuth);
 
   Future<void> deleteStoredCredentials();

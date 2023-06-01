@@ -3,6 +3,7 @@ import 'package:fullfit_app/domain/entities/entities.dart';
 import 'package:fullfit_app/domain/repositories/repositories.dart';
 import 'package:fullfit_app/infrastructure/datasources/datasources.dart';
 import 'package:fullfit_app/infrastructure/services/services.dart';
+import 'package:local_auth_android/local_auth_android.dart';
 
 class AuthRepositoryImpl extends AuthRepository {
   final AuthDataSource _authDataSource;
@@ -19,6 +20,10 @@ class AuthRepositoryImpl extends AuthRepository {
   @override
   bool get didLoggedOutOrFailedBiometricAuth =>
       _authDataSource.didLoggedOutOrFailedBiometricAuth;
+
+  @override
+  List<BiometricType> get availableBiometrics =>
+      _authDataSource.availableBiometrics;
 
   @override
   set didLoggedOutOrFailedBiometricAuth(

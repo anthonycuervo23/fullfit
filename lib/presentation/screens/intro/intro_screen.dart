@@ -101,7 +101,7 @@ class _IntroScreenState extends State<IntroScreen> {
               ),
               SizedBox(height: 40.h),
               CustomBigButton(
-                onPressed: () => context.push('/register'),
+                onPressed: () => context.go('/onboarding'),
                 child: const Text('Comenzar'),
               ),
               SizedBox(height: 16.h),
