@@ -10,9 +10,9 @@ class NotificationsScreen extends StatefulWidget {
 
 class NotificationsScreenState extends State<NotificationsScreen> {
   List<String> notificationTips = [
-    'New weekly healthy reminder',
-    'Motivational reminder',
-    'Personalised program'
+    'Nuevo recordatorio saludable semanal',
+    'Recordatorio motivacional',
+    'Programa personalizado'
   ];
 
   @override
@@ -25,7 +25,7 @@ class NotificationsScreenState extends State<NotificationsScreen> {
       child: Column(
         children: [
           Text(
-            'Do you want to turn on notification?',
+            '¿Quieres activar las notificaciones?',
             textAlign: TextAlign.center,
             style: textStyles.titleMedium,
           ),
