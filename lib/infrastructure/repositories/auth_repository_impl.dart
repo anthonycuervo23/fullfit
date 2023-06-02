@@ -96,7 +96,7 @@ class AuthRepositoryImpl extends AuthRepository {
   }
 
   @override
-  Future<void> checkAccountExists(String email, Function(bool exists) closure) {
-    return _authDataSource.checkAccountExists(email, closure);
+  Future<bool> checkAccountExists(String email) {
+    return _authDataSource.checkAccountExists(email);
   }
 }

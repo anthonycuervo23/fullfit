@@ -127,10 +127,13 @@ class OnBoardingScreenState extends ConsumerState<OnBoardingScreen>
                           final currentScreenId = _screens[stepCount].id;
                           if (currentScreenId == ScreenId.email) {
                             //check if email already exists
-                            ref
+                            bool exists = await ref
                                 .read(onBoardingNotifierProvider.notifier)
                                 .emailAlreadyExists();
-                            return;
+
+                            if (exists) {
+                              return;
+                            }
                           }
 
                           if (currentScreenId == ScreenId.biometric) {

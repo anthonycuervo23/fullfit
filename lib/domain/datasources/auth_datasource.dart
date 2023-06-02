@@ -23,7 +23,7 @@ abstract class AuthDataSource {
   Future<Person> register(String email, String password, String fullname);
   Future<void> performLogout();
 
-  Future<void> checkAccountExists(String email, Function(bool exists) closure);
+  Future<bool> checkAccountExists(String email);
 
   Future<void> saveCredentials(
       {required String email, required String password});

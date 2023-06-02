@@ -238,17 +238,16 @@ class FirebaseAuthDatasourceImpl extends AuthDataSource {
   }
 
   @override
-  Future<void> checkAccountExists(
-      String email, Function(bool exists) closure) async {
+  Future<bool> checkAccountExists(String email) async {
     try {
-      final methods = _firebaseAuth.fetchSignInMethodsForEmail(email);
-      methods.then((value) => closure(value.isNotEmpty));
+      final methods = await _firebaseAuth.fetchSignInMethodsForEmail(email);
+      return methods.isNotEmpty;
     } on FirebaseAuthException catch (e) {
       debugPrint(e.toString());
-      closure(false);
+      return false;
     } catch (e) {
       debugPrint(e.toString());
-      closure(false);
+      return false;
     }
   }
 }

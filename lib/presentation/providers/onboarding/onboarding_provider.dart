@@ -29,14 +29,16 @@ class OnBoardingNotifier extends StateNotifier<OnBoardingState> {
     );
   }
 
-  emailAlreadyExists() {
+  Future<bool> emailAlreadyExists() async {
     state = state.copyWith(checkingEmail: true, errorMessage: '');
-    _authRepository.checkAccountExists(state.email.value, (exists) {
-      if (exists) {
-        state = state.copyWith(errorMessage: 'La cuenta ya existe!');
-      }
-      state = state.copyWith(checkingEmail: false);
-    });
+    bool exists = await _authRepository.checkAccountExists(state.email.value);
+    if (exists) {
+      state = state.copyWith(
+          errorMessage: 'La cuenta ya existe!', checkingEmail: false);
+      return true;
+    }
+    state = state.copyWith(checkingEmail: false);
+    return false;
   }
 
   onPasswordChanged(String value) {
