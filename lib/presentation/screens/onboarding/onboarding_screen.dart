@@ -12,6 +12,7 @@ import 'package:fullfit_app/presentation/widgets/widgets.dart';
 enum ScreenId {
   email,
   password,
+  height,
   biometric,
   profilePic,
   fitnessLevel,
@@ -50,6 +51,8 @@ class OnBoardingScreenState extends ConsumerState<OnBoardingScreen>
   final List<_ScreenBuilder> _screensBuilders = [
     _ScreenBuilder(id: ScreenId.email, screen: const EmailScreen()),
     _ScreenBuilder(id: ScreenId.password, screen: const PasswordScreen()),
+    _ScreenBuilder(id: ScreenId.height, screen: const HeightScreen()),
+    _ScreenBuilder(id: ScreenId.height, screen: const WeightScreen()),
     _ScreenBuilder(id: ScreenId.biometric, screen: const BiometricScreen()),
     _ScreenBuilder(id: ScreenId.profilePic, screen: const ProfilePicScreen()),
     _ScreenBuilder(
@@ -57,7 +60,7 @@ class OnBoardingScreenState extends ConsumerState<OnBoardingScreen>
     _ScreenBuilder(id: ScreenId.fitnessGoal, screen: const FitnessGoalScreen()),
     _ScreenBuilder(
         id: ScreenId.trainingSpot, screen: const TrainingSpotScreen()),
-    _ScreenBuilder(id: ScreenId.userSizes, screen: const UserSizesFormScreen()),
+    _ScreenBuilder(id: ScreenId.userSizes, screen: const UserDetailsScreen()),
     _ScreenBuilder(id: ScreenId.gender, screen: const GenderScreen()),
     _ScreenBuilder(
         id: ScreenId.notifications, screen: const NotificationsScreen()),

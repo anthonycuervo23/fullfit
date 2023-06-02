@@ -3,12 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fullfit_app/presentation/providers/providers.dart';
 
+//TODO: check if email already exists
 class EmailScreen extends ConsumerWidget {
   const EmailScreen({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final onBoardingProvider = ref.watch(onBoardingNotifierProvider);
-
     final textStyles = Theme.of(context).textTheme;
     final colors = Theme.of(context).colorScheme;
     return SingleChildScrollView(

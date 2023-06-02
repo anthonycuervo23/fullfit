@@ -70,6 +70,14 @@ class OnBoardingNotifier extends StateNotifier<OnBoardingState> {
 
     _onGenderChanged(gender);
   }
+
+  onHeightChanged(int value) {
+    state = state.copyWith(height: value);
+  }
+
+  onWeightChanged(int value) {
+    state = state.copyWith(weight: value);
+  }
 }
 
 //STATE
@@ -86,7 +94,9 @@ class OnBoardingState {
   final String gender;
   final List<Gender> genders;
   final int genderSelected;
-  //TODO: missing inputs (name, lastname, age, weight, height, trainingSpot)
+  final int height;
+  final int weight;
+  //TODO: missing inputs (name, lastname, age, weight, trainingSpot)
 
   OnBoardingState(
       {this.isPosting = false,
@@ -107,6 +117,8 @@ class OnBoardingState {
         'Ganar músculo': false,
         'Aumentar la definición muscular': false
       },
+      this.height = 170,
+      this.weight = 70,
       this.genderSelected = 0,
       this.genders = const [
         Gender('Male', 'assets/images/male.png'),
@@ -126,6 +138,8 @@ class OnBoardingState {
     String? gender,
     List<Gender>? genders,
     int? genderSelected,
+    int? height,
+    int? weight,
   }) {
     return OnBoardingState(
       isPosting: isPosting ?? this.isPosting,
@@ -140,10 +154,13 @@ class OnBoardingState {
       gender: gender ?? this.gender,
       genders: genders ?? this.genders,
       genderSelected: genderSelected ?? this.genderSelected,
+      height: height ?? this.height,
+      weight: weight ?? this.weight,
     );
   }
 }
 
+//* Modelos personalizados
 class FitnessLevel {
   final String level;
   final String title;
