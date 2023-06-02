@@ -12,3 +12,4 @@ export 'training_spot_screen.dart';
 export 'ready_to_go_screen.dart';
 export 'height_screen.dart';
 export 'weight_screen.dart';
+export 'age_range_screen.dart';

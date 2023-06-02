@@ -54,7 +54,23 @@ class OnBoardingNotifier extends StateNotifier<OnBoardingState> {
 
   _onGenderChanged(String value) {
     final gender = value.translate();
-    state = state.copyWith(gender: gender);
+    state = state.copyWith(
+        gender: gender,
+        ageRanges: gender == 'Mujer'
+            ? const [
+                AgeRange('18-24', 'assets/images/female_18.png'),
+                AgeRange('25-34', 'assets/images/female_25.png'),
+                AgeRange('35-54', 'assets/images/female_35.png'),
+                AgeRange('55+', 'assets/images/female_55.png'),
+              ]
+            : const [
+                AgeRange('18-24', 'assets/images/male_18.png'),
+                AgeRange('25-34', 'assets/images/male_25.png'),
+                AgeRange('35-54', 'assets/images/male_35.png'),
+                AgeRange('55+', 'assets/images/male_55.png'),
+              ]);
+
+    // state = state.copyWith(gender: gender);
   }
 
   onGenderSelected(String gender) {
@@ -82,6 +98,10 @@ class OnBoardingNotifier extends StateNotifier<OnBoardingState> {
   onTrainingSpotChanged(String value) {
     state = state.copyWith(selectedSpot: value);
   }
+
+  onAgeRangeChanged(String value) {
+    state = state.copyWith(ageRange: value);
+  }
 }
 
 //STATE
@@ -97,12 +117,13 @@ class OnBoardingState {
   final Map<String, bool> fitnessGoals;
   final String gender;
   final List<Gender> genders;
+  final String ageRange;
+  final List<AgeRange> ageRanges;
   final int genderSelected;
   final int height;
   final int weight;
   final List<String> trainingSpots;
   final String selectedSpot;
-  //TODO: missing inputs (name, lastname, age)
 
   OnBoardingState({
     this.isPosting = false,
@@ -112,6 +133,7 @@ class OnBoardingState {
     this.email = const Email.pure(),
     this.password = const Password.pure(),
     this.gender = 'Masculino',
+    this.ageRange = '',
     this.profilePic = 'assets/avatars/avatar1.png',
     this.fitnessLevel = const FitnessLevel(
         level: 'Average',
@@ -126,6 +148,12 @@ class OnBoardingState {
     this.height = 170,
     this.weight = 70,
     this.genderSelected = 0,
+    this.ageRanges = const [
+      AgeRange('18-24', 'assets/images/male_18.png'),
+      AgeRange('25-34', 'assets/images/male_25.png'),
+      AgeRange('35-54', 'assets/images/male_35.png'),
+      AgeRange('55+', 'assets/images/male_55.png'),
+    ],
     this.genders = const [
       Gender('Male', 'assets/images/male.png'),
       Gender('Female', 'assets/images/female.png'),
@@ -150,6 +178,8 @@ class OnBoardingState {
     Map<String, bool>? fitnessGoals,
     String? gender,
     List<Gender>? genders,
+    String? ageRange,
+    List<AgeRange>? ageRanges,
     int? genderSelected,
     int? height,
     int? weight,
@@ -168,6 +198,8 @@ class OnBoardingState {
       fitnessGoals: fitnessGoals ?? this.fitnessGoals,
       gender: gender ?? this.gender,
       genders: genders ?? this.genders,
+      ageRange: ageRange ?? this.ageRange,
+      ageRanges: ageRanges ?? this.ageRanges,
       genderSelected: genderSelected ?? this.genderSelected,
       height: height ?? this.height,
       weight: weight ?? this.weight,
@@ -192,6 +224,13 @@ class Gender {
   final String image;
 
   const Gender(this.title, this.image);
+}
+
+class AgeRange {
+  final String range;
+  final String image;
+
+  const AgeRange(this.range, this.image);
 }
 
 //* Metodos helpers

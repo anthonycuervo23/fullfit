@@ -12,7 +12,7 @@ const scaffoldBackgroundColorDark = Color.fromARGB(255, 19, 13, 31);
 class AppTheme {
   final bool isDarkMode;
 
-  AppTheme({this.isDarkMode = false});
+  AppTheme({this.isDarkMode = true});
 
   ThemeData getTheme() => ThemeData(
 

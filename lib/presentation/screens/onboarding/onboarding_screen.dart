@@ -9,30 +9,6 @@ import 'package:step_progress_indicator/step_progress_indicator.dart';
 
 import 'package:fullfit_app/presentation/widgets/widgets.dart';
 
-enum ScreenId {
-  email,
-  password,
-  height,
-  biometric,
-  profilePic,
-  fitnessLevel,
-  fitnessGoal,
-  trainingSpot,
-  userSizes,
-  gender,
-  notifications,
-}
-
-class _ScreenBuilder {
-  final ScreenId id;
-  final Widget screen;
-
-  _ScreenBuilder({
-    required this.id,
-    required this.screen,
-  });
-}
-
 class OnBoardingScreen extends ConsumerStatefulWidget {
   const OnBoardingScreen({Key? key}) : super(key: key);
 
@@ -47,21 +23,22 @@ class OnBoardingScreenState extends ConsumerState<OnBoardingScreen>
   final List<_ScreenBuilder> _screens = [];
   PageController controller = PageController();
 
-  // Definimos los constructores de las pantallas
+  //* Definimos los constructores de las pantallas y el orden en el que se muestran
   final List<_ScreenBuilder> _screensBuilders = [
     _ScreenBuilder(id: ScreenId.email, screen: const EmailScreen()),
     _ScreenBuilder(id: ScreenId.password, screen: const PasswordScreen()),
-    _ScreenBuilder(id: ScreenId.height, screen: const HeightScreen()),
-    _ScreenBuilder(id: ScreenId.height, screen: const WeightScreen()),
+    _ScreenBuilder(id: ScreenId.userDetails, screen: const UserDetailsScreen()),
     _ScreenBuilder(id: ScreenId.biometric, screen: const BiometricScreen()),
-    _ScreenBuilder(id: ScreenId.profilePic, screen: const ProfilePicScreen()),
+    _ScreenBuilder(id: ScreenId.gender, screen: const GenderScreen()),
+    _ScreenBuilder(id: ScreenId.age, screen: const AgeRangeScreen()),
+    _ScreenBuilder(id: ScreenId.height, screen: const HeightScreen()),
+    _ScreenBuilder(id: ScreenId.weight, screen: const WeightScreen()),
     _ScreenBuilder(
         id: ScreenId.fitnessLevel, screen: const FitnessLevelScreen()),
     _ScreenBuilder(id: ScreenId.fitnessGoal, screen: const FitnessGoalScreen()),
     _ScreenBuilder(
         id: ScreenId.trainingSpot, screen: const TrainingSpotScreen()),
-    _ScreenBuilder(id: ScreenId.userSizes, screen: const UserDetailsScreen()),
-    _ScreenBuilder(id: ScreenId.gender, screen: const GenderScreen()),
+    _ScreenBuilder(id: ScreenId.profilePic, screen: const ProfilePicScreen()),
     _ScreenBuilder(
         id: ScreenId.notifications, screen: const NotificationsScreen()),
   ];
@@ -138,9 +115,6 @@ class OnBoardingScreenState extends ConsumerState<OnBoardingScreen>
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
                     return _screens[index].screen;
-                    //     return const TrainingSpotScreen(); //falta
-                    //     return const UserSizesFormScreen(); //falta
-                    //     return const NotificationsScreen();
                   }),
             ),
             Padding(
@@ -246,12 +220,44 @@ class OnBoardingScreenState extends ConsumerState<OnBoardingScreen>
         return onboardingProvider.isEmailValid;
       case ScreenId.password:
         return onboardingProvider.isPasswordValid;
+      // case ScreenId.userDetails:
+      //   return onboardingProvider.isNameValid &&
+      //       onboardingProvider.isLastNameValid;
       case ScreenId.fitnessGoal:
         return !onboardingProvider.fitnessGoals.values.every((v) => v == false);
       case ScreenId.gender:
         return onboardingProvider.genderSelected != 0;
+      case ScreenId.age:
+        return onboardingProvider.ageRange != '';
       default:
         return true;
     }
   }
+}
+
+//* Modelo de screens
+enum ScreenId {
+  email,
+  password,
+  height,
+  biometric,
+  age,
+  profilePic,
+  fitnessLevel,
+  fitnessGoal,
+  trainingSpot,
+  userDetails,
+  weight,
+  gender,
+  notifications,
+}
+
+class _ScreenBuilder {
+  final ScreenId id;
+  final Widget screen;
+
+  _ScreenBuilder({
+    required this.id,
+    required this.screen,
+  });
 }
