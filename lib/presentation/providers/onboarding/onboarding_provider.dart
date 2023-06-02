@@ -78,6 +78,10 @@ class OnBoardingNotifier extends StateNotifier<OnBoardingState> {
   onWeightChanged(int value) {
     state = state.copyWith(weight: value);
   }
+
+  onTrainingSpotChanged(String value) {
+    state = state.copyWith(selectedSpot: value);
+  }
 }
 
 //STATE
@@ -96,34 +100,43 @@ class OnBoardingState {
   final int genderSelected;
   final int height;
   final int weight;
-  //TODO: missing inputs (name, lastname, age, weight, trainingSpot)
+  final List<String> trainingSpots;
+  final String selectedSpot;
+  //TODO: missing inputs (name, lastname, age)
 
-  OnBoardingState(
-      {this.isPosting = false,
-      this.isFormValid = false,
-      this.isEmailValid = false,
-      this.isPasswordValid = false,
-      this.email = const Email.pure(),
-      this.password = const Password.pure(),
-      this.gender = 'Masculino',
-      this.profilePic = 'assets/avatars/avatar1.png',
-      this.fitnessLevel = const FitnessLevel(
-          level: 'Average',
-          title: 'Intensidad Media',
-          description: 'Realizo alguna forma de ejercicio regularmente.'),
-      this.fitnessGoals = const {
-        'Perder peso': false,
-        'Mejorar la composición corporal': false,
-        'Ganar músculo': false,
-        'Aumentar la definición muscular': false
-      },
-      this.height = 170,
-      this.weight = 70,
-      this.genderSelected = 0,
-      this.genders = const [
-        Gender('Male', 'assets/images/male.png'),
-        Gender('Female', 'assets/images/female.png'),
-      ]});
+  OnBoardingState({
+    this.isPosting = false,
+    this.isFormValid = false,
+    this.isEmailValid = false,
+    this.isPasswordValid = false,
+    this.email = const Email.pure(),
+    this.password = const Password.pure(),
+    this.gender = 'Masculino',
+    this.profilePic = 'assets/avatars/avatar1.png',
+    this.fitnessLevel = const FitnessLevel(
+        level: 'Average',
+        title: 'Intensidad Media',
+        description: 'Realizo alguna forma de ejercicio regularmente.'),
+    this.fitnessGoals = const {
+      'Perder peso': false,
+      'Mejorar la composición corporal': false,
+      'Ganar músculo': false,
+      'Aumentar la definición muscular': false
+    },
+    this.height = 170,
+    this.weight = 70,
+    this.genderSelected = 0,
+    this.genders = const [
+      Gender('Male', 'assets/images/male.png'),
+      Gender('Female', 'assets/images/female.png'),
+    ],
+    this.trainingSpots = const [
+      'Gimnasio',
+      'Casa',
+      'Parque',
+    ],
+    this.selectedSpot = 'Gimnasio',
+  });
 
   OnBoardingState copyWith({
     bool? isPosting,
@@ -140,6 +153,8 @@ class OnBoardingState {
     int? genderSelected,
     int? height,
     int? weight,
+    List<String>? trainingSpots,
+    String? selectedSpot,
   }) {
     return OnBoardingState(
       isPosting: isPosting ?? this.isPosting,
@@ -156,6 +171,8 @@ class OnBoardingState {
       genderSelected: genderSelected ?? this.genderSelected,
       height: height ?? this.height,
       weight: weight ?? this.weight,
+      trainingSpots: trainingSpots ?? this.trainingSpots,
+      selectedSpot: selectedSpot ?? this.selectedSpot,
     );
   }
 }

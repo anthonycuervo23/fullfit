@@ -13,7 +13,7 @@ class FitnessGoalScreen extends ConsumerWidget {
     final textStyles = Theme.of(context).textTheme;
 
     final Map<String, bool> helpOptions =
-        ref.read(onBoardingNotifierProvider).fitnessGoals;
+        ref.watch(onBoardingNotifierProvider).fitnessGoals;
 
     return SingleChildScrollView(
       padding: EdgeInsets.only(left: 22.w, right: 22.w, top: 53.h),
