@@ -121,7 +121,9 @@ class FirebaseAuthDatasourceImpl extends AuthDataSource {
         idToken: googleAuth?.idToken,
       );
 
-      await FirebaseAuth.instance.signInWithCredential(credential);
+      final UserCredential credentials =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+      _saveUsernameInStorage(credentials.user);
 
       _hasLoggedWithEmailPassword = false;
       checkLoggedUser();
@@ -144,8 +146,10 @@ class FirebaseAuthDatasourceImpl extends AuthDataSource {
                   accessToken: authResult.authToken!,
                   secret: authResult.authTokenSecret!);
 
-          await FirebaseAuth.instance
+          final credentials = await FirebaseAuth.instance
               .signInWithCredential(twitterAuthCredential);
+
+          _saveUsernameInStorage(credentials.user);
 
           _hasLoggedWithEmailPassword = false;
           checkLoggedUser();
@@ -232,6 +236,21 @@ class FirebaseAuthDatasourceImpl extends AuthDataSource {
     checkLoggedUser();
     didLoggedOutOrFailedBiometricAuth = true;
   }
+
+  @override
+  Future<void> checkAccountExists(
+      String email, Function(bool exists) closure) async {
+    try {
+      final methods = _firebaseAuth.fetchSignInMethodsForEmail(email);
+      methods.then((value) => closure(value.isNotEmpty));
+    } on FirebaseAuthException catch (e) {
+      debugPrint(e.toString());
+      closure(false);
+    } catch (e) {
+      debugPrint(e.toString());
+      closure(false);
+    }
+  }
 }
 
 //* Extension con metodos propios de la clase
@@ -242,6 +261,14 @@ extension _FirebaseAuthDatasourceImplExtension on FirebaseAuthDatasourceImpl {
     } catch (e) {
       _loggedUser = null;
     }
+  }
+
+  void _saveUsernameInStorage(User? user) {
+    final String? name = user?.displayName?.split(' ')[0];
+    final String? lastname = user?.displayName?.split(' ')[1];
+    //guardamos el nombre y apellido en el storage
+    _storageService.setKeyValue<String>(nameKey, name ?? '');
+    _storageService.setKeyValue<String>(lastnameKey, lastname ?? '');
   }
 
   Future<void> checkBiometricSupport() async {

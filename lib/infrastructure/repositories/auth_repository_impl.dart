@@ -94,4 +94,9 @@ class AuthRepositoryImpl extends AuthRepository {
       {required String email, required String password}) {
     return _authDataSource.saveCredentials(email: email, password: password);
   }
+
+  @override
+  Future<void> checkAccountExists(String email, Function(bool exists) closure) {
+    return _authDataSource.checkAccountExists(email, closure);
+  }
 }

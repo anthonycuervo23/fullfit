@@ -1,18 +1,24 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
 import 'package:fullfit_app/config/extensions/string_extensions.dart';
+import 'package:fullfit_app/domain/repositories/repositories.dart';
 import 'package:fullfit_app/presentation/inputs/inputs.dart';
+import 'package:fullfit_app/presentation/providers/providers.dart';
 
 //PROVIDER
 final onBoardingNotifierProvider =
     StateNotifierProvider.autoDispose<OnBoardingNotifier, OnBoardingState>(
         (ref) {
-  return OnBoardingNotifier();
+  final authRepository = ref.watch(authRepositoryProvider);
+  return OnBoardingNotifier(authRepository: authRepository);
 });
 
 //NOTIFIER
 class OnBoardingNotifier extends StateNotifier<OnBoardingState> {
-  OnBoardingNotifier() : super(OnBoardingState());
+  final AuthRepository _authRepository;
+  OnBoardingNotifier({required authRepository})
+      : _authRepository = authRepository,
+        super(OnBoardingState());
 
   onEmailChanged(String value) {
     final newEmail = Email.dirty(value);
@@ -23,12 +29,40 @@ class OnBoardingNotifier extends StateNotifier<OnBoardingState> {
     );
   }
 
+  emailAlreadyExists() {
+    state = state.copyWith(checkingEmail: true, errorMessage: '');
+    _authRepository.checkAccountExists(state.email.value, (exists) {
+      if (exists) {
+        state = state.copyWith(errorMessage: 'La cuenta ya existe!');
+      }
+      state = state.copyWith(checkingEmail: false);
+    });
+  }
+
   onPasswordChanged(String value) {
     final newPassword = Password.dirty(value);
 
     state = state.copyWith(
       password: newPassword,
       isPasswordValid: Formz.validate([newPassword]),
+    );
+  }
+
+  onFirstNameChanged(String value) {
+    final newName = Name.dirty(value);
+
+    state = state.copyWith(
+      firstName: newName,
+      isFirstNameValid: Formz.validate([newName]),
+    );
+  }
+
+  onLastNameChanged(String value) {
+    final newLastName = Name.dirty(value);
+
+    state = state.copyWith(
+      lastName: newLastName,
+      isLastNameValid: Formz.validate([newLastName]),
     );
   }
 
@@ -106,12 +140,18 @@ class OnBoardingNotifier extends StateNotifier<OnBoardingState> {
 
 //STATE
 class OnBoardingState {
+  final bool checkingEmail;
   final bool isPosting;
   final bool isFormValid;
   final bool isEmailValid;
   final bool isPasswordValid;
+  final String errorMessage;
   final Email email;
   final Password password;
+  final Name firstName;
+  final Name lastName;
+  final bool isFirstNameValid;
+  final bool isLastNameValid;
   final String profilePic;
   final FitnessLevel fitnessLevel;
   final Map<String, bool> fitnessGoals;
@@ -126,10 +166,16 @@ class OnBoardingState {
   final String selectedSpot;
 
   OnBoardingState({
+    this.checkingEmail = false,
     this.isPosting = false,
     this.isFormValid = false,
     this.isEmailValid = false,
     this.isPasswordValid = false,
+    this.isFirstNameValid = false,
+    this.isLastNameValid = false,
+    this.errorMessage = '',
+    this.firstName = const Name.pure(),
+    this.lastName = const Name.pure(),
     this.email = const Email.pure(),
     this.password = const Password.pure(),
     this.gender = 'Masculino',
@@ -168,11 +214,17 @@ class OnBoardingState {
 
   OnBoardingState copyWith({
     bool? isPosting,
+    bool? checkingEmail,
     bool? isFormValid,
     bool? isEmailValid,
     bool? isPasswordValid,
+    bool? isFirstNameValid,
+    bool? isLastNameValid,
+    Name? firstName,
+    Name? lastName,
     Email? email,
     Password? password,
+    String? errorMessage,
     String? profilePic,
     FitnessLevel? fitnessLevel,
     Map<String, bool>? fitnessGoals,
@@ -187,10 +239,16 @@ class OnBoardingState {
     String? selectedSpot,
   }) {
     return OnBoardingState(
+      checkingEmail: checkingEmail ?? this.checkingEmail,
       isPosting: isPosting ?? this.isPosting,
       isFormValid: isFormValid ?? this.isFormValid,
       isEmailValid: isEmailValid ?? this.isEmailValid,
       isPasswordValid: isPasswordValid ?? this.isPasswordValid,
+      isFirstNameValid: isFirstNameValid ?? this.isFirstNameValid,
+      isLastNameValid: isLastNameValid ?? this.isLastNameValid,
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
+      errorMessage: errorMessage ?? this.errorMessage,
       email: email ?? this.email,
       password: password ?? this.password,
       profilePic: profilePic ?? this.profilePic,

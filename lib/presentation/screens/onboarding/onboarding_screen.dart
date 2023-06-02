@@ -125,6 +125,14 @@ class OnBoardingScreenState extends ConsumerState<OnBoardingScreen>
                         FocusScope.of(context).unfocus();
                         if (stepCount != _screens.length - 1) {
                           final currentScreenId = _screens[stepCount].id;
+                          if (currentScreenId == ScreenId.email) {
+                            //check if email already exists
+                            ref
+                                .read(onBoardingNotifierProvider.notifier)
+                                .emailAlreadyExists();
+                            return;
+                          }
+
                           if (currentScreenId == ScreenId.biometric) {
                             authRepository.didLoggedOutOrFailedBiometricAuth =
                                 false;
@@ -168,7 +176,12 @@ class OnBoardingScreenState extends ConsumerState<OnBoardingScreen>
                         }
                       }
                     : null,
-                child: const Text('Continuar'),
+                child: onboardingProvider.checkingEmail
+                    ? Padding(
+                        padding: EdgeInsets.all(8.0.w),
+                        child: const CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Text('Continuar'),
               ),
             ),
             Visibility(
@@ -217,12 +230,13 @@ class OnBoardingScreenState extends ConsumerState<OnBoardingScreen>
     final currentScreenId = _screens[stepCount].id;
     switch (currentScreenId) {
       case ScreenId.email:
-        return onboardingProvider.isEmailValid;
+        return onboardingProvider.isEmailValid &&
+            !onboardingProvider.checkingEmail;
       case ScreenId.password:
         return onboardingProvider.isPasswordValid;
-      // case ScreenId.userDetails:
-      //   return onboardingProvider.isNameValid &&
-      //       onboardingProvider.isLastNameValid;
+      case ScreenId.userDetails:
+        return onboardingProvider.isFirstNameValid &&
+            onboardingProvider.isLastNameValid;
       case ScreenId.fitnessGoal:
         return !onboardingProvider.fitnessGoals.values.every((v) => v == false);
       case ScreenId.gender:

@@ -1,5 +1,9 @@
 const String emailKey = 'email_key';
 
+const String nameKey = 'name_key';
+
+const String lastnameKey = 'last_name_key';
+
 const String hasBiometricLoginEnabledKey = "has_biometric_login_enabled_key";
 
 const String isRegisteredForPushNotificationsKey =
