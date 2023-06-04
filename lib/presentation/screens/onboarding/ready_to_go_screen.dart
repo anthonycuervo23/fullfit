@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fullfit_app/presentation/providers/auth/auth.dart';
 import 'package:fullfit_app/presentation/widgets/widgets.dart';
 
-class ReadyToGoScreen extends StatefulWidget {
+class ReadyToGoScreen extends ConsumerWidget {
   const ReadyToGoScreen({super.key});
 
   @override
-  ReadyToGoScreenState createState() => ReadyToGoScreenState();
-}
-
-class ReadyToGoScreenState extends State<ReadyToGoScreen> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colors = Theme.of(context).colorScheme;
     final textStyles = Theme.of(context).textTheme;
     return Scaffold(
@@ -73,9 +70,9 @@ class ReadyToGoScreenState extends State<ReadyToGoScreen> {
                         backgroundColor: colors.surface,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(23.5))),
-                    onPressed: () {
-                      //TODO: check all inputs are valid and then authenticate user
-                    },
+                    onPressed: () async => await ref
+                        .read(authProvider.notifier)
+                        .authenticateUser(),
                     child: Text(
                       'Comenzar',
                       style: textStyles.titleSmall?.copyWith(

@@ -1,22 +1,22 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fullfit_app/domain/datasources/datasources.dart';
 import 'package:fullfit_app/domain/entities/entities.dart';
-import 'package:fullfit_app/infrastructure/datasources/datasources.dart';
+import 'package:fullfit_app/domain/repositories/repositories.dart';
+import 'package:fullfit_app/presentation/providers/providers.dart';
 
 final userProvider = StateNotifierProvider<PersonNotifier, PersonState>((ref) {
-  final personDatasource = PersonDatasourceImpl();
-  return PersonNotifier(personDatasource: personDatasource);
+  final personRepository = ref.watch(personRepositoryProvider);
+  return PersonNotifier(personRepository: personRepository);
 });
 
 class PersonNotifier extends StateNotifier<PersonState> {
-  final PersonDatasource _personDatasource;
-  PersonNotifier({required personDatasource})
-      : _personDatasource = personDatasource,
+  final PersonRepository _personRepository;
+  PersonNotifier({required personRepository})
+      : _personRepository = personRepository,
         super(PersonState());
 
   Future<void> setUser() async {
-    await _personDatasource.getUserData();
-    Person? person = _personDatasource.person;
+    await _personRepository.getUserData();
+    Person? person = _personRepository.person;
     state = state.copyWith(person: person);
   }
 

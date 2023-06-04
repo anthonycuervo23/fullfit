@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/rendering.dart';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -5,9 +7,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:local_auth_android/local_auth_android.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:twitter_login/twitter_login.dart';
-
-import 'package:fullfit_app/domain/entities/entities.dart';
 import 'package:fullfit_app/infrastructure/services/services.dart';
 import 'package:fullfit_app/config/config.dart';
 import 'package:fullfit_app/domain/datasources/datasources.dart';
@@ -28,7 +29,6 @@ class FirebaseAuthDatasourceImpl extends AuthDataSource {
   List<BiometricType> _availableBiometrics = [];
 
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final AppleAuthProvider _appleProvider = AppleAuthProvider();
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final TwitterLogin _twitterLogin = TwitterLogin(
     apiKey: Environment.twitterApiKey,
@@ -40,7 +40,7 @@ class FirebaseAuthDatasourceImpl extends AuthDataSource {
   final String _passwordKey = "password_key";
 
   late final bool _hasBiometricSupport;
-  bool _hasLoggedWithEmailPassword = false;
+  bool _hasLoggedWithEmailPassword = true;
 
   @override
   List<BiometricType> get availableBiometrics => _availableBiometrics;
@@ -99,7 +99,37 @@ class FirebaseAuthDatasourceImpl extends AuthDataSource {
   @override
   Future<void> performLoginWithApple(Function(bool success) closure) async {
     try {
-      await FirebaseAuth.instance.signInWithProvider(_appleProvider);
+      // await FirebaseAuth.instance.signInWithProvider(_appleProvider);
+      // To prevent replay attacks with the credential returned from Apple, we
+      // include a nonce in the credential request. When signing in with
+      // Firebase, the nonce in the id token returned by Apple, is expected to
+      // match the sha256 hash of `rawNonce`.
+      final rawNonce = generateNonce();
+      final nonce = sha256ofString(rawNonce);
+
+      // Request credential for the currently signed in Apple account.
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+        nonce: nonce,
+      );
+
+      // Create an `OAuthCredential` from the credential returned by Apple.
+      final oauthCredential = OAuthProvider("apple.com").credential(
+        idToken: appleCredential.identityToken,
+        rawNonce: rawNonce,
+      );
+
+      // Sign in the user with Firebase. If the nonce we generated earlier does
+      // not match the nonce in `appleCredential.identityToken`, sign in will fail.
+      final UserCredential credentials =
+          await FirebaseAuth.instance.signInWithCredential(oauthCredential);
+
+      _storageService.setKeyValue<String>(
+          emailKey, credentials.user?.email ?? 'no-email');
+
       _hasLoggedWithEmailPassword = false;
       checkLoggedUser();
 
@@ -124,7 +154,8 @@ class FirebaseAuthDatasourceImpl extends AuthDataSource {
       final UserCredential credentials =
           await FirebaseAuth.instance.signInWithCredential(credential);
       _saveUsernameInStorage(credentials.user);
-
+      _storageService.setKeyValue<String>(
+          emailKey, credentials.user?.email ?? 'no-email');
       _hasLoggedWithEmailPassword = false;
       checkLoggedUser();
 
@@ -150,7 +181,8 @@ class FirebaseAuthDatasourceImpl extends AuthDataSource {
               .signInWithCredential(twitterAuthCredential);
 
           _saveUsernameInStorage(credentials.user);
-
+          _storageService.setKeyValue<String>(
+              emailKey, credentials.user?.email ?? 'no-email');
           _hasLoggedWithEmailPassword = false;
           checkLoggedUser();
 
@@ -219,8 +251,26 @@ class FirebaseAuthDatasourceImpl extends AuthDataSource {
   }
 
   @override
-  Future<Person> register(String email, String password, String fullname) {
-    throw UnimplementedError();
+  Future<bool> register(String email, String password) async {
+    try {
+      //check if account exists
+      final accountExists = await checkAccountExists(email);
+
+      if (accountExists) {
+        return true;
+      }
+
+      // Crear cuenta de usuario con Firebase Auth
+      UserCredential _ = await _firebaseAuth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      _hasLoggedWithEmailPassword = true;
+      return true;
+    } catch (e) {
+      debugPrint(e.toString());
+      return false;
+    }
   }
 
   @override
@@ -277,5 +327,12 @@ extension _FirebaseAuthDatasourceImplExtension on FirebaseAuthDatasourceImpl {
     _hasBiometricSupport = availableBiometrics.isNotEmpty &&
         canCheckBiometrics &&
         isDeviceSupported;
+  }
+
+  /// Returns the sha256 hash of [input] in hex notation.
+  String sha256ofString(String input) {
+    final bytes = utf8.encode(input);
+    final digest = sha256.convert(bytes);
+    return digest.toString();
   }
 }

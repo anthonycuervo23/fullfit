@@ -1,5 +1,4 @@
 import 'package:fullfit_app/domain/datasources/datasources.dart';
-import 'package:fullfit_app/domain/entities/entities.dart';
 import 'package:fullfit_app/domain/repositories/repositories.dart';
 import 'package:fullfit_app/infrastructure/datasources/datasources.dart';
 import 'package:fullfit_app/infrastructure/services/services.dart';
@@ -85,8 +84,8 @@ class AuthRepositoryImpl extends AuthRepository {
   }
 
   @override
-  Future<Person> register(String email, String password, String fullname) {
-    return _authDataSource.register(email, password, fullname);
+  Future<bool> register(String email, String password) {
+    return _authDataSource.register(email, password);
   }
 
   @override

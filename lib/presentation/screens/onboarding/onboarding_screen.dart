@@ -20,6 +20,7 @@ class OnBoardingScreenState extends ConsumerState<OnBoardingScreen>
     with AutomaticKeepAliveClientMixin {
   int stepCount = 0;
   bool hasBiometricSupport = false;
+  bool hasLoggedWithEmailPassword = true;
   final List<_ScreenBuilder> _screens = [];
   PageController controller = PageController();
 
@@ -47,8 +48,17 @@ class OnBoardingScreenState extends ConsumerState<OnBoardingScreen>
   void initState() {
     super.initState();
     hasBiometricSupport = ref.read(authRepositoryProvider).hasBiometricSupport;
+    hasLoggedWithEmailPassword =
+        ref.read(authRepositoryProvider).hasLoggedWithEmailPassword;
     for (var screenBuilder in _screensBuilders) {
       if (screenBuilder.id == ScreenId.biometric && !hasBiometricSupport) {
+        continue;
+      }
+      if (screenBuilder.id == ScreenId.password &&
+          !hasLoggedWithEmailPassword) {
+        continue;
+      }
+      if (screenBuilder.id == ScreenId.email && !hasLoggedWithEmailPassword) {
         continue;
       }
       _screens.add(screenBuilder);
@@ -67,6 +77,13 @@ class OnBoardingScreenState extends ConsumerState<OnBoardingScreen>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
+    ref.listen(authProvider, (previous, next) async {
+      if (next.errorMessage.isNotEmpty) {
+        Alert.error(context, msg: next.errorMessage)
+            .then((value) => context.go('/intro'));
+      }
+    });
 
     final authRepository = ref.read(authRepositoryProvider);
     final onboardingProvider = ref.read(onBoardingNotifierProvider);
@@ -175,7 +192,10 @@ class OnBoardingScreenState extends ConsumerState<OnBoardingScreen>
                             isCurrentInputValid();
                           });
                         } else {
-                          context.push('/ready-to-go');
+                          ref
+                              .read(onBoardingNotifierProvider.notifier)
+                              .onFormSubmitted();
+                          // context.push('/ready-to-go');
                         }
                       }
                     : null,
@@ -210,7 +230,10 @@ class OnBoardingScreenState extends ConsumerState<OnBoardingScreen>
                       isCurrentInputValid();
                     });
                   } else {
-                    context.push('/ready-to-go');
+                    ref
+                        .read(onBoardingNotifierProvider.notifier)
+                        .onFormSubmitted();
+                    // context.push('/ready-to-go');
                   }
                 },
                 child: Text(

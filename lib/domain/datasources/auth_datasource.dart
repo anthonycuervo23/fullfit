@@ -1,4 +1,3 @@
-import 'package:fullfit_app/domain/entities/entities.dart';
 import 'package:local_auth_android/local_auth_android.dart';
 
 abstract class AuthDataSource {
@@ -20,7 +19,7 @@ abstract class AuthDataSource {
   Future<void> performBiometricLogin();
   Future<bool> performBiometricAuthentication();
 
-  Future<Person> register(String email, String password, String fullname);
+  Future<bool> register(String email, String password);
   Future<void> performLogout();
 
   Future<bool> checkAccountExists(String email);

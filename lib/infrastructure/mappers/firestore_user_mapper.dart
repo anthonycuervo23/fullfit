@@ -8,20 +8,19 @@ class PersonMapper {
     return Person(
       id: doc.id,
       name: data?['name'] ?? '--',
-      lastname: data?['lastname'] ?? '--',
-      age: data?['age'] ?? 0,
-      height: double.tryParse(data?['height'].toString() ?? '0') ?? 0.0,
-      weight: double.tryParse(data?['weight'].toString() ?? '0') ?? 0.0,
+      lastname: data?['last_name'] ?? '--',
+      ageRange: data?['age_range'] ?? '--',
+      height: int.tryParse(data?['height'].toString() ?? '0') ?? 0,
+      weight: int.tryParse(data?['weight'].toString() ?? '0') ?? 0,
       email: data?['email'] ?? '--',
       gender: data?['gender'] ?? '--',
-      profilePic: data?['photoURL'] ?? '--',
+      profilePic: data?['photo_URL'] ?? '--',
+      trainingSpot: data?['training_ spot'] ?? '--',
+      fitnessLevel: data?['fitness_level'] ?? '--',
+      fitnessGoal: (data?['fitness_goal'] as List<dynamic>?)
+              ?.map((item) => item.toString())
+              .toList() ??
+          [],
     );
   }
-
-  // static Map<String, dynamic> toFirestore(Person person) {
-  //   return {
-  //     'name': person.name,
-  //     'age': person.age,
-  //   };
-  // }
 }

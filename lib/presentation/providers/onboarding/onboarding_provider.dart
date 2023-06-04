@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
 import 'package:fullfit_app/config/extensions/string_extensions.dart';
 import 'package:fullfit_app/domain/repositories/repositories.dart';
+import 'package:fullfit_app/infrastructure/services/key_value_storage_service.dart';
 import 'package:fullfit_app/presentation/inputs/inputs.dart';
 import 'package:fullfit_app/presentation/providers/providers.dart';
 
@@ -10,14 +12,37 @@ final onBoardingNotifierProvider =
     StateNotifierProvider.autoDispose<OnBoardingNotifier, OnBoardingState>(
         (ref) {
   final authRepository = ref.watch(authRepositoryProvider);
-  return OnBoardingNotifier(authRepository: authRepository);
+  final registerUserCallback = ref.watch(authProvider.notifier).registerUser;
+  final String? email =
+      ref.watch(keyValueStorageProvider).getValue<String>(emailKey);
+  final String? loginType =
+      ref.watch(keyValueStorageProvider).getValue<String>(loginTypeKey);
+  return OnBoardingNotifier(
+      authRepository: authRepository,
+      registerUserCallback: registerUserCallback,
+      loginType: loginType,
+      loginEmail: email);
 });
 
 //NOTIFIER
 class OnBoardingNotifier extends StateNotifier<OnBoardingState> {
   final AuthRepository _authRepository;
-  OnBoardingNotifier({required authRepository})
-      : _authRepository = authRepository,
+  final String _loginEmail;
+  final String _loginType;
+  final Future<void> Function(
+    String email,
+    String password,
+    Map<String, dynamic> personLike,
+  ) _registerUserCallback;
+  OnBoardingNotifier({
+    required authRepository,
+    required registerUserCallback,
+    required loginEmail,
+    required loginType,
+  })  : _authRepository = authRepository,
+        _registerUserCallback = registerUserCallback,
+        _loginEmail = loginEmail,
+        _loginType = loginType,
         super(OnBoardingState());
 
   onEmailChanged(String value) {
@@ -137,6 +162,38 @@ class OnBoardingNotifier extends StateNotifier<OnBoardingState> {
 
   onAgeRangeChanged(String value) {
     state = state.copyWith(ageRange: value);
+  }
+
+  Future<void> onFormSubmitted() async {
+    final Map<String, dynamic> personLike = {
+      'name': state.firstName.value,
+      'login_type': _loginType,
+      'lastname': state.lastName.value,
+      'email': state.email.value.isEmpty ? _loginEmail : state.email.value,
+      'weight': state.weight,
+      'height': state.height,
+      'gender': state.gender,
+      'photo_URL': state.profilePic,
+      'training_spot': state.selectedSpot,
+      'age_range': state.ageRange,
+      'fitness_level': state.fitnessLevel.level,
+      'fitness_goal': state.fitnessGoals.keys
+          .where((element) => state.fitnessGoals[element] == true)
+          .toList(),
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    };
+
+    state = state.copyWith(isPosting: true);
+
+//si no tenemos un email es porque venimos de login con google o twitter
+    await _registerUserCallback(
+      state.email.value.isEmpty ? _loginEmail : state.email.value,
+      state.password.value,
+      personLike,
+    );
+
+    state = state.copyWith(isPosting: false);
   }
 }
 

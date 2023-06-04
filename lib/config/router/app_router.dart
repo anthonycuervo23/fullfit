@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fullfit_app/config/router/app_router_notifier.dart';
-import 'package:fullfit_app/infrastructure/services/services.dart';
 import 'package:fullfit_app/presentation/providers/providers.dart';
 import 'package:fullfit_app/presentation/screens/screens.dart';
 import 'package:go_router/go_router.dart';
@@ -108,25 +107,28 @@ final goRouterProvider = Provider((ref) {
           return '/intro';
         }
 
+        if (authStatus == AuthStatus.missingData) {
+          if (isGoingTo == '/onboarding') {
+            return null;
+          }
+          return '/onboarding';
+        }
+
+        if (authStatus == AuthStatus.readyToGo) {
+          if (isGoingTo == '/ready-to-go') {
+            return null;
+          }
+          return '/ready-to-go';
+        }
+
         if (authStatus == AuthStatus.authenticated) {
           // check if user completed onboarding
-          final isOnboardingCompleted =
-              ref.read(keyValueStorageProvider).getValue<bool>(
-                        isOnboardingCompletedKey,
-                      ) ??
-                  false;
-
-          if (!isOnboardingCompleted) {
-            // redirigir a la pantalla de onboarding
-            return '/onboarding';
-          } else {
-            if (isGoingTo == '/login' ||
-                isGoingTo == '/onboarding' ||
-                isGoingTo == '/splash' ||
-                isGoingTo == '/intro') {
-              return '/';
-            }
-            return null;
+          if (isGoingTo == '/login' ||
+              isGoingTo == '/onboarding' ||
+              isGoingTo == '/splash' ||
+              isGoingTo == '/intro' ||
+              isGoingTo == '/ready-to-go') {
+            return '/';
           }
         }
         return null;

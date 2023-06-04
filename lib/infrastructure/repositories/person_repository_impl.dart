@@ -13,5 +13,15 @@ class PersonRepositoryImpl extends PersonRepository {
   }
 
   @override
+  Future<bool> checkUserDocumentExists() {
+    return _personDatasource.checkUserDocumentExists();
+  }
+
+  @override
   Person? get person => _personDatasource.person;
+
+  @override
+  Future<void> saveUserData(Map<String, dynamic> personLike) {
+    return _personDatasource.saveUserData(personLike);
+  }
 }
