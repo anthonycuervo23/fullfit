@@ -290,6 +290,7 @@ class FirebaseAuthDatasourceImpl extends AuthDataSource {
   @override
   Future<bool> checkAccountExists(String email) async {
     try {
+      //TODO: ver como comprobar si usuario existe cuando hace login con apple
       final methods = await _firebaseAuth.fetchSignInMethodsForEmail(email);
       return methods.isNotEmpty;
     } on FirebaseAuthException catch (e) {

@@ -99,6 +99,18 @@ class OnBoardingNotifier extends StateNotifier<OnBoardingState> {
     );
   }
 
+  validateInitialValues(String? name, String? lastName) {
+    final newName = Name.dirty(name ?? '');
+    final newLastName = Name.dirty(lastName ?? '');
+
+    state = state.copyWith(
+      firstName: newName,
+      isFirstNameValid: Formz.validate([newName]),
+      lastName: newLastName,
+      isLastNameValid: Formz.validate([newLastName]),
+    );
+  }
+
   onFitnessLevelChanged(double position) {
     final fitnessLevel = _getFitnessLevel(position);
     state = state.copyWith(

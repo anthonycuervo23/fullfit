@@ -5,16 +5,37 @@ import 'package:fullfit_app/infrastructure/services/services.dart';
 import 'package:fullfit_app/presentation/providers/providers.dart';
 import 'package:fullfit_app/presentation/widgets/widgets.dart';
 
-class UserDetailsScreen extends ConsumerWidget {
+class UserDetailsScreen extends ConsumerStatefulWidget {
   const UserDetailsScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  UserDetailsScreenState createState() => UserDetailsScreenState();
+}
+
+class UserDetailsScreenState extends ConsumerState<UserDetailsScreen> {
+  String? name;
+  String? lastName;
+  @override
+  void initState() {
+    super.initState();
+
+    name = ref.read(keyValueStorageProvider).getValue<String>(nameKey);
+    lastName = ref.read(keyValueStorageProvider).getValue<String>(lastnameKey);
+
+    //validate initial values
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final onBoardingProvider = ref.read(onBoardingNotifierProvider.notifier);
+      onBoardingProvider.validateInitialValues(name, lastName);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final textStyles = Theme.of(context).textTheme;
     final colors = Theme.of(context).colorScheme;
     final onBoardingProvider = ref.read(onBoardingNotifierProvider);
     final onBoardingNotifier = ref.read(onBoardingNotifierProvider.notifier);
-    final storageProvider = ref.read(keyValueStorageProvider);
+    // final storageProvider = ref.read(keyValueStorageProvider);
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 24.w),
@@ -33,7 +54,7 @@ class UserDetailsScreen extends ConsumerWidget {
             Padding(
               padding: EdgeInsets.symmetric(vertical: 10.0.h),
               child: CustomTextFormField(
-                initialValue: storageProvider.getValue<String>(nameKey),
+                initialValue: name,
                 errorMessage: onBoardingProvider.firstName.errorMessage,
                 hint: 'Ingresa tu nombre',
                 onChanged: onBoardingNotifier.onFirstNameChanged,
@@ -42,7 +63,7 @@ class UserDetailsScreen extends ConsumerWidget {
             Padding(
               padding: EdgeInsets.symmetric(vertical: 10.0.h),
               child: CustomTextFormField(
-                initialValue: storageProvider.getValue<String>(lastnameKey),
+                initialValue: lastName,
                 errorMessage: onBoardingProvider.lastName.errorMessage,
                 hint: 'Ingresa tu apellido',
                 onChanged: onBoardingNotifier.onLastNameChanged,
