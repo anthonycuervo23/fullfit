@@ -8,7 +8,11 @@ environment:
 
 ### PAQUETES ###
 dependencies:
+  card_swiper: ^2.0.4
   cloud_firestore: ^4.7.1
+  crypto: ^3.0.3
+  cupertino_icons: ^1.0.5
+  device_info_plus: ^9.0.2
   dots_indicator: ^3.0.0
   firebase_auth: ^4.6.1
   firebase_core: ^2.13.0
@@ -19,14 +23,24 @@ dependencies:
   flutter_easyloading: ^3.0.5
   flutter_riverpod: ^2.3.6
   flutter_screenutil: ^5.8.2
+  flutter_secure_storage: ^8.0.0
+  flutter_svg: ^2.0.6
   fluttertoast: ^8.2.2
+  focus_detector: ^2.0.1
+  font_awesome_flutter: ^10.4.0
   formz: ^0.6.0
   go_router: ^7.1.1
   google_fonts: ^4.0.3
   google_sign_in: ^6.1.2
   image_picker: ^0.8.7+5
+  local_auth: ^2.1.6
+  local_auth_android: ^1.0.28
+  package_info_plus: ^4.0.2
   permission_handler: ^10.2.0
   shared_preferences: ^2.1.1
+  sign_in_with_apple: ^4.3.0
+  smooth_page_indicator: ^1.1.0
+  step_progress_indicator: ^1.0.2
   twitter_login: ^4.4.0
 
 ### PAQUETES DE DESARROLLO ###
@@ -45,4 +59,5 @@ flutter:
     - assets/icons/
     - assets/images/
     - assets/loaders/
+    - assets/avatars/
     - google_fonts/roboto/

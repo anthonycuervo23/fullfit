@@ -38,6 +38,8 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSFaceIDUsageDescription</key>
+	<string>FullFit quiere que te autentiques con tu FaceID</string>
 	<key>NSCameraUsageDescription</key>
 	<string>FullFit necesita acceder a tu camara para actualizar la foto de tu perfil.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
