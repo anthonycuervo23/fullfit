@@ -12,6 +12,10 @@ FullFit es una aplicación de fitness desarrollada en Flutter. Esta aplicación 
 
 - **Tips Saludables**: Recibe tips diarios de salud y alimenticios que te ayudaran a mantener una vida sana y una dieta balanceada.
 
+## Configuración
+
+Antes de ejecutar la aplicación, necesitarás crear un archivo `.env` en la raíz del proyecto. Puedes tomar como ejemplo el archivo `.env.example` que se incluye en el proyecto. Simplemente copia el contenido del archivo `.env.example` en un nuevo archivo `.env` y rellena los valores de las variables de entorno según sea necesario.
+
 ## Capturas de pantalla
 
 ¡Pronto estarán disponibles las capturas de pantalla de la aplicación!
