@@ -27,8 +27,8 @@ final onBoardingNotifierProvider =
 //NOTIFIER
 class OnBoardingNotifier extends StateNotifier<OnBoardingState> {
   final AuthRepository _authRepository;
-  final String _loginEmail;
-  final String _loginType;
+  final String? _loginEmail;
+  final String? _loginType;
   final Future<void> Function(
     String email,
     String password,
@@ -200,7 +200,7 @@ class OnBoardingNotifier extends StateNotifier<OnBoardingState> {
 
 //si no tenemos un email es porque venimos de login con google o twitter
     await _registerUserCallback(
-      state.email.value.isEmpty ? _loginEmail : state.email.value,
+      state.email.value.isEmpty ? _loginEmail ?? '' : state.email.value,
       state.password.value,
       personLike,
     );
