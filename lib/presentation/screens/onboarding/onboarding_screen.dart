@@ -91,161 +91,184 @@ class OnBoardingScreenState extends ConsumerState<OnBoardingScreen>
     final colors = Theme.of(context).colorScheme;
     final textStyles = Theme.of(context).textTheme;
 
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            StepProgressIndicator(
-              totalSteps: _screens.length,
-              currentStep: stepCount + 1,
-              selectedColor: colors.primary,
-              size: 8,
-              unselectedColor: colors.onSurface.withOpacity(0.2),
-            ),
-            SizedBox(height: 24.h, width: double.infinity),
-            TopIconRow(
-              onBackPressed: () {
-                if (stepCount >= 1) {
-                  setState(() {
-                    stepCount--;
-                    controller.previousPage(
-                        duration: const Duration(milliseconds: 200),
-                        curve: Curves.easeIn);
+    return WillPopScope(
+      onWillPop: () {
+        if (stepCount >= 1) {
+          setState(() {
+            stepCount--;
+            controller.previousPage(
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.easeIn);
 
-                    isCurrentInputValid();
-                  });
-                } else {
-                  if (context.canPop()) {
-                    return context.pop();
-                  }
-                  context.go('/intro');
-                }
-              },
-            ),
-            Expanded(
-              child: PageView.builder(
-                  controller: controller,
-                  itemCount: _screens.length,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return _screens[index].screen;
-                  }),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 22, right: 22, bottom: 19),
-              child: CustomBigButton(
-                onPressed: isCurrentInputValid()
-                    ? () async {
-                        FocusScope.of(context).unfocus();
-                        if (stepCount != _screens.length - 1) {
-                          final currentScreenId = _screens[stepCount].id;
-                          if (currentScreenId == ScreenId.email) {
-                            //check if email already exists
-                            bool exists = await ref
-                                .read(onBoardingNotifierProvider.notifier)
-                                .emailAlreadyExists();
-
-                            if (exists) {
-                              return;
-                            }
-                          }
-
-                          if (currentScreenId == ScreenId.biometric) {
-                            authRepository.didLoggedOutOrFailedBiometricAuth =
-                                false;
-                            authRepository
-                                .performBiometricAuthentication()
-                                .then((didAuthenticate) {
-                              if (didAuthenticate) {
-                                KeyValueStorageServiceImplementation()
-                                    .setKeyValue<bool>(
-                                        hasBiometricLoginEnabledKey, true);
-                                authRepository.saveCredentials(
-                                    email: onboardingProvider.email.value,
-                                    password:
-                                        onboardingProvider.password.value);
-                                setState(() {
-                                  stepCount++;
-                                  controller.animateToPage(stepCount,
-                                      duration:
-                                          const Duration(milliseconds: 200),
-                                      curve: Curves.easeIn);
-                                });
-                              } else {
-                                Alert.error(context,
-                                    msg:
-                                        'No se pudo realizar la autenticación biométrica');
-                              }
-                            });
-
-                            return;
-                          }
-                          setState(() {
-                            stepCount++;
-                            controller.animateToPage(stepCount,
-                                duration: const Duration(milliseconds: 200),
-                                curve: Curves.easeIn);
-
-                            isCurrentInputValid();
-                          });
-                        } else {
-                          ref
-                              .read(onBoardingNotifierProvider.notifier)
-                              .onFormSubmitted();
-                          // context.push('/ready-to-go');
-                        }
-                      }
-                    : null,
-                child: onboardingProvider.checkingEmail
-                    ? Padding(
-                        padding: EdgeInsets.all(8.0.w),
-                        child: const CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Text('Continuar'),
+            isCurrentInputValid();
+          });
+        } else {
+          if (context.canPop()) {
+            context.pop();
+          }
+          context.go('/intro');
+        }
+        return Future.value(false);
+      },
+      child: Scaffold(
+        body: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              StepProgressIndicator(
+                totalSteps: _screens.length,
+                currentStep: stepCount + 1,
+                selectedColor: colors.primary,
+                size: 8,
+                unselectedColor: colors.onSurface.withOpacity(0.2),
               ),
-            ),
-            Visibility(
-              visible: _screens[stepCount].id == ScreenId.biometric ||
-                  _screens[stepCount].id == ScreenId.notifications,
-              child: TextButton(
-                onPressed: () {
-                  FocusScope.of(context).unfocus();
-
-                  if (stepCount != _screens.length - 1) {
-                    final currentScreenId = _screens[stepCount].id;
-                    if (currentScreenId == ScreenId.biometric) {
-                      authRepository.didLoggedOutOrFailedBiometricAuth = false;
-                      KeyValueStorageServiceImplementation().setKeyValue<bool>(
-                          hasBiometricLoginEnabledKey, false);
-                    }
+              SizedBox(height: 24.h, width: double.infinity),
+              TopIconRow(
+                onBackPressed: () {
+                  if (stepCount >= 1) {
                     setState(() {
-                      stepCount++;
-                      controller.nextPage(
+                      stepCount--;
+                      controller.previousPage(
                           duration: const Duration(milliseconds: 200),
                           curve: Curves.easeIn);
 
                       isCurrentInputValid();
                     });
                   } else {
-                    ref
-                        .read(onBoardingNotifierProvider.notifier)
-                        .onFormSubmitted();
-                    // context.push('/ready-to-go');
+                    if (context.canPop()) {
+                      return context.pop();
+                    }
+                    context.go('/intro');
                   }
                 },
-                child: Text(
-                  'Ahora no',
-                  style: textStyles.bodyMedium?.copyWith(
-                      fontSize: 16,
-                      color: colors.primary,
-                      fontWeight: FontWeight.w500),
+              ),
+              Expanded(
+                child: PageView.builder(
+                    controller: controller,
+                    itemCount: _screens.length,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return _screens[index].screen;
+                    }),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 22, right: 22, bottom: 19),
+                child: CustomBigButton(
+                  onPressed: isCurrentInputValid()
+                      ? () async {
+                          FocusScope.of(context).unfocus();
+                          if (stepCount != _screens.length - 1) {
+                            final currentScreenId = _screens[stepCount].id;
+                            if (currentScreenId == ScreenId.email) {
+                              //check if email already exists
+                              bool exists = await ref
+                                  .read(onBoardingNotifierProvider.notifier)
+                                  .emailAlreadyExists();
+
+                              if (exists) {
+                                return;
+                              }
+                            }
+
+                            if (currentScreenId == ScreenId.biometric) {
+                              authRepository.didLoggedOutOrFailedBiometricAuth =
+                                  false;
+                              authRepository
+                                  .performBiometricAuthentication()
+                                  .then((didAuthenticate) {
+                                if (didAuthenticate) {
+                                  KeyValueStorageServiceImplementation()
+                                      .setKeyValue<bool>(
+                                          hasBiometricLoginEnabledKey, true);
+                                  authRepository.saveCredentials(
+                                      email: onboardingProvider.email.value,
+                                      password:
+                                          onboardingProvider.password.value);
+                                  setState(() {
+                                    stepCount++;
+                                    controller.animateToPage(stepCount,
+                                        duration:
+                                            const Duration(milliseconds: 200),
+                                        curve: Curves.easeIn);
+                                  });
+                                } else {
+                                  Alert.error(context,
+                                      msg:
+                                          'No se pudo realizar la autenticación biométrica');
+                                }
+                              });
+
+                              return;
+                            }
+                            setState(() {
+                              stepCount++;
+                              controller.animateToPage(stepCount,
+                                  duration: const Duration(milliseconds: 200),
+                                  curve: Curves.easeIn);
+
+                              isCurrentInputValid();
+                            });
+                          } else {
+                            ref
+                                .read(onBoardingNotifierProvider.notifier)
+                                .onFormSubmitted();
+                            // context.push('/ready-to-go');
+                          }
+                        }
+                      : null,
+                  child: onboardingProvider.checkingEmail
+                      ? Padding(
+                          padding: EdgeInsets.all(8.0.w),
+                          child:
+                              const CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Text('Continuar'),
                 ),
               ),
-            ),
-          ],
+              Visibility(
+                visible: _screens[stepCount].id == ScreenId.biometric ||
+                    _screens[stepCount].id == ScreenId.notifications,
+                child: TextButton(
+                  onPressed: () {
+                    FocusScope.of(context).unfocus();
+
+                    if (stepCount != _screens.length - 1) {
+                      final currentScreenId = _screens[stepCount].id;
+                      if (currentScreenId == ScreenId.biometric) {
+                        authRepository.didLoggedOutOrFailedBiometricAuth =
+                            false;
+                        KeyValueStorageServiceImplementation()
+                            .setKeyValue<bool>(
+                                hasBiometricLoginEnabledKey, false);
+                      }
+                      setState(() {
+                        stepCount++;
+                        controller.nextPage(
+                            duration: const Duration(milliseconds: 200),
+                            curve: Curves.easeIn);
+
+                        isCurrentInputValid();
+                      });
+                    } else {
+                      ref
+                          .read(onBoardingNotifierProvider.notifier)
+                          .onFormSubmitted();
+                      // context.push('/ready-to-go');
+                    }
+                  },
+                  child: Text(
+                    'Ahora no',
+                    style: textStyles.bodyMedium?.copyWith(
+                        fontSize: 16,
+                        color: colors.primary,
+                        fontWeight: FontWeight.w500),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

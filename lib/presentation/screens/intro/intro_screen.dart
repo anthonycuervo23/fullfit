@@ -41,90 +41,96 @@ class _IntroScreenState extends State<IntroScreen> {
     final colors = Theme.of(context).colorScheme;
     final textStyles = Theme.of(context).textTheme;
 
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 24.h),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const AppLogo(),
-              SizedBox(height: 18.h),
-              SizedBox(
-                height: 400.w,
-                child: PageView.builder(
-                    itemCount: images.length,
-                    controller: controller,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 48.0.w),
-                            child: Text(
-                              titles[index],
-                              textAlign: TextAlign.center,
-                              style: textStyles.titleMedium,
-                            ),
-                          ),
-                          SizedBox(height: 14.h),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 48.0.w),
-                            child: Text(
-                              subtitles[index],
-                              textAlign: TextAlign.center,
-                              style: textStyles.bodyMedium?.copyWith(
-                                color: colors.onBackground.withOpacity(0.6),
+    return WillPopScope(
+      onWillPop: () {
+        //TODO : Implementar el cierre de la app
+        return Future.value(false);
+      },
+      child: Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 24.h),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                const AppLogo(),
+                SizedBox(height: 18.h),
+                SizedBox(
+                  height: 400.w,
+                  child: PageView.builder(
+                      itemCount: images.length,
+                      controller: controller,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 48.0.w),
+                              child: Text(
+                                titles[index],
+                                textAlign: TextAlign.center,
+                                style: textStyles.titleMedium,
                               ),
                             ),
-                          ),
-                          SizedBox(height: 12.h),
-                          Image.asset(
-                            images[index],
-                          ),
-                        ],
-                      );
-                    }),
-              ),
-              SmoothPageIndicator(
-                controller: controller,
-                count: images.length,
-                effect: ScaleEffect(
-                  dotHeight: 6.h,
-                  dotWidth: 6.w,
-                  scale: 1.7,
-                  spacing: 12,
-                  activeDotColor: colors.primary,
+                            SizedBox(height: 14.h),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 48.0.w),
+                              child: Text(
+                                subtitles[index],
+                                textAlign: TextAlign.center,
+                                style: textStyles.bodyMedium?.copyWith(
+                                  color: colors.onBackground.withOpacity(0.6),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 12.h),
+                            Image.asset(
+                              images[index],
+                            ),
+                          ],
+                        );
+                      }),
                 ),
-              ),
-              SizedBox(height: 40.h),
-              CustomBigButton(
-                onPressed: () => context.go('/onboarding'),
-                child: const Text('Comenzar'),
-              ),
-              SizedBox(height: 16.h),
-              RichText(
-                text: TextSpan(
-                  style: textStyles.bodyMedium?.copyWith(
-                    color: colors.onBackground.withOpacity(0.6),
+                SmoothPageIndicator(
+                  controller: controller,
+                  count: images.length,
+                  effect: ScaleEffect(
+                    dotHeight: 6.h,
+                    dotWidth: 6.w,
+                    scale: 1.7,
+                    spacing: 12,
+                    activeDotColor: colors.primary,
                   ),
-                  text: '¿Ya tienes una cuenta?  ',
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: 'Iniciar sesión',
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () => context.go('/login'),
-                      style: textStyles.bodyMedium?.copyWith(
-                        color: colors.primary,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    )
-                  ],
                 ),
-              ),
-            ],
+                SizedBox(height: 40.h),
+                CustomBigButton(
+                  onPressed: () => context.go('/onboarding'),
+                  child: const Text('Comenzar'),
+                ),
+                SizedBox(height: 16.h),
+                RichText(
+                  text: TextSpan(
+                    style: textStyles.bodyMedium?.copyWith(
+                      color: colors.onBackground.withOpacity(0.6),
+                    ),
+                    text: '¿Ya tienes una cuenta?  ',
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: 'Iniciar sesión',
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () => context.go('/login'),
+                        style: textStyles.bodyMedium?.copyWith(
+                          color: colors.primary,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
