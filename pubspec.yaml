@@ -13,6 +13,7 @@ dependencies:
   crypto: ^3.0.3
   cupertino_icons: ^1.0.5
   device_info_plus: ^9.0.2
+  dio: ^5.1.2
   dots_indicator: ^3.0.0
   firebase_auth: ^4.6.1
   firebase_core: ^2.13.0
@@ -60,4 +61,5 @@ flutter:
     - assets/images/
     - assets/loaders/
     - assets/avatars/
+    - assets/temp/
     - google_fonts/roboto/

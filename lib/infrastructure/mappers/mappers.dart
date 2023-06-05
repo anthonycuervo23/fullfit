@@ -1,1 +1,3 @@
-export 'firestore_user_mapper.dart';
+export 'person_mapper.dart';
+export 'recipe_mapper.dart';
+export 'meal_planner_mapper.dart';
