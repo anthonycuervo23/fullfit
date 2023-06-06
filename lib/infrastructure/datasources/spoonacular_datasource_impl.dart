@@ -7,7 +7,9 @@ import 'package:fullfit_app/domain/entities/entities.dart';
 import 'package:fullfit_app/infrastructure/mappers/mappers.dart';
 
 class SpoonacularDataSourceImpl extends RecipesDataSource {
-  SpoonacularDataSourceImpl() : super('https://api.spoonacular.com');
+  SpoonacularDataSourceImpl()
+      : super('https://api.spoonacular.com',
+            headers: {'x-api-key': Environment.scoopnacularApiKey});
 
   @override
   Future execute<T>(
@@ -46,7 +48,7 @@ class SpoonacularDataSourceImpl extends RecipesDataSource {
         queryParameters: {
           'number': limit,
           'tags': type,
-          'apiKey': Environment.scoopnacularApiKey,
+          // 'apiKey': Environment.scoopnacularApiKey,
         });
 
     await execute(request, RecipeMapper.recipListJsonToEntity, (result) async {
@@ -70,7 +72,7 @@ class SpoonacularDataSourceImpl extends RecipesDataSource {
           'timeFrame': 'day',
           'diet': diet,
           'targetCalories': targetCalories,
-          'apiKey': Environment.scoopnacularApiKey,
+          // 'apiKey': Environment.scoopnacularApiKey,
         });
 
     await execute(request, MealPlannerMapper.mealPlannerJsonToEntity,

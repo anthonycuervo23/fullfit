@@ -2,7 +2,8 @@ import 'package:fullfit_app/config/api/api_client.dart';
 import 'package:fullfit_app/domain/entities/entities.dart';
 
 abstract class RecipesDataSource extends CustomApiClient {
-  RecipesDataSource(String baseUrl) : super(baseUrl);
+  RecipesDataSource(String baseUrl, {Map<String, dynamic>? headers})
+      : super(baseUrl, headers: headers);
 
   Future<void> getRecipes(Future Function(List<Recipe>? recipes) closure,
       {String type = 'main course', int limit = 10});
