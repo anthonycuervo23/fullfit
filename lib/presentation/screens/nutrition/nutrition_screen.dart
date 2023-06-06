@@ -1,3 +1,5 @@
+import 'package:animate_do/animate_do.dart';
+import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -16,12 +18,13 @@ class NutritionScreenState extends ConsumerState<NutritionScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(mealPlannerProvider.notifier).loadTodaysMealPlan();
       ref.read(breakfastRecipesProvider.notifier).loadRecipes();
-      // ref.read(drinksRecipesProvider.notifier).loadRecipes();
-      // ref.read(lunchRecipesProvider.notifier).loadRecipes();
-      // ref.read(dessertsRecipesProvider.notifier).loadRecipes();
-      // ref.read(veganRecipesProvider.notifier).loadRecipes();
-      // ref.read(mealPlannerProvider.notifier).loadTodaysMealPlan();
+      ref.read(lunchRecipesProvider.notifier).loadRecipes();
+      ref.read(drinksRecipesProvider.notifier).loadRecipes();
+      ref.read(veganRecipesProvider.notifier).loadRecipes();
+      ref.read(dessertsRecipesProvider.notifier).loadRecipes();
+      ref.read(pastaRecipesProvider.notifier).loadRecipes();
     });
   }
 
@@ -33,11 +36,12 @@ class NutritionScreenState extends ConsumerState<NutritionScreen> {
     }
 
     final breakfastRecipes = ref.watch(breakfastRecipesProvider);
-    // final drinksRecipes = ref.watch(drinksRecipesProvider);
-    // final lunchRecipes = ref.watch(lunchRecipesProvider);
-    // final dessertRecipes = ref.watch(dessertsRecipesProvider);
-    // final vegaRecipes = ref.watch(veganRecipesProvider);
-    // final todaysMealPlan = ref.watch(mealPlannerProvider);
+    final drinksRecipes = ref.watch(drinksRecipesProvider);
+    final pastaRecipes = ref.watch(pastaRecipesProvider);
+    final lunchRecipes = ref.watch(lunchRecipesProvider);
+    final dessertRecipes = ref.watch(dessertsRecipesProvider);
+    final vegaRecipes = ref.watch(veganRecipesProvider);
+    final todaysMealPlan = ref.watch(mealPlannerProvider).mealPlanner;
 
     final textStyles = Theme.of(context).textTheme;
     final colors = Theme.of(context).colorScheme;
@@ -81,20 +85,39 @@ class NutritionScreenState extends ConsumerState<NutritionScreen> {
                   ),
                 ),
               ),
-              //* FIN search bar
-              SizedBox(height: 20.h),
-              Padding(
-                padding: const EdgeInsets.all(14.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const CustomHeader(
-                        title: 'Popular Breakfast Recipes', name: 'breakfast'),
-                    RecipeHorizontalListview(recipes: breakfastRecipes),
-                  ],
+              const CustomHeader(
+                  title: 'Your Meal Plan for Today', name: 'meal'),
+              SizedBox(
+                height: 255.h,
+                width: double.infinity,
+                child: Swiper(
+                  loop: false,
+                  index: 1,
+                  itemCount: todaysMealPlan?.meals.length ?? 0,
+                  viewportFraction: 0.65,
+                  scale: 0.65,
+                  itemBuilder: (context, index) {
+                    final meal = todaysMealPlan!.meals[index];
+                    return MealCard(meal: meal);
+                  },
                 ),
               ),
-              // todayPlan(),
+              //* FIN search bar
+              SizedBox(height: 20.h),
+              const CustomHeader(
+                  title: 'Popular Breakfast Recipes', name: 'breakfast'),
+              RecipesHorizontalListview(recipes: breakfastRecipes),
+              const CustomHeader(title: 'Best Lunch Recipes', name: 'lunch'),
+              RecipesVerticalListview(recipes: lunchRecipes),
+              const CustomHeader(title: 'Popular Drinks', name: 'drinks'),
+              RecipesHorizontalListview(recipes: drinksRecipes),
+              const CustomHeader(title: 'Best Vegan Recipes', name: 'vegan'),
+              RecipesVerticalListview(recipes: vegaRecipes),
+              const CustomHeader(
+                  title: 'Delicious Desserts Recipes', name: 'desserts'),
+              RecipesHorizontalListview(recipes: dessertRecipes),
+              const CustomHeader(title: 'Popular Pasta Recipes', name: 'pasta'),
+              RecipesVerticalListview(recipes: pastaRecipes),
               SizedBox(height: 20.h),
             ],
           ),
@@ -149,7 +172,7 @@ class NutritionScreenState extends ConsumerState<NutritionScreen> {
           height: 195,
           child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: state.mealPlanner?.meals.length,
+              itemCount: eatZone.length,
               itemBuilder: (BuildContext context, int index) {
                 return Container(
                   padding: myLocale == const Locale('ar')
@@ -177,12 +200,9 @@ class NutritionScreenState extends ConsumerState<NutritionScreen> {
                                   borderRadius: BorderRadius.circular(8),
                                   image: DecorationImage(
                                     fit: BoxFit.contain,
-                                    image: NetworkImage(
-                                      state.mealPlanner!.meals[index].image,
+                                    image: AssetImage(
+                                      eatZone[index]['image'],
                                     ),
-                                    // image: AssetImage(
-                                    //   eatZone[index]['image'],
-                                    // ),
                                   ),
                                 ),
                               ),
@@ -210,17 +230,13 @@ class NutritionScreenState extends ConsumerState<NutritionScreen> {
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text(state.mealPlanner!.meals[index].name,
-                                          // Text(eatZone[index]['title'],
+                                      Text(eatZone[index]['title'],
                                           style: textStyles.subtitle1?.copyWith(
                                             fontSize: 14.sp,
                                             fontWeight: FontWeight.w600,
                                           )),
                                       Text(
-                                        state.mealPlanner!.meals[index]
-                                            .cookingTime
-                                            .toString(),
-                                        // eatZone[index]['time'],
+                                        eatZone[index]['time'],
                                         style: textStyles.bodyMedium,
                                       ),
                                     ],

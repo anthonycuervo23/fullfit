@@ -8,7 +8,7 @@ import 'package:fullfit_app/presentation/widgets/widgets.dart';
 //PROVIDER
 final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
   final authRepository = ref.watch(authRepositoryProvider);
-  final userNotifier = ref.watch(userProvider.notifier);
+  final userNotifier = ref.watch(personProvider.notifier);
   final storageService = ref.watch(keyValueStorageProvider);
   final personRepository = ref.watch(personRepositoryProvider);
   return AuthNotifier(

@@ -48,7 +48,6 @@ class SpoonacularDataSourceImpl extends RecipesDataSource {
         queryParameters: {
           'number': limit,
           'tags': type,
-          // 'apiKey': Environment.scoopnacularApiKey,
         });
 
     await execute(request, RecipeMapper.recipListJsonToEntity, (result) async {
@@ -72,7 +71,6 @@ class SpoonacularDataSourceImpl extends RecipesDataSource {
           'timeFrame': 'day',
           'diet': diet,
           'targetCalories': targetCalories,
-          // 'apiKey': Environment.scoopnacularApiKey,
         });
 
     await execute(request, MealPlannerMapper.mealPlannerJsonToEntity,

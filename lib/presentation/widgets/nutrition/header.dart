@@ -1,5 +1,5 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:fullfit_app/presentation/widgets/widgets.dart';
 
 class CustomHeader extends StatelessWidget {
   final String title;
@@ -17,9 +17,10 @@ class CustomHeader extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          FadeTransitionAnimation(
-            delay: const Duration(microseconds: 600),
-            child: Text(name,
+          FadeIn(
+            duration: const Duration(milliseconds: 600),
+            delay: const Duration(milliseconds: 600),
+            child: Text(title,
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 20,

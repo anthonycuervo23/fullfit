@@ -6,16 +6,7 @@ final breakfastRecipesProvider =
     StateNotifierProvider<RecipesNotifier, List<Recipe>>((ref) {
   final recipesRespository = ref.watch(recipesRepositoryProvider);
   return RecipesNotifier(
-      fetchRecipes: recipesRespository.getRecipes,
-      limit: 10,
-      type: 'breakfast');
-});
-
-final drinksRecipesProvider =
-    StateNotifierProvider<RecipesNotifier, List<Recipe>>((ref) {
-  final recipesRespository = ref.watch(recipesRepositoryProvider);
-  return RecipesNotifier(
-      fetchRecipes: recipesRespository.getRecipes, limit: 3, type: 'drinks');
+      fetchRecipes: recipesRespository.getRecipes, limit: 5, type: 'breakfast');
 });
 
 final lunchRecipesProvider =
@@ -25,20 +16,32 @@ final lunchRecipesProvider =
       fetchRecipes: recipesRespository.getRecipes, limit: 10, type: 'lunch');
 });
 
-final dessertsRecipesProvider =
+final drinksRecipesProvider =
     StateNotifierProvider<RecipesNotifier, List<Recipe>>((ref) {
   final recipesRespository = ref.watch(recipesRepositoryProvider);
   return RecipesNotifier(
-      fetchRecipes: recipesRespository.getRecipes, limit: 3, type: 'dessert');
+      fetchRecipes: recipesRespository.getRecipes, limit: 5, type: 'drinks');
 });
 
 final veganRecipesProvider =
     StateNotifierProvider<RecipesNotifier, List<Recipe>>((ref) {
   final recipesRespository = ref.watch(recipesRepositoryProvider);
   return RecipesNotifier(
-      fetchRecipes: recipesRespository.getRecipes,
-      limit: 10,
-      type: 'vegetarian');
+      fetchRecipes: recipesRespository.getRecipes, limit: 10, type: 'vegan');
+});
+
+final dessertsRecipesProvider =
+    StateNotifierProvider<RecipesNotifier, List<Recipe>>((ref) {
+  final recipesRespository = ref.watch(recipesRepositoryProvider);
+  return RecipesNotifier(
+      fetchRecipes: recipesRespository.getRecipes, limit: 5, type: 'dessert');
+});
+
+final pastaRecipesProvider =
+    StateNotifierProvider<RecipesNotifier, List<Recipe>>((ref) {
+  final recipesRespository = ref.watch(recipesRepositoryProvider);
+  return RecipesNotifier(
+      fetchRecipes: recipesRespository.getRecipes, limit: 10, type: 'pasta');
 });
 
 typedef RecipesCallback = Future<void> Function(

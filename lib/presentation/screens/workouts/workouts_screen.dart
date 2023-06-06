@@ -1,6 +1,13 @@
+import 'package:animate_do/animate_do.dart';
+import 'package:animations/animations.dart';
+import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fullfit_app/domain/entities/person.dart';
 import 'package:fullfit_app/presentation/providers/providers.dart';
+import 'package:fullfit_app/presentation/widgets/widgets.dart';
+import 'package:intl/intl.dart';
 
 class WorkoutsScreen extends ConsumerStatefulWidget {
   const WorkoutsScreen({super.key});
@@ -12,14 +19,262 @@ class WorkoutsScreen extends ConsumerStatefulWidget {
 class WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
   @override
   Widget build(BuildContext context) {
-    final user = ref.watch(userProvider.notifier).user;
+    final person = ref.watch(personProvider.notifier).user;
+    final colors = Theme.of(context).colorScheme;
+    final textStyles = Theme.of(context).textTheme;
+    final today = DateTime.now();
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('WorkoutsScreen'),
+    return CustomScrollView(
+      physics: const ClampingScrollPhysics(),
+      slivers: [
+        HomeAppBar(
+            colors: colors,
+            today: today,
+            textStyles: textStyles,
+            person: person),
+        SliverList(
+          delegate: SliverChildListDelegate(
+            [
+              PersonNutritionProgress(colors: colors),
+              Padding(
+                padding:
+                    EdgeInsets.symmetric(horizontal: 12.0.w, vertical: 20.h),
+                child: Text(
+                  'MEALS FOR TODAY',
+                  style: textStyles.titleMedium?.copyWith(fontSize: 16.sp),
+                ),
+              ),
+              SizedBox(
+                height: 255.h,
+                width: double.infinity,
+                child: Swiper(
+                  index: 1,
+                  loop: false,
+                  itemCount: meals.length,
+                  viewportFraction: 0.65,
+                  scale: 0.65,
+                  itemBuilder: (context, index) {
+                    final meal = meals[index];
+                    return MealCard(localMeal: meal);
+                  },
+                ),
+              ),
+              const SizedBox(height: 20),
+              OpenContainer(
+                closedElevation: 0,
+                transitionType: ContainerTransitionType.fade,
+                transitionDuration: const Duration(milliseconds: 1000),
+                closedColor: Colors.transparent,
+                openBuilder: (context, _) {
+                  //TODO: open workout details
+                  return Container();
+                },
+                closedBuilder: (context, VoidCallback openContainer) {
+                  return GestureDetector(
+                    onTap: openContainer,
+                    child: Container(
+                      margin: const EdgeInsets.only(
+                          bottom: 10, left: 32, right: 32),
+                      decoration: BoxDecoration(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(30)),
+                        color: colors.primary.withOpacity(0.8),
+                      ),
+                      child: SizedBox(
+                        height: 180.h,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            const SizedBox(width: 20),
+                            Padding(
+                              padding: EdgeInsets.only(top: 16.0.h, left: 16.w),
+                              child: Text(
+                                'YOUR NEXT WORKOUT',
+                                style: textStyles.titleMedium
+                                    ?.copyWith(fontSize: 16.sp),
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 4.0, left: 16),
+                              child: Text(
+                                'Upper Body',
+                                style: textStyles.titleLarge
+                                    ?.copyWith(fontSize: 24.sp),
+                              ),
+                            ),
+                            Expanded(
+                              child: Row(
+                                children: <Widget>[
+                                  const SizedBox(width: 20),
+                                  Container(
+                                    decoration: const BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(25)),
+                                      color: Color(0xFF5B4D9D),
+                                    ),
+                                    padding: const EdgeInsets.all(10),
+                                    child: Image.asset(
+                                      "assets/temp/chest.png",
+                                      width: 50,
+                                      height: 50,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Container(
+                                    decoration: const BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(25)),
+                                      color: Color(0xFF5B4D9D),
+                                    ),
+                                    padding: const EdgeInsets.all(10),
+                                    child: Image.asset(
+                                      "assets/temp/back.png",
+                                      width: 50,
+                                      height: 50,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Container(
+                                    decoration: const BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(25)),
+                                      color: Color(0xFF5B4D9D),
+                                    ),
+                                    padding: const EdgeInsets.all(10),
+                                    child: Image.asset(
+                                      "assets/temp/biceps.png",
+                                      width: 50,
+                                      height: 50,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class PersonNutritionProgress extends StatelessWidget {
+  const PersonNutritionProgress({
+    super.key,
+    required this.colors,
+  });
+
+  final ColorScheme colors;
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: const BorderRadius.vertical(
+        bottom: Radius.circular(40),
       ),
-      body: Center(
-        child: Text('${user?.email}'),
+      child: Container(
+        height: 200.w,
+        color: colors.surface,
+        padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            const SizedBox(height: 20),
+            Row(
+              children: <Widget>[
+                RadialProgress(
+                  width: 140.w,
+                  height: 140.w,
+                  progress: 0.7,
+                ),
+                const Spacer(),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    NutrientesProgressBar(
+                      ingredient: 'Protein',
+                      progress: 0.3,
+                      progressColor: Colors.green,
+                      leftAmount: 72,
+                      width: 100.w,
+                    ),
+                    const SizedBox(height: 10),
+                    NutrientesProgressBar(
+                      ingredient: 'Carbs',
+                      progress: 0.2,
+                      progressColor: Colors.red,
+                      leftAmount: 252,
+                      width: 100.w,
+                    ),
+                    const SizedBox(height: 10),
+                    NutrientesProgressBar(
+                      ingredient: 'Fat',
+                      progress: 0.1,
+                      progressColor: Colors.yellow,
+                      leftAmount: 61,
+                      width: 100.w,
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class HomeAppBar extends StatelessWidget {
+  const HomeAppBar({
+    super.key,
+    required this.colors,
+    required this.today,
+    required this.textStyles,
+    required this.person,
+  });
+
+  final ColorScheme colors;
+  final DateTime today;
+  final TextTheme textStyles;
+  final Person? person;
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverAppBar(
+      backgroundColor: colors.surface,
+      floating: true,
+      toolbarHeight: 70.h,
+      expandedHeight: 0,
+      flexibleSpace: FlexibleSpaceBar(
+        title: SafeArea(
+          bottom: false,
+          child: ListTile(
+            dense: true,
+            title: Text(
+                '${DateFormat("EEEE").format(today)}, ${DateFormat("d MMMM").format(today)}',
+                style: textStyles.bodyLarge?.copyWith(fontSize: 16.sp)),
+            subtitle: Text(
+              'Hello, ${person?.name ?? 'User'}',
+              style: textStyles.titleMedium,
+            ),
+            trailing: ClipOval(child: Image.asset("assets/temp/user.jpg")),
+          ),
+        ),
       ),
     );
   }

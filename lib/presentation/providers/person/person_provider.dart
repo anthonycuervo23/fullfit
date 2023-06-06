@@ -3,7 +3,8 @@ import 'package:fullfit_app/domain/entities/entities.dart';
 import 'package:fullfit_app/domain/repositories/repositories.dart';
 import 'package:fullfit_app/presentation/providers/providers.dart';
 
-final userProvider = StateNotifierProvider<PersonNotifier, PersonState>((ref) {
+final personProvider =
+    StateNotifierProvider<PersonNotifier, PersonState>((ref) {
   final personRepository = ref.watch(personRepositoryProvider);
   return PersonNotifier(personRepository: personRepository);
 });

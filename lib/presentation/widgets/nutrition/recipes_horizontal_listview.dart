@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fullfit_app/domain/entities/entities.dart';
 
-class RecipeHorizontalListview extends StatelessWidget {
+class RecipesHorizontalListview extends StatelessWidget {
   final List<Recipe> recipes;
-  const RecipeHorizontalListview({
+  const RecipesHorizontalListview({
     super.key,
     required this.recipes,
   });
@@ -14,9 +14,6 @@ class RecipeHorizontalListview extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 280.h,
-      // child: Column(
-      //   children: [
-      //     Expanded(
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
@@ -26,9 +23,6 @@ class RecipeHorizontalListview extends StatelessWidget {
           return _recipeSlide(recipe, context);
         },
       ),
-      // )
-      //   ],
-      // ),
     );
   }
 
@@ -94,9 +88,6 @@ class RecipeHorizontalListview extends StatelessWidget {
                         ),
                       ),
                     ),
-                    // const SizedBox(
-                    //   height: 10,
-                    // ),
                     Padding(
                       padding: EdgeInsets.all(12.0.w),
                       child: Text(
@@ -122,7 +113,7 @@ class RecipeHorizontalListview extends StatelessWidget {
                                 fontWeight: FontWeight.bold),
                           ),
                           Icon(
-                            Icons.timer_outlined,
+                            Icons.access_time_rounded,
                             color: colors.primary,
                           ),
                         ],
