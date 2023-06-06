@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fullfit_app/presentation/providers/providers.dart';
+import 'package:fullfit_app/presentation/widgets/widgets.dart';
 
 class NutritionScreen extends ConsumerStatefulWidget {
   const NutritionScreen({Key? key}) : super(key: key);
@@ -16,11 +17,11 @@ class NutritionScreenState extends ConsumerState<NutritionScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(breakfastRecipesProvider.notifier).loadRecipes();
-      ref.read(drinksRecipesProvider.notifier).loadRecipes();
-      ref.read(lunchRecipesProvider.notifier).loadRecipes();
-      ref.read(dessertsRecipesProvider.notifier).loadRecipes();
-      ref.read(veganRecipesProvider.notifier).loadRecipes();
-      ref.read(mealPlannerProvider.notifier).loadTodaysMealPlan();
+      // ref.read(drinksRecipesProvider.notifier).loadRecipes();
+      // ref.read(lunchRecipesProvider.notifier).loadRecipes();
+      // ref.read(dessertsRecipesProvider.notifier).loadRecipes();
+      // ref.read(veganRecipesProvider.notifier).loadRecipes();
+      // ref.read(mealPlannerProvider.notifier).loadTodaysMealPlan();
     });
   }
 
@@ -28,8 +29,15 @@ class NutritionScreenState extends ConsumerState<NutritionScreen> {
   Widget build(BuildContext context) {
     final initialLoading = ref.watch(nutritionLoadingProvider);
     if (initialLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(child: CircularProgressIndicator(strokeWidth: 2));
     }
+
+    final breakfastRecipes = ref.watch(breakfastRecipesProvider);
+    // final drinksRecipes = ref.watch(drinksRecipesProvider);
+    // final lunchRecipes = ref.watch(lunchRecipesProvider);
+    // final dessertRecipes = ref.watch(dessertsRecipesProvider);
+    // final vegaRecipes = ref.watch(veganRecipesProvider);
+    // final todaysMealPlan = ref.watch(mealPlannerProvider);
 
     final textStyles = Theme.of(context).textTheme;
     final colors = Theme.of(context).colorScheme;
@@ -75,15 +83,18 @@ class NutritionScreenState extends ConsumerState<NutritionScreen> {
               ),
               //* FIN search bar
               SizedBox(height: 20.h),
-              Container(
-                height: 250.0.h,
-                width: 200.0.w,
-                decoration: BoxDecoration(
-                  color: colors.primary,
-                  borderRadius: BorderRadius.circular(20.0),
+              Padding(
+                padding: const EdgeInsets.all(14.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const CustomHeader(
+                        title: 'Popular Breakfast Recipes', name: 'breakfast'),
+                    RecipeHorizontalListview(recipes: breakfastRecipes),
+                  ],
                 ),
               ),
-              todayPlan(),
+              // todayPlan(),
               SizedBox(height: 20.h),
             ],
           ),
@@ -92,7 +103,7 @@ class NutritionScreenState extends ConsumerState<NutritionScreen> {
     );
   }
 
-  Widget todayPlan() {
+  Widget _todayPlan() {
     final state = ref.watch(mealPlannerProvider);
 
     final textStyles = Theme.of(context).textTheme;
