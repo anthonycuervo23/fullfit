@@ -17,16 +17,28 @@ class RecipeMapper {
               .map((item) => Ingredient(
                     id: item.id,
                     name: item.name ?? '--',
+                    nameClean: item.nameClean ?? '--',
                     image: item.image != null
-                        ? 'https://spoonacular.com/cdn/ingredients_420x420/${item.image}.jpg'
+                        ? 'https://spoonacular.com/cdn/ingredients_500x500/${item.image}'
                         : 'https://st4.depositphotos.com/14953852/22772/v/600/depositphotos_227725020-stock-illustration-image-available-icon-flat-vector.jpg',
-                    amount: item.amount ?? 0.0,
+                    amount: item.original ?? '--',
                     unit: item.unit ?? '--',
                   ))
               .toList()
           : [],
       instructions: recipeResponse.instructions ?? '--',
       summary: recipeResponse.summary ?? '--',
+      nutrients: recipeResponse.nutrition?.nutrients != null
+          ? recipeResponse.nutrition!.nutrients!
+              .take(9)
+              .map((item) => Nutrient(
+                    name: item.name ?? '--',
+                    amount: item.amount ?? 0.0,
+                    unit: item.unit ?? '--',
+                    percentOfDailyNeeds: item.percentOfDailyNeeds ?? 0.0,
+                  ))
+              .toList()
+          : [],
     );
   }
 
@@ -51,16 +63,29 @@ class RecipeMapper {
                       .map((item) => Ingredient(
                             id: item.id,
                             name: item.name ?? '--',
+                            nameClean: item.nameClean ?? '--',
                             image: item.image != null
-                                ? 'https://spoonacular.com/cdn/ingredients_420x420/${item.image}.jpg'
+                                ? 'https://spoonacular.com/cdn/ingredients_500x500/${item.image}'
                                 : 'https://st4.depositphotos.com/14953852/22772/v/600/depositphotos_227725020-stock-illustration-image-available-icon-flat-vector.jpg',
-                            amount: item.amount ?? 0.0,
+                            amount: item.original ?? '--',
                             unit: item.unit ?? '--',
                           ))
                       .toList()
                   : [],
               instructions: item.instructions ?? '--',
               summary: item.summary ?? '--',
+              nutrients: item.nutrition?.nutrients != null
+                  ? item.nutrition!.nutrients!
+                      .take(9)
+                      .map((item) => Nutrient(
+                            name: item.name ?? '--',
+                            amount: item.amount ?? 0.0,
+                            unit: item.unit ?? '--',
+                            percentOfDailyNeeds:
+                                item.percentOfDailyNeeds ?? 0.0,
+                          ))
+                      .toList()
+                  : [],
             ))
         .toList();
   }

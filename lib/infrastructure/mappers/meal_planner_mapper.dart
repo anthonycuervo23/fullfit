@@ -3,18 +3,22 @@ import 'package:fullfit_app/domain/entities/entities.dart';
 class MealPlannerMapper {
   static MealPlanner mealPlannerJsonToEntity(Map<String, dynamic> json) {
     final mealPlannerResponse = MealPlannerResponse.fromJson(json);
+    final mealTypes = ['Breakfast', 'Lunch', 'Dinner']; // Orden de las comidas.
 
     return MealPlanner(
       meals: mealPlannerResponse.meals!
+          .asMap()
+          .entries
           .map(
-            (meal) => Meal(
-              id: meal.id,
-              name: meal.title ?? '--',
-              image: meal.imageType != null
-                  ? 'https://spoonacular.com/recipeImages/${meal.id}-556x370.${meal.imageType}'
+            (entry) => Meal(
+              id: entry.value.id,
+              name: entry.value.title ?? '--',
+              image: entry.value.imageType != null
+                  ? 'https://spoonacular.com/recipeImages/${entry.value.id}-556x370.${entry.value.imageType}'
                   : 'https://www.warnersstellian.com/Content/images/product_image_not_available.png',
-              cookingTime: meal.readyInMinutes ?? 0,
-              servings: meal.servings ?? 0,
+              cookingTime: entry.value.readyInMinutes ?? 0,
+              servings: entry.value.servings ?? 0,
+              type: mealTypes[entry.key], // Añade el tipo de comida.
             ),
           )
           .toList(),

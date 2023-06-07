@@ -57,8 +57,18 @@ final goRouterProvider = Provider((ref) {
               routes: [
                 //* Rutas del primer tab (workouts)
                 GoRoute(
-                  path: '/',
+                  path: '/workouts',
                   builder: (context, state) => const WorkoutsScreen(),
+                  routes: [
+                    GoRoute(
+                      path: 'recipe/:id',
+                      builder: (context, state) {
+                        final recipeId = state.pathParameters['id'] ?? 'no-id';
+                        return RecipeInfoScreen(
+                            recipeId: int.tryParse(recipeId) ?? 0);
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -69,6 +79,16 @@ final goRouterProvider = Provider((ref) {
                 GoRoute(
                   path: '/nutrition',
                   builder: (context, state) => const NutritionScreen(),
+                  routes: [
+                    GoRoute(
+                      path: 'recipe/:id',
+                      builder: (context, state) {
+                        final recipeId = state.pathParameters['id'] ?? 'no-id';
+                        return RecipeInfoScreen(
+                            recipeId: int.tryParse(recipeId) ?? 0);
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -128,7 +148,7 @@ final goRouterProvider = Provider((ref) {
               isGoingTo == '/splash' ||
               isGoingTo == '/intro' ||
               isGoingTo == '/ready-to-go') {
-            return '/';
+            return '/workouts';
           }
         }
         return null;

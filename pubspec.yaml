@@ -19,11 +19,13 @@ dependencies:
   dots_indicator: ^3.0.0
   firebase_auth: ^4.6.1
   firebase_core: ^2.13.0
+  firebase_dynamic_links: ^5.3.2
   firebase_storage: ^11.2.1
   flutter:
     sdk: flutter
   flutter_dotenv: ^5.0.2
   flutter_easyloading: ^3.0.5
+  flutter_html: ^3.0.0-beta.1
   flutter_riverpod: ^2.3.6
   flutter_screenutil: ^5.8.2
   flutter_secure_storage: ^8.0.0
@@ -41,6 +43,7 @@ dependencies:
   local_auth_android: ^1.0.28
   package_info_plus: ^4.0.2
   permission_handler: ^10.2.0
+  share_plus: ^7.0.2
   shared_preferences: ^2.1.1
   sign_in_with_apple: ^4.3.0
   smooth_page_indicator: ^1.1.0

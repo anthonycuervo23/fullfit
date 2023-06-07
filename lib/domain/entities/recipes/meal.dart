@@ -4,6 +4,7 @@ class Meal {
   final String image;
   final int cookingTime;
   final int servings;
+  final String type;
 
   Meal({
     required this.id,
@@ -11,5 +12,6 @@ class Meal {
     required this.image,
     required this.cookingTime,
     required this.servings,
+    required this.type,
   });
 }

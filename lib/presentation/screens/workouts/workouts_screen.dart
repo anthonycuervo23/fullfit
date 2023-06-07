@@ -18,7 +18,16 @@ class WorkoutsScreen extends ConsumerStatefulWidget {
 
 class WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(mealPlannerProvider.notifier).loadTodaysMealPlan();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final todaysMealPlan = ref.watch(mealPlannerProvider).mealPlanner;
     final person = ref.watch(personProvider.notifier).user;
     final colors = Theme.of(context).colorScheme;
     final textStyles = Theme.of(context).textTheme;
@@ -44,21 +53,7 @@ class WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
                   style: textStyles.titleMedium?.copyWith(fontSize: 16.sp),
                 ),
               ),
-              SizedBox(
-                height: 255.h,
-                width: double.infinity,
-                child: Swiper(
-                  index: 1,
-                  loop: false,
-                  itemCount: meals.length,
-                  viewportFraction: 0.65,
-                  scale: 0.65,
-                  itemBuilder: (context, index) {
-                    final meal = meals[index];
-                    return MealCard(localMeal: meal);
-                  },
-                ),
-              ),
+              MealPlanSwiper(meals: todaysMealPlan?.meals ?? []),
               const SizedBox(height: 20),
               OpenContainer(
                 closedElevation: 0,
@@ -72,90 +67,93 @@ class WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
                 closedBuilder: (context, VoidCallback openContainer) {
                   return GestureDetector(
                     onTap: openContainer,
-                    child: Container(
-                      margin: const EdgeInsets.only(
-                          bottom: 10, left: 32, right: 32),
-                      decoration: BoxDecoration(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(30)),
-                        color: colors.primary.withOpacity(0.8),
-                      ),
-                      child: SizedBox(
-                        height: 180.h,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            const SizedBox(width: 20),
-                            Padding(
-                              padding: EdgeInsets.only(top: 16.0.h, left: 16.w),
-                              child: Text(
-                                'YOUR NEXT WORKOUT',
-                                style: textStyles.titleMedium
-                                    ?.copyWith(fontSize: 16.sp),
+                    child: FadeInUp(
+                      child: Container(
+                        margin: const EdgeInsets.only(
+                            bottom: 10, left: 32, right: 32),
+                        decoration: BoxDecoration(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(30)),
+                          color: colors.primary.withOpacity(0.8),
+                        ),
+                        child: SizedBox(
+                          height: 180.h,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              const SizedBox(width: 20),
+                              Padding(
+                                padding:
+                                    EdgeInsets.only(top: 16.0.h, left: 16.w),
+                                child: Text(
+                                  'YOUR NEXT WORKOUT',
+                                  style: textStyles.titleMedium
+                                      ?.copyWith(fontSize: 16.sp),
+                                ),
                               ),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(top: 4.0, left: 16),
-                              child: Text(
-                                'Upper Body',
-                                style: textStyles.titleLarge
-                                    ?.copyWith(fontSize: 24.sp),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(top: 4.0, left: 16),
+                                child: Text(
+                                  'Upper Body',
+                                  style: textStyles.titleLarge
+                                      ?.copyWith(fontSize: 24.sp),
+                                ),
                               ),
-                            ),
-                            Expanded(
-                              child: Row(
-                                children: <Widget>[
-                                  const SizedBox(width: 20),
-                                  Container(
-                                    decoration: const BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(25)),
-                                      color: Color(0xFF5B4D9D),
+                              Expanded(
+                                child: Row(
+                                  children: <Widget>[
+                                    const SizedBox(width: 20),
+                                    Container(
+                                      decoration: const BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(25)),
+                                        color: Color(0xFF5B4D9D),
+                                      ),
+                                      padding: const EdgeInsets.all(10),
+                                      child: Image.asset(
+                                        "assets/temp/chest.png",
+                                        width: 50,
+                                        height: 50,
+                                        color: Colors.white,
+                                      ),
                                     ),
-                                    padding: const EdgeInsets.all(10),
-                                    child: Image.asset(
-                                      "assets/temp/chest.png",
-                                      width: 50,
-                                      height: 50,
-                                      color: Colors.white,
+                                    const SizedBox(width: 10),
+                                    Container(
+                                      decoration: const BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(25)),
+                                        color: Color(0xFF5B4D9D),
+                                      ),
+                                      padding: const EdgeInsets.all(10),
+                                      child: Image.asset(
+                                        "assets/temp/back.png",
+                                        width: 50,
+                                        height: 50,
+                                        color: Colors.white,
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Container(
-                                    decoration: const BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(25)),
-                                      color: Color(0xFF5B4D9D),
+                                    const SizedBox(width: 10),
+                                    Container(
+                                      decoration: const BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(25)),
+                                        color: Color(0xFF5B4D9D),
+                                      ),
+                                      padding: const EdgeInsets.all(10),
+                                      child: Image.asset(
+                                        "assets/temp/biceps.png",
+                                        width: 50,
+                                        height: 50,
+                                        color: Colors.white,
+                                      ),
                                     ),
-                                    padding: const EdgeInsets.all(10),
-                                    child: Image.asset(
-                                      "assets/temp/back.png",
-                                      width: 50,
-                                      height: 50,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Container(
-                                    decoration: const BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(25)),
-                                      color: Color(0xFF5B4D9D),
-                                    ),
-                                    padding: const EdgeInsets.all(10),
-                                    child: Image.asset(
-                                      "assets/temp/biceps.png",
-                                      width: 50,
-                                      height: 50,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 10),
-                                ],
+                                    const SizedBox(width: 10),
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),

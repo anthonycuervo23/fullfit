@@ -11,7 +11,7 @@ class Recipe {
   final String instructions;
   final String summary;
   // final List<Equipment> equipment;
-  // final List<Nutrient> nutrients;
+  final List<Nutrient> nutrients;
 
   Recipe({
     required this.id,
@@ -24,7 +24,7 @@ class Recipe {
     required this.instructions,
     required this.summary,
     // required this.equipment,
-    // required this.nutrients,
+    required this.nutrients,
   });
 }
 

@@ -35,8 +35,20 @@ class SpoonacularDataSourceImpl extends RecipesDataSource {
   }
 
   @override
-  Future<void> getRecipeInfo(int id, Future Function(Recipe recipe) closure) {
-    throw UnimplementedError();
+  Future<void> getRecipeInfo(
+      int id, Future Function(Recipe? recipe) closure) async {
+    var request = build(
+        endpoint: '/recipes/$id/information',
+        requestType: RequestType.get,
+        queryParameters: {'includeNutrition': true});
+
+    await execute(request, RecipeMapper.recipJsonToEntity, (result) async {
+      if (result != null) {
+        await closure(result);
+      } else {
+        await closure(null);
+      }
+    });
   }
 
   @override

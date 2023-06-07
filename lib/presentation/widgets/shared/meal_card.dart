@@ -1,7 +1,9 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fullfit_app/domain/entities/entities.dart';
+import 'package:go_router/go_router.dart';
 
 class MealCard extends StatelessWidget {
   final LocalMeal? localMeal;
@@ -16,108 +18,101 @@ class MealCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final textStyles = Theme.of(context).textTheme;
     final colors = Theme.of(context).colorScheme;
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Material(
-        borderRadius: const BorderRadius.all(Radius.circular(20)),
-        elevation: 4,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            Flexible(
-              flex: 2,
-              child: OpenContainer(
-                closedShape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
+    return FadeInRight(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Material(
+          borderRadius: const BorderRadius.all(Radius.circular(20)),
+          elevation: 4,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              Flexible(
+                flex: 2,
+                child: GestureDetector(
+                  onTap: () => context.push('/workouts/recipe/${meal!.id}'),
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20))),
-                transitionDuration: const Duration(milliseconds: 1000),
-                openBuilder: (context, _) {
-                  return Container();
-                },
-                closedBuilder: (context, openContainer) {
-                  return GestureDetector(
-                    onTap: openContainer,
-                    child: ClipRRect(
-                        borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20)),
-                        child: localMeal != null
-                            ? Image.asset(
-                                localMeal!.imagePath,
-                                width: double.infinity,
-                                fit: BoxFit.cover,
-                              )
-                            : Image.network(
-                                meal!.image,
-                                width: double.infinity,
-                                fit: BoxFit.cover,
-                                loadingBuilder: (context, child,
-                                        loadingProgress) =>
-                                    loadingProgress == null
-                                        ? child
-                                        : const Center(
-                                            child: CircularProgressIndicator(
-                                                strokeWidth: 2),
-                                          ),
-                              )),
-                  );
-                },
-              ),
-            ),
-            Flexible(
-              flex: 1,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 5),
-                    Text(
-                      localMeal?.mealTime ?? 'BREAKFAST',
-                      style: textStyles.bodyMedium?.copyWith(
-                        fontSize: 14.sp,
-                      ),
-                    ),
-                    Text(
-                      localMeal?.name ?? meal!.name,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: textStyles.titleMedium?.copyWith(
-                        fontSize: 16.sp,
-                      ),
-                    ),
-                    const Spacer(),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            localMeal != null
-                                ? "Ready in ${localMeal!.timeTaken} min"
-                                : "Ready in ${meal!.cookingTime} min",
-                            style: textStyles.bodyMedium?.copyWith(
-                                fontSize: 14.sp,
-                                color: colors.primary,
-                                fontWeight: FontWeight.bold),
+                        topRight: Radius.circular(20)),
+                    child: localMeal != null
+                        ? FadeIn(
+                            child: Image.asset(
+                              localMeal!.imagePath,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                        : FadeIn(
+                            child: Image.network(
+                              meal!.image,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                              loadingBuilder:
+                                  (context, child, loadingProgress) =>
+                                      loadingProgress == null
+                                          ? child
+                                          : const Center(
+                                              child: CircularProgressIndicator(
+                                                  strokeWidth: 2)),
+                            ),
                           ),
-                          Icon(
-                            Icons.access_time,
-                            // size: 16.w,
-                            color: colors.primary,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
-            ),
-          ],
+              Flexible(
+                flex: 1,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 5),
+                      Text(
+                        localMeal?.mealTime ?? meal!.type.toUpperCase(),
+                        style: textStyles.bodyMedium?.copyWith(
+                          fontSize: 14.sp,
+                        ),
+                      ),
+                      Text(
+                        localMeal?.name ?? meal!.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: textStyles.titleMedium?.copyWith(
+                          fontSize: 16.sp,
+                        ),
+                      ),
+                      const Spacer(),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              localMeal != null
+                                  ? "Ready in ${localMeal!.timeTaken} min"
+                                  : "Ready in ${meal!.cookingTime} min",
+                              style: textStyles.bodyMedium?.copyWith(
+                                  fontSize: 14.sp,
+                                  color: colors.primary,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Icon(
+                              Icons.access_time,
+                              // size: 16.w,
+                              color: colors.primary,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
-        // ),
       ),
     );
   }

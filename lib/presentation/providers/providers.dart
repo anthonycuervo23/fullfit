@@ -7,3 +7,4 @@ export 'nutrition/recipes_repository_provider.dart';
 export 'nutrition/meal_planner_provider.dart';
 export 'nutrition/recipes_providers.dart';
 export 'nutrition/nutrition_loading_provider.dart';
+export 'nutrition/recipe_info_provider.dart';

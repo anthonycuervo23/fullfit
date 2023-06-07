@@ -9,7 +9,7 @@ class RecipesRepositoryImpl extends RecipesRespository {
   RecipesRepositoryImpl(this._dataSource);
 
   @override
-  Future<void> getRecipeInfo(int id, Future Function(Recipe recipe) closure) {
+  Future<void> getRecipeInfo(int id, Future Function(Recipe? recipe) closure) {
     return _dataSource.getRecipeInfo(id, closure);
   }
 

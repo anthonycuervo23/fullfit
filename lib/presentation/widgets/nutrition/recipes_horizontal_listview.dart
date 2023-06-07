@@ -2,6 +2,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fullfit_app/domain/entities/entities.dart';
+import 'package:go_router/go_router.dart';
 
 class RecipesHorizontalListview extends StatelessWidget {
   final List<Recipe> recipes;
@@ -34,7 +35,7 @@ class RecipesHorizontalListview extends StatelessWidget {
         children: [
           GestureDetector(
             onTap: () {
-              //TODO: mostrar informacion de receta
+              context.push('/nutrition/recipe/${recipe.id}');
             },
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),

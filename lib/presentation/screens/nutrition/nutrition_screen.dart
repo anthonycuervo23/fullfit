@@ -87,21 +87,7 @@ class NutritionScreenState extends ConsumerState<NutritionScreen> {
               ),
               const CustomHeader(
                   title: 'Your Meal Plan for Today', name: 'meal'),
-              SizedBox(
-                height: 255.h,
-                width: double.infinity,
-                child: Swiper(
-                  loop: false,
-                  index: 1,
-                  itemCount: todaysMealPlan?.meals.length ?? 0,
-                  viewportFraction: 0.65,
-                  scale: 0.65,
-                  itemBuilder: (context, index) {
-                    final meal = todaysMealPlan!.meals[index];
-                    return MealCard(meal: meal);
-                  },
-                ),
-              ),
+              MealPlanSwiper(meals: todaysMealPlan?.meals ?? []),
               //* FIN search bar
               SizedBox(height: 20.h),
               const CustomHeader(
