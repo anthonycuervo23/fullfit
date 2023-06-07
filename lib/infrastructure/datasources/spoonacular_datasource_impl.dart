@@ -94,4 +94,10 @@ class SpoonacularDataSourceImpl extends RecipesDataSource {
       }
     });
   }
+
+  @override
+  Future<List<RecipeResult>> searchRecipes(
+      {required String query, int limit = 10}) {
+    throw UnimplementedError();
+  }
 }

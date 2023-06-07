@@ -1,3 +1,4 @@
+export 'package:fullfit_app/domain/entities/recipes/recipe_result.dart';
 export 'package:fullfit_app/domain/entities/recipes/meal.dart';
 export 'package:fullfit_app/domain/entities/recipes/meal_planner.dart';
 export 'package:fullfit_app/domain/entities/recipes/recipe.dart';

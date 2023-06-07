@@ -1,6 +1,7 @@
 import 'package:fullfit_app/domain/datasources/datasources.dart';
 import 'package:fullfit_app/domain/entities/recipes/meal_planner.dart';
 import 'package:fullfit_app/domain/entities/recipes/recipe.dart';
+import 'package:fullfit_app/domain/entities/recipes/recipe_result.dart';
 import 'package:fullfit_app/domain/repositories/repositories.dart';
 
 class RecipesRepositoryImpl extends RecipesRespository {
@@ -26,5 +27,11 @@ class RecipesRepositoryImpl extends RecipesRespository {
       String diet = 'paleo'}) {
     return _dataSource.getTodayMealPlan(closure,
         targetCalories: targetCalories, diet: diet);
+  }
+
+  @override
+  Future<List<RecipeResult>> searchRecipes(
+      {required String query, int limit = 10}) {
+    return _dataSource.searchRecipes(query: query, limit: limit);
   }
 }
