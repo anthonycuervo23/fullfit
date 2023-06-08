@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fullfit_app/config/api/api_client.dart';
@@ -19,9 +21,20 @@ class SpoonacularDataSourceImpl extends RecipesDataSource {
     try {
       final response = await request;
 
-      final T object = expecting(response.data);
+      if (response.data is List) {
+        final T object = expecting({'results': response.data});
+        return completion(object);
+      } else if (response.data is Map<String, dynamic>) {
+        final T object = expecting(response.data);
+        return completion(object);
+        // await completion(object);
+      } else {
+        throw Exception('Unexpected response type');
+      }
 
-      return completion(object);
+      // final T object = expecting(response.data);
+
+      // return completion(object);
     } on DioError catch (e) {
       debugPrint(e.toString());
       completion(null);
@@ -96,8 +109,53 @@ class SpoonacularDataSourceImpl extends RecipesDataSource {
   }
 
   @override
-  Future<List<RecipeResult>> searchRecipes(
-      {required String query, int limit = 10}) {
-    throw UnimplementedError();
+  Future<List<RecipeResult>?> searchRecipes(
+      {required String query, int limit = 10}) async {
+    var request = build(
+        endpoint: '/recipes/autocomplete',
+        requestType: RequestType.get,
+        queryParameters: {
+          'query': query,
+          'number': limit,
+        });
+
+    var completer = Completer<List<RecipeResult>?>();
+
+    await execute(request, SearchRecipeMapper.fromJsonListToEntityList,
+        (result) async {
+      if (result != null) {
+        completer.complete(result);
+      } else {
+        completer.complete([]);
+      }
+    });
+
+    return completer.future;
+  }
+
+  @override
+  Future<List<ComplexSearchRecipe>> getListRecipes(
+      {required String query, int limit = 100, int offset = 0}) async {
+    var request = build(
+        endpoint: '/recipes/complexSearch',
+        requestType: RequestType.get,
+        queryParameters: {
+          'query': query,
+          'number': limit,
+          'offset': offset,
+        });
+
+    var completer = Completer<List<ComplexSearchRecipe>>();
+
+    await execute(
+        request, ComplexResultsMapper.searchComplexResultsJsonToEntity,
+        (result) async {
+      if (result != null) {
+        completer.complete(result);
+      } else {
+        completer.complete([]);
+      }
+    });
+    return completer.future;
   }
 }

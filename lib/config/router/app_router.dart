@@ -88,6 +88,14 @@ final goRouterProvider = Provider((ref) {
                             recipeId: int.tryParse(recipeId) ?? 0);
                       },
                     ),
+                    GoRoute(
+                      path: 'suggestions/:name',
+                      builder: (context, state) {
+                        final foodType =
+                            state.pathParameters['name'] ?? 'no-name';
+                        return SuggestedRecipesScreen(foodType: foodType);
+                      },
+                    ),
                   ],
                 ),
               ],

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fullfit_app/domain/entities/entities.dart';
-import 'package:fullfit_app/presentation/providers/providers.dart';
 import 'package:fullfit_app/presentation/widgets/widgets.dart';
 
 class MealPlanSwiper extends ConsumerWidget {

@@ -1,5 +1,4 @@
 import 'package:animate_do/animate_do.dart';
-import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fullfit_app/domain/entities/entities.dart';
@@ -31,7 +30,7 @@ class MealCard extends StatelessWidget {
               Flexible(
                 flex: 2,
                 child: GestureDetector(
-                  onTap: () => context.push('/workouts/recipe/${meal!.id}'),
+                  onTap: () => context.push('/nutrition/recipe/${meal!.id}'),
                   child: ClipRRect(
                     borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(20),

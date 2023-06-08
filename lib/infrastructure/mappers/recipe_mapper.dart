@@ -1,4 +1,5 @@
 import 'package:fullfit_app/domain/entities/entities.dart';
+import 'package:fullfit_app/infrastructure/models/models.dart';
 
 class RecipeMapper {
   static Recipe recipJsonToEntity(Map<String, dynamic> json,

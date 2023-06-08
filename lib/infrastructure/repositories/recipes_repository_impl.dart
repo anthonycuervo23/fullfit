@@ -1,4 +1,5 @@
 import 'package:fullfit_app/domain/datasources/datasources.dart';
+import 'package:fullfit_app/domain/entities/recipes/complex_search_recipe.dart';
 import 'package:fullfit_app/domain/entities/recipes/meal_planner.dart';
 import 'package:fullfit_app/domain/entities/recipes/recipe.dart';
 import 'package:fullfit_app/domain/entities/recipes/recipe_result.dart';
@@ -30,8 +31,15 @@ class RecipesRepositoryImpl extends RecipesRespository {
   }
 
   @override
-  Future<List<RecipeResult>> searchRecipes(
+  Future<List<RecipeResult>?> searchRecipes(
       {required String query, int limit = 10}) {
     return _dataSource.searchRecipes(query: query, limit: limit);
+  }
+
+  @override
+  Future<List<ComplexSearchRecipe>> getListRecipes(
+      {required String query, int limit = 100, int offset = 0}) {
+    return _dataSource.getListRecipes(
+        query: query, limit: limit, offset: offset);
   }
 }

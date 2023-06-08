@@ -1,7 +1,9 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
-class CustomHeader extends StatelessWidget {
+class CustomHeader extends ConsumerWidget {
   final String title;
   final String name;
   const CustomHeader({
@@ -11,7 +13,7 @@ class CustomHeader extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 13.0, vertical: 8),
       child: Row(
@@ -28,7 +30,7 @@ class CustomHeader extends StatelessWidget {
           ),
           IconButton(
             onPressed: () {
-              //TODO: open search results
+              context.push('/nutrition/suggestions/$name');
             },
             icon: const Icon(Icons.arrow_forward_ios_rounded),
           )

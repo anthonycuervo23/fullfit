@@ -1,4 +1,5 @@
 import 'package:fullfit_app/domain/entities/entities.dart';
+import 'package:fullfit_app/infrastructure/models/models.dart';
 
 class MealPlannerMapper {
   static MealPlanner mealPlannerJsonToEntity(Map<String, dynamic> json) {

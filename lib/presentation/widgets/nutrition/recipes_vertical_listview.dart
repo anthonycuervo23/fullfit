@@ -2,6 +2,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fullfit_app/domain/entities/entities.dart';
+import 'package:go_router/go_router.dart';
 
 class RecipesVerticalListview extends StatelessWidget {
   final List<Recipe> recipes;
@@ -29,7 +30,7 @@ class RecipesVerticalListview extends StatelessWidget {
       delay: const Duration(microseconds: 600),
       child: GestureDetector(
         onTap: () {
-          //TODO: navegar a la pantalla de receta
+          context.push('/nutrition/recipe/${recipe.id}');
         },
         child: Padding(
           padding: EdgeInsets.all(8.0.w),
