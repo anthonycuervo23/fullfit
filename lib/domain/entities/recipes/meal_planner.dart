@@ -1,17 +1,26 @@
-import 'package:fullfit_app/domain/entities/recipes/meal.dart';
+import 'package:fullfit_app/domain/entities/entities.dart';
+import 'package:isar/isar.dart';
 
+part 'meal_planner.g.dart';
+
+@Collection()
 class MealPlanner {
-  final List<Meal> meals;
-  final double calories;
-  final double carbohydrates;
-  final double fat;
-  final double protein;
+  Id? isarId;
+  final DailyMeal monday;
+  final DailyMeal tuesday;
+  final DailyMeal wednesday;
+  final DailyMeal thursday;
+  final DailyMeal friday;
+  final DailyMeal saturday;
+  final DailyMeal sunday;
 
-  const MealPlanner({
-    required this.meals,
-    required this.calories,
-    required this.carbohydrates,
-    required this.fat,
-    required this.protein,
+  MealPlanner({
+    required this.monday,
+    required this.tuesday,
+    required this.wednesday,
+    required this.thursday,
+    required this.friday,
+    required this.saturday,
+    required this.sunday,
   });
 }

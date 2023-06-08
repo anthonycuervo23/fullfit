@@ -7,10 +7,18 @@ import 'package:fullfit_app/config/config.dart';
 import 'package:fullfit_app/domain/datasources/datasources.dart';
 import 'package:fullfit_app/domain/entities/entities.dart';
 import 'package:fullfit_app/infrastructure/mappers/mappers.dart';
+import 'package:fullfit_app/infrastructure/services/services.dart';
 
 class SpoonacularDataSourceImpl extends RecipesDataSource {
-  SpoonacularDataSourceImpl()
-      : super('https://api.spoonacular.com',
+  final KeyValueStorageService _storageService;
+  final LocalStorageDataSource _localStorageDataSource;
+  SpoonacularDataSourceImpl({
+    KeyValueStorageService storageService =
+        const KeyValueStorageServiceImplementation(),
+    required LocalStorageDataSource localStorageDataSource,
+  })  : _storageService = storageService,
+        _localStorageDataSource = localStorageDataSource,
+        super('https://api.spoonacular.com',
             headers: {'x-api-key': Environment.scoopnacularApiKey});
 
   @override
@@ -85,27 +93,50 @@ class SpoonacularDataSourceImpl extends RecipesDataSource {
   }
 
   @override
-  Future<void> getTodayMealPlan(
-      Future Function(MealPlanner? mealPlanner) closure,
-      {int targetCalories = 2000,
-      String diet = 'paleo'}) async {
-    var request = build(
-        endpoint: '/mealplanner/generate',
-        requestType: RequestType.get,
-        queryParameters: {
-          'timeFrame': 'day',
-          'diet': diet,
-          'targetCalories': targetCalories,
-        });
+  Future<void> getTodayMealPlan(Future Function(DailyMeal? mealPlanner) closure,
+      {int targetCalories = 2000}) async {
+    //TODO: obtener el total de calorias del usuario
+    if (await _hasWeekPassed()) {
+      debugPrint('👨🏻‍💻 Generando un nuevo Plan Semanal');
+      //si ha pasado una semana desde el último plan de comidas, obtenemos uno nuevo plan de comidas
+      var request = build(
+          endpoint: '/mealplanner/generate',
+          requestType: RequestType.get,
+          queryParameters: {
+            'timeFrame': 'week',
+            'targetCalories': targetCalories,
+          });
 
-    await execute(request, MealPlannerMapper.mealPlannerJsonToEntity,
-        (result) async {
-      if (result != null) {
-        await closure(result);
+      await execute(request, MealPlannerMapper.mealPlannerJsonToEntity,
+          (result) async {
+        if (result != null) {
+          final date = DateTime.now().toIso8601String();
+          //guardamos la fecha de cuando se generó el plan de comidas
+          _storageService.setKeyValue<String>(mealPlanDateKey, date);
+          //guardamos el plan de comidas en el almacenamiento local
+          await _localStorageDataSource.saveWeekPlan(result);
+
+          final DailyMeal todaysMealPlan = _getTodayMealPlan(result);
+
+          await closure(todaysMealPlan);
+        } else {
+          debugPrint('👨🏻‍💻 Error generando nuevo Plan Semanal');
+          await closure(null);
+        }
+      });
+    } else {
+      debugPrint('👨🏻‍💻 Obteniendo plan semanal desde la BD');
+      //si no ha pasado una semana, obtenemos el plan de comidas guardado en el almacenamiento local
+      final mealPlan = await _localStorageDataSource.getWeeklyMealPlan();
+
+      if (mealPlan != null) {
+        final DailyMeal todaysMealPlan = _getTodayMealPlan(mealPlan);
+        await closure(todaysMealPlan);
       } else {
+        debugPrint('👨🏻‍💻 Error obteniendo plan desde la BD');
         await closure(null);
       }
-    });
+    }
   }
 
   @override
@@ -157,5 +188,54 @@ class SpoonacularDataSourceImpl extends RecipesDataSource {
       }
     });
     return completer.future;
+  }
+}
+
+extension SpoonacularDataSourceImplExtension on SpoonacularDataSourceImpl {
+  // Esta función verifica si ha pasado una semana desde el último plan de comidas.
+  Future<bool> _hasWeekPassed() async {
+    final lastMealPlanDateString =
+        _storageService.getValue<String>(mealPlanDateKey);
+
+    if (lastMealPlanDateString == null) {
+      debugPrint('👨🏻‍💻 No meal plan date found');
+      return true; // no hay un plan de comidas guardado, por lo que asumimos que ha pasado una semana
+    }
+
+    final lastMealPlanDate = DateTime.parse(lastMealPlanDateString);
+    final now = DateTime.now();
+    final difference = now.difference(lastMealPlanDate);
+    debugPrint(
+        '👨🏻‍💻 ha pasado mas de una semana: ${difference.inDays >= 7}');
+    return difference.inDays >= 7;
+  }
+
+  DailyMeal _getTodayMealPlan(MealPlanner mealPlanner) {
+    var weekday = DateTime.now().weekday;
+    switch (weekday) {
+      case 1:
+        debugPrint('👨🏻‍💻 Obteniendo plan para el LUNES');
+        return mealPlanner.monday;
+      case 2:
+        debugPrint('👨🏻‍💻 Obteniendo plan para el MARTES');
+        return mealPlanner.tuesday;
+      case 3:
+        debugPrint('👨🏻‍💻 Obteniendo plan para el MIERCOLES');
+        return mealPlanner.wednesday;
+      case 4:
+        debugPrint('👨🏻‍💻 Obteniendo plan para el JUEVES');
+        return mealPlanner.thursday;
+      case 5:
+        debugPrint('👨🏻‍💻 Obteniendo plan para el VIERNES');
+        return mealPlanner.friday;
+      case 6:
+        debugPrint('👨🏻‍💻 Obteniendo plan para el SABADO');
+        return mealPlanner.saturday;
+      case 7:
+        debugPrint('👨🏻‍💻 Obteniendo plan para el DOMINGO');
+        return mealPlanner.sunday;
+      default:
+        throw Exception("Invalid weekday");
+    }
   }
 }

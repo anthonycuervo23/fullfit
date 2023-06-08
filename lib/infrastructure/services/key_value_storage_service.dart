@@ -16,7 +16,10 @@ const String loginTypeKey = 'login_type_key';
 
 const String isOnboardingCompletedKey = 'is_onboarding_completed_key';
 
+const String mealPlanDateKey = 'meal_plan_date_key';
+
 abstract class KeyValueStorageService {
+  const KeyValueStorageService();
   void setKeyValue<T>(String key, T value);
   T? getValue<T>(String key);
   Future<bool> removeKey(String key);

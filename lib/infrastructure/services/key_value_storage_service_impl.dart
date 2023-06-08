@@ -2,6 +2,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'key_value_storage_service.dart';
 
 class KeyValueStorageServiceImplementation extends KeyValueStorageService {
+  const KeyValueStorageServiceImplementation();
   static late SharedPreferences _sharedPreferences;
 
   static Future<void> loadPreferences() async =>

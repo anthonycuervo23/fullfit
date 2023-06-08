@@ -40,9 +40,12 @@ dependencies:
   google_sign_in: ^6.1.2
   image_picker: ^0.8.7+5
   intl: ^0.18.1
+  isar: ^3.1.0+1
+  isar_flutter_libs: ^3.1.0+1
   local_auth: ^2.1.6
   local_auth_android: ^1.0.28
   package_info_plus: ^4.0.2
+  path_provider: ^2.0.15
   permission_handler: ^10.2.0
   share_plus: ^7.0.2
   shared_preferences: ^2.1.1
@@ -54,9 +57,11 @@ dependencies:
 
 ### PAQUETES DE DESARROLLO ###
 dev_dependencies:
+  build_runner: ^2.4.5
   flutter_lints: ^2.0.0
   flutter_test:
     sdk: flutter
+  isar_generator: ^3.1.0+1
 
 flutter:
   uses-material-design: true

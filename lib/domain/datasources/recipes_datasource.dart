@@ -12,10 +12,8 @@ abstract class RecipesDataSource extends CustomApiClient {
   Future<void> getRecipeInfo(int id, Future Function(Recipe? recipe) closure);
   Future<List<RecipeResult>?> searchRecipes(
       {required String query, int limit = 10});
-  Future<void> getTodayMealPlan(
-      Future Function(MealPlanner? mealPlanner) closure,
-      {int targetCalories = 2000,
-      String diet = 'paleo'});
+  Future<void> getTodayMealPlan(Future Function(DailyMeal? mealPlanner) closure,
+      {int targetCalories = 2000});
 }
 
 

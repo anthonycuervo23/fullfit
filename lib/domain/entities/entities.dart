@@ -1,3 +1,5 @@
+export 'package:fullfit_app/domain/entities/recipes/daily_meal.dart';
+export 'package:fullfit_app/domain/entities/recipes/meal_nutrients.dart';
 export 'package:fullfit_app/domain/entities/recipes/complex_search_recipe.dart';
 export 'package:fullfit_app/domain/entities/recipes/recipe_result.dart';
 export 'package:fullfit_app/domain/entities/recipes/meal.dart';

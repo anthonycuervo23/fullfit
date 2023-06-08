@@ -10,9 +10,8 @@ final mealPlannerProvider =
 });
 
 typedef MealPlannerCallback = Future<void> Function(
-    Future Function(MealPlanner? mealPlanner) closure,
-    {int targetCalories,
-    String diet});
+    Future Function(DailyMeal? mealPlanner) closure,
+    {int targetCalories});
 
 class MealPlannerNotifier extends StateNotifier<MealPlannerState> {
   final MealPlannerCallback _fetchTodaysMealPlan;
@@ -23,9 +22,8 @@ class MealPlannerNotifier extends StateNotifier<MealPlannerState> {
   Future<void> loadTodaysMealPlan() async {
     state = state.copyWith(isLoading: true);
 
-    await _fetchTodaysMealPlan(
-        diet: state.diet,
-        targetCalories: state.targetCalories, (mealPlanner) async {
+    await _fetchTodaysMealPlan(targetCalories: state.targetCalories,
+        (mealPlanner) async {
       if (mealPlanner != null) {
         state = state.copyWith(
           isLoading: false,
@@ -44,7 +42,7 @@ class MealPlannerNotifier extends StateNotifier<MealPlannerState> {
 
 class MealPlannerState {
   final bool isLoading;
-  final MealPlanner? mealPlanner;
+  final DailyMeal? mealPlanner;
   final String diet;
   final int targetCalories;
   final bool? errorLoading;
@@ -59,7 +57,7 @@ class MealPlannerState {
 
   MealPlannerState copyWith({
     bool? isLoading,
-    MealPlanner? mealPlanner,
+    DailyMeal? mealPlanner,
     String? diet,
     int? targetCalories,
     bool? errorLoading,

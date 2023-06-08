@@ -8,8 +8,6 @@ abstract class RecipesRespository {
       {required String query, int limit = 10});
   Future<List<ComplexSearchRecipe>> getListRecipes(
       {required String query, int limit = 100, int offset = 0});
-  Future<void> getTodayMealPlan(
-      Future Function(MealPlanner? mealPlanner) closure,
-      {int targetCalories = 2000,
-      String diet = 'paleo'});
+  Future<void> getTodayMealPlan(Future Function(DailyMeal? mealPlanner) closure,
+      {int targetCalories = 2000});
 }

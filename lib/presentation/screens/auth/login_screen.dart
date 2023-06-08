@@ -41,10 +41,10 @@ class _LoginForm extends ConsumerWidget {
       }
 
       if (next.status == AuthStatus.checkBiometric) {
-        final hasBiometricEnabled = KeyValueStorageServiceImplementation()
+        final hasBiometricEnabled = const KeyValueStorageServiceImplementation()
             .getValue<bool>(hasBiometricLoginEnabledKey);
-        final lastLoggedEmail =
-            KeyValueStorageServiceImplementation().getValue<String>(emailKey);
+        final lastLoggedEmail = const KeyValueStorageServiceImplementation()
+            .getValue<String>(emailKey);
         authRepository.didLoggedOutOrFailedBiometricAuth = false;
         if (authRepository.hasBiometricSupport &&
             (hasBiometricEnabled == false ||
@@ -54,19 +54,19 @@ class _LoginForm extends ConsumerWidget {
             authRepository: authRepository,
             onEnable: () {
               Navigator.pop(context);
-              KeyValueStorageServiceImplementation()
+              const KeyValueStorageServiceImplementation()
                   .setKeyValue<bool>(hasBiometricLoginEnabledKey, true);
               authRepository.saveCredentials(
                   email: loginForm.email.value,
                   password: loginForm.password.value);
-              KeyValueStorageServiceImplementation()
+              const KeyValueStorageServiceImplementation()
                   .setKeyValue<String>(emailKey, loginForm.email.value);
             },
             onDisable: () {
               Navigator.pop(context);
-              KeyValueStorageServiceImplementation()
+              const KeyValueStorageServiceImplementation()
                   .setKeyValue<bool>(hasBiometricLoginEnabledKey, false);
-              KeyValueStorageServiceImplementation()
+              const KeyValueStorageServiceImplementation()
                   .setKeyValue<String>(emailKey, loginForm.email.value);
             },
           );
@@ -74,10 +74,10 @@ class _LoginForm extends ConsumerWidget {
             hasBiometricEnabled == true) {
           authRepository.saveCredentials(
               email: loginForm.email.value, password: loginForm.password.value);
-          KeyValueStorageServiceImplementation()
+          const KeyValueStorageServiceImplementation()
               .setKeyValue<String>(emailKey, loginForm.email.value);
         } else {
-          KeyValueStorageServiceImplementation()
+          const KeyValueStorageServiceImplementation()
               .setKeyValue<String>(emailKey, loginForm.email.value);
         }
 
@@ -98,8 +98,9 @@ class _LoginForm extends ConsumerWidget {
         //* email textfield
         FocusDetector(
           onFocusGained: () {
-            final hasBiometricEnabled = KeyValueStorageServiceImplementation()
-                .getValue<bool>(hasBiometricLoginEnabledKey);
+            final hasBiometricEnabled =
+                const KeyValueStorageServiceImplementation()
+                    .getValue<bool>(hasBiometricLoginEnabledKey);
 
             if (authRepository.hasBiometricSupport &&
                 hasBiometricEnabled == true &&

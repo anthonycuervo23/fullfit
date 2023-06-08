@@ -45,7 +45,7 @@ class MealCard extends StatelessWidget {
                           )
                         : FadeIn(
                             child: Image.network(
-                              meal!.image,
+                              meal!.image!,
                               width: double.infinity,
                               fit: BoxFit.cover,
                               loadingBuilder:
@@ -69,13 +69,13 @@ class MealCard extends StatelessWidget {
                     children: [
                       const SizedBox(height: 5),
                       Text(
-                        localMeal?.mealTime ?? meal!.type.toUpperCase(),
+                        localMeal?.mealTime ?? meal!.type!.toUpperCase(),
                         style: textStyles.bodyMedium?.copyWith(
                           fontSize: 14.sp,
                         ),
                       ),
                       Text(
-                        localMeal?.name ?? meal!.name,
+                        localMeal?.name ?? meal!.name!,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: textStyles.titleMedium?.copyWith(

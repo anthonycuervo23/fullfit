@@ -179,7 +179,7 @@ class OnBoardingScreenState extends ConsumerState<OnBoardingScreen>
                                   .performBiometricAuthentication()
                                   .then((didAuthenticate) {
                                 if (didAuthenticate) {
-                                  KeyValueStorageServiceImplementation()
+                                  const KeyValueStorageServiceImplementation()
                                       .setKeyValue<bool>(
                                           hasBiometricLoginEnabledKey, true);
                                   authRepository.saveCredentials(
@@ -239,7 +239,7 @@ class OnBoardingScreenState extends ConsumerState<OnBoardingScreen>
                       if (currentScreenId == ScreenId.biometric) {
                         authRepository.didLoggedOutOrFailedBiometricAuth =
                             false;
-                        KeyValueStorageServiceImplementation()
+                        const KeyValueStorageServiceImplementation()
                             .setKeyValue<bool>(
                                 hasBiometricLoginEnabledKey, false);
                       }

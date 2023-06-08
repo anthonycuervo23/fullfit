@@ -1,23 +1,65 @@
 // To parse this JSON data, do
 //
-//     final mealPlannerResponse = mealPlannerResponseFromJson(jsonString);
+//     final weekMealPlannerResponse = weekMealPlannerResponseFromJson(jsonString);
 
 import 'dart:convert';
 
-MealPlannerResponse mealPlannerResponseFromJson(String str) =>
-    MealPlannerResponse.fromJson(json.decode(str));
+WeekMealPlannerResponse weekMealPlannerResponseFromJson(String str) =>
+    WeekMealPlannerResponse.fromJson(json.decode(str));
 
-class MealPlannerResponse {
+class WeekMealPlannerResponse {
+  final Week? week;
+
+  WeekMealPlannerResponse({
+    required this.week,
+  });
+
+  factory WeekMealPlannerResponse.fromJson(Map<String, dynamic> json) =>
+      WeekMealPlannerResponse(
+        week: Week.fromJson(json["week"]),
+      );
+}
+
+class Week {
+  final Day? monday;
+  final Day? tuesday;
+  final Day? wednesday;
+  final Day? thursday;
+  final Day? friday;
+  final Day? saturday;
+  final Day? sunday;
+
+  Week({
+    required this.monday,
+    required this.tuesday,
+    required this.wednesday,
+    required this.thursday,
+    required this.friday,
+    required this.saturday,
+    required this.sunday,
+  });
+
+  factory Week.fromJson(Map<String, dynamic> json) => Week(
+        monday: Day.fromJson(json["monday"]),
+        tuesday: Day.fromJson(json["tuesday"]),
+        wednesday: Day.fromJson(json["wednesday"]),
+        thursday: Day.fromJson(json["thursday"]),
+        friday: Day.fromJson(json["friday"]),
+        saturday: Day.fromJson(json["saturday"]),
+        sunday: Day.fromJson(json["sunday"]),
+      );
+}
+
+class Day {
   final List<MealResponse>? meals;
   final NutrientsResponse? nutrients;
 
-  MealPlannerResponse({
+  Day({
     required this.meals,
     required this.nutrients,
   });
 
-  factory MealPlannerResponse.fromJson(Map<String, dynamic> json) =>
-      MealPlannerResponse(
+  factory Day.fromJson(Map<String, dynamic> json) => Day(
         meals: List<MealResponse>.from(
             json["meals"].map((x) => MealResponse.fromJson(x))),
         nutrients: NutrientsResponse.fromJson(json["nutrients"]),
@@ -26,16 +68,16 @@ class MealPlannerResponse {
 
 class MealResponse {
   final int id;
-  final String? title;
   final String? imageType;
+  final String? title;
   final int? readyInMinutes;
   final int? servings;
   final String? sourceUrl;
 
   MealResponse({
     required this.id,
-    required this.title,
     required this.imageType,
+    required this.title,
     required this.readyInMinutes,
     required this.servings,
     required this.sourceUrl,
@@ -43,8 +85,8 @@ class MealResponse {
 
   factory MealResponse.fromJson(Map<String, dynamic> json) => MealResponse(
         id: json["id"],
-        title: json["title"],
         imageType: json["imageType"],
+        title: json["title"],
         readyInMinutes: json["readyInMinutes"],
         servings: json["servings"],
         sourceUrl: json["sourceUrl"],
@@ -53,22 +95,22 @@ class MealResponse {
 
 class NutrientsResponse {
   final double? calories;
-  final double? carbohydrates;
-  final double? fat;
   final double? protein;
+  final double? fat;
+  final double? carbohydrates;
 
   NutrientsResponse({
     required this.calories,
-    required this.carbohydrates,
-    required this.fat,
     required this.protein,
+    required this.fat,
+    required this.carbohydrates,
   });
 
   factory NutrientsResponse.fromJson(Map<String, dynamic> json) =>
       NutrientsResponse(
         calories: json["calories"]?.toDouble(),
-        carbohydrates: json["carbohydrates"]?.toDouble(),
-        fat: json["fat"]?.toDouble(),
         protein: json["protein"]?.toDouble(),
+        fat: json["fat"]?.toDouble(),
+        carbohydrates: json["carbohydrates"]?.toDouble(),
       );
 }
