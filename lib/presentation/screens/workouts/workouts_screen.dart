@@ -269,7 +269,10 @@ class HomeAppBar extends StatelessWidget {
               'Hello, ${person?.name ?? 'User'}',
               style: textStyles.titleMedium,
             ),
-            trailing: ClipOval(child: Image.asset("assets/temp/user.jpg")),
+            trailing: ClipOval(
+                child: person != null
+                    ? Image.network(person!.profilePic)
+                    : Image.asset("assets/temp/user.jpg")),
           ),
         ),
       ),
