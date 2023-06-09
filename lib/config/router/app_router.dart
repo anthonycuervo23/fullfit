@@ -59,16 +59,16 @@ final goRouterProvider = Provider((ref) {
                 GoRoute(
                   path: '/workouts',
                   builder: (context, state) => const WorkoutsScreen(),
-                  routes: [
-                    GoRoute(
-                      path: 'recipe/:id',
-                      builder: (context, state) {
-                        final recipeId = state.pathParameters['id'] ?? 'no-id';
-                        return RecipeInfoScreen(
-                            recipeId: int.tryParse(recipeId) ?? 0);
-                      },
-                    ),
-                  ],
+                  // routes: [
+                  // GoRoute(
+                  //   path: 'recipe/:id',
+                  //   builder: (context, state) {
+                  //     final recipeId = state.pathParameters['id'] ?? 'no-id';
+                  //     return RecipeInfoScreen(
+                  //         recipeId: int.tryParse(recipeId) ?? 0);
+                  //   },
+                  // ),
+                  // ],
                 ),
               ],
             ),
@@ -94,6 +94,14 @@ final goRouterProvider = Provider((ref) {
                         final foodType =
                             state.pathParameters['name'] ?? 'no-name';
                         return SuggestedRecipesScreen(foodType: foodType);
+                      },
+                    ),
+                    GoRoute(
+                      path: 'mealplan',
+                      builder: (context, state) {
+                        // final foodType =
+                        //     state.pathParameters['name'] ?? 'no-name';
+                        return const MealPlanScreen();
                       },
                     ),
                   ],

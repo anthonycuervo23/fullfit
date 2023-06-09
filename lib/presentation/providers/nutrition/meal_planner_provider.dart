@@ -1,29 +1,29 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fullfit_app/domain/entities/entities.dart';
+import 'package:fullfit_app/domain/repositories/repositories.dart';
 import 'package:fullfit_app/presentation/providers/providers.dart';
 
 final mealPlannerProvider =
     StateNotifierProvider<MealPlannerNotifier, MealPlannerState>((ref) {
-  final recipesRespository = ref.watch(recipesRepositoryProvider);
-  return MealPlannerNotifier(
-      fetchTodaysMealPlan: recipesRespository.getTodayMealPlan);
+  final recipesRepository = ref.watch(recipesRepositoryProvider);
+  return MealPlannerNotifier(recipesRepository: recipesRepository);
 });
 
-typedef MealPlannerCallback = Future<void> Function(
-    Future Function(DailyMeal? mealPlanner) closure,
-    {int targetCalories});
+// typedef MealPlannerCallback = Future<void> Function(
+//     Future Function(DailyMeal? mealPlanner) closure,
+//     {int targetCalories});
 
 class MealPlannerNotifier extends StateNotifier<MealPlannerState> {
-  final MealPlannerCallback _fetchTodaysMealPlan;
-  MealPlannerNotifier({required fetchTodaysMealPlan})
-      : _fetchTodaysMealPlan = fetchTodaysMealPlan,
+  final RecipesRespository _recipesRepository;
+  MealPlannerNotifier({required recipesRepository})
+      : _recipesRepository = recipesRepository,
         super(MealPlannerState());
 
   Future<void> loadTodaysMealPlan() async {
     state = state.copyWith(isLoading: true);
 
-    await _fetchTodaysMealPlan(targetCalories: state.targetCalories,
-        (mealPlanner) async {
+    await _recipesRepository.getTodayMealPlan(
+        targetCalories: state.targetCalories, (mealPlanner) async {
       if (mealPlanner != null) {
         state = state.copyWith(
           isLoading: false,
@@ -38,19 +38,40 @@ class MealPlannerNotifier extends StateNotifier<MealPlannerState> {
       }
     });
   }
+
+  void setTargetCalories(int targetCalories) {
+    state = state.copyWith(targetCalories: targetCalories);
+  }
+
+  void getWeekMealPlan() async {
+    state = state.copyWith(isLoading: true);
+    final weekMealPlan = await _recipesRepository.getWeekMealPlan();
+    if (weekMealPlan != null) {
+      state = state.copyWith(
+        isLoading: false,
+        errorLoading: false,
+        weekMealPlan: weekMealPlan,
+      );
+    } else {
+      state = state.copyWith(
+        isLoading: false,
+        errorLoading: true,
+      );
+    }
+  }
 }
 
 class MealPlannerState {
   final bool isLoading;
   final DailyMeal? mealPlanner;
-  final String diet;
+  final MealPlanner? weekMealPlan;
   final int targetCalories;
   final bool? errorLoading;
 
   MealPlannerState({
     this.isLoading = false,
     this.mealPlanner,
-    this.diet = 'paleo',
+    this.weekMealPlan,
     this.targetCalories = 2000,
     this.errorLoading = false,
   });
@@ -58,14 +79,14 @@ class MealPlannerState {
   MealPlannerState copyWith({
     bool? isLoading,
     DailyMeal? mealPlanner,
-    String? diet,
+    MealPlanner? weekMealPlan,
     int? targetCalories,
     bool? errorLoading,
   }) {
     return MealPlannerState(
       isLoading: isLoading ?? this.isLoading,
       mealPlanner: mealPlanner ?? this.mealPlanner,
-      diet: diet ?? this.diet,
+      weekMealPlan: weekMealPlan ?? this.weekMealPlan,
       targetCalories: targetCalories ?? this.targetCalories,
       errorLoading: errorLoading ?? this.errorLoading,
     );

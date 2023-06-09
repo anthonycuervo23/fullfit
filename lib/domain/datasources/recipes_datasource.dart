@@ -14,6 +14,7 @@ abstract class RecipesDataSource extends CustomApiClient {
       {required String query, int limit = 10});
   Future<void> getTodayMealPlan(Future Function(DailyMeal? mealPlanner) closure,
       {int targetCalories = 2000});
+  Future<MealPlanner?> getWeekMealPlan();
 }
 
 

@@ -189,6 +189,12 @@ class SpoonacularDataSourceImpl extends RecipesDataSource {
     });
     return completer.future;
   }
+
+  @override
+  Future<MealPlanner?> getWeekMealPlan() {
+    //obtenemos el plan de comidas guardado en el almacenamiento local
+    return _localStorageDataSource.getWeeklyMealPlan();
+  }
 }
 
 extension SpoonacularDataSourceImplExtension on SpoonacularDataSourceImpl {

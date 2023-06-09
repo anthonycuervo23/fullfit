@@ -5,11 +5,13 @@ import 'package:go_router/go_router.dart';
 
 class CustomHeader extends ConsumerWidget {
   final String title;
-  final String name;
+  final String? name;
+  final void Function()? onPressed;
   const CustomHeader({
     super.key,
     required this.title,
-    required this.name,
+    this.name,
+    this.onPressed,
   });
 
   @override
@@ -29,9 +31,10 @@ class CustomHeader extends ConsumerWidget {
                 )),
           ),
           IconButton(
-            onPressed: () {
-              context.push('/nutrition/suggestions/$name');
-            },
+            onPressed: onPressed ??
+                () {
+                  context.push('/nutrition/suggestions/$name');
+                },
             icon: const Icon(Icons.arrow_forward_ios_rounded),
           )
         ],

@@ -1,6 +1,7 @@
 import 'package:fullfit_app/domain/datasources/datasources.dart';
 import 'package:fullfit_app/domain/entities/recipes/complex_search_recipe.dart';
 import 'package:fullfit_app/domain/entities/recipes/daily_meal.dart';
+import 'package:fullfit_app/domain/entities/recipes/meal_planner.dart';
 import 'package:fullfit_app/domain/entities/recipes/recipe.dart';
 import 'package:fullfit_app/domain/entities/recipes/recipe_result.dart';
 import 'package:fullfit_app/domain/repositories/repositories.dart';
@@ -39,5 +40,10 @@ class RecipesRepositoryImpl extends RecipesRespository {
       {int targetCalories = 2000}) {
     return _dataSource.getTodayMealPlan(closure,
         targetCalories: targetCalories);
+  }
+
+  @override
+  Future<MealPlanner?> getWeekMealPlan() {
+    return _dataSource.getWeekMealPlan();
   }
 }

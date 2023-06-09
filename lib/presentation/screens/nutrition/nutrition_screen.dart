@@ -49,13 +49,18 @@ class NutritionScreenState extends ConsumerState<NutritionScreen> {
       child: Scaffold(
         body: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 24.0.h),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-                child: Text(
-                  'what would you like to cook today?',
-                  style: textStyles.titleMedium,
+                child: SizedBox(
+                  width: 240.w,
+                  child: Text(
+                    'Food Recipes Made For You',
+                    style: textStyles.titleMedium,
+                    textAlign: TextAlign.start,
+                  ),
                 ),
               ),
               Padding(
@@ -71,8 +76,13 @@ class NutritionScreenState extends ConsumerState<NutritionScreen> {
                   },
                 ),
               ),
-              const CustomHeader(
-                  title: 'Your Meal Plan for Today', name: 'meal'),
+              CustomHeader(
+                title: 'Your Meal Plan for Today',
+                onPressed: () {
+                  //TODO: show weekly meal plan
+                  context.push('/nutrition/mealplan');
+                },
+              ),
               MealPlanSwiper(meals: todaysMealPlan?.meals ?? []),
               SizedBox(height: 20.h),
               const CustomHeader(

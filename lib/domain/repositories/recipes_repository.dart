@@ -10,4 +10,5 @@ abstract class RecipesRespository {
       {required String query, int limit = 100, int offset = 0});
   Future<void> getTodayMealPlan(Future Function(DailyMeal? mealPlanner) closure,
       {int targetCalories = 2000});
+  Future<MealPlanner?> getWeekMealPlan();
 }
