@@ -3,7 +3,7 @@ import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fullfit_app/domain/entities/person.dart';
+import 'package:fullfit_app/domain/entities/entities.dart';
 import 'package:fullfit_app/presentation/providers/providers.dart';
 import 'package:fullfit_app/presentation/widgets/widgets.dart';
 import 'package:intl/intl.dart';
@@ -27,7 +27,7 @@ class WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
   @override
   Widget build(BuildContext context) {
     final todaysMealPlan = ref.watch(mealPlannerProvider).mealPlanner;
-    final person = ref.watch(personProvider.notifier).user;
+
     final colors = Theme.of(context).colorScheme;
     final textStyles = Theme.of(context).textTheme;
     final today = DateTime.now();
@@ -35,11 +35,7 @@ class WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
     return CustomScrollView(
       physics: const ClampingScrollPhysics(),
       slivers: [
-        HomeAppBar(
-            colors: colors,
-            today: today,
-            textStyles: textStyles,
-            person: person),
+        HomeAppBar(colors: colors, today: today, textStyles: textStyles),
         SliverList(
           delegate: SliverChildListDelegate(
             [
@@ -167,7 +163,7 @@ class WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
   }
 }
 
-class PersonNutritionProgress extends StatelessWidget {
+class PersonNutritionProgress extends ConsumerWidget {
   const PersonNutritionProgress({
     super.key,
     required this.colors,
@@ -176,7 +172,12 @@ class PersonNutritionProgress extends StatelessWidget {
   final ColorScheme colors;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final ConsumptionData? consumptionData =
+        ref.watch(nutritionTrackingProvider).consumptionData;
+    //necesitamos el usuario para obtener los valores de consumo maximo diario permitido
+    final person = ref.watch(personProvider.notifier).user;
+
     return ClipRRect(
       borderRadius: const BorderRadius.vertical(
         bottom: Radius.circular(40),
@@ -194,7 +195,8 @@ class PersonNutritionProgress extends StatelessWidget {
                 RadialProgress(
                   width: 140.w,
                   height: 140.w,
-                  progress: 0.7,
+                  progress: (consumptionData?.caloriesConsumed ?? 0) / 2000,
+                  leftAmount: (consumptionData?.remainingCalories ?? 0).round(),
                 ),
                 const Spacer(),
                 Column(
@@ -204,25 +206,27 @@ class PersonNutritionProgress extends StatelessWidget {
                   children: <Widget>[
                     NutrientesProgressBar(
                       ingredient: 'Protein',
-                      progress: 0.3,
+                      progress: (consumptionData?.proteinConsumed ?? 0) / 200,
                       progressColor: Colors.green,
-                      leftAmount: 72,
+                      leftAmount:
+                          (consumptionData?.remainingProtein ?? 0).round(),
                       width: 100.w,
                     ),
                     const SizedBox(height: 10),
                     NutrientesProgressBar(
                       ingredient: 'Carbs',
-                      progress: 0.2,
+                      progress: (consumptionData?.carbsConsumed ?? 0) / 200,
                       progressColor: Colors.red,
-                      leftAmount: 252,
+                      leftAmount:
+                          (consumptionData?.remainingCarbs ?? 0).round(),
                       width: 100.w,
                     ),
                     const SizedBox(height: 10),
                     NutrientesProgressBar(
                       ingredient: 'Fat',
-                      progress: 0.1,
+                      progress: (consumptionData?.fatConsumed ?? 0) / 200,
                       progressColor: Colors.yellow,
-                      leftAmount: 61,
+                      leftAmount: (consumptionData?.remainingFat ?? 0).round(),
                       width: 100.w,
                     ),
                   ],
@@ -236,22 +240,22 @@ class PersonNutritionProgress extends StatelessWidget {
   }
 }
 
-class HomeAppBar extends StatelessWidget {
+class HomeAppBar extends ConsumerWidget {
   const HomeAppBar({
     super.key,
     required this.colors,
     required this.today,
     required this.textStyles,
-    required this.person,
   });
 
   final ColorScheme colors;
   final DateTime today;
   final TextTheme textStyles;
-  final Person? person;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final person = ref.watch(personProvider.notifier).user;
+
     return SliverAppBar(
       backgroundColor: colors.surface,
       floating: true,
@@ -271,7 +275,7 @@ class HomeAppBar extends StatelessWidget {
             ),
             trailing: ClipOval(
                 child: person != null
-                    ? Image.network(person!.profilePic)
+                    ? Image.network(person.profilePic)
                     : Image.asset("assets/temp/user.jpg")),
           ),
         ),

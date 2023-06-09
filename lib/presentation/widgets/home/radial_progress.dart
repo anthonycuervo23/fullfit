@@ -4,12 +4,14 @@ import 'package:vector_math/vector_math_64.dart' as math;
 
 class RadialProgress extends StatelessWidget {
   final double height, width, progress;
+  final int leftAmount;
 
   const RadialProgress({
     Key? key,
     required this.height,
     required this.width,
     required this.progress,
+    required this.leftAmount,
   }) : super(key: key);
 
   @override
@@ -18,7 +20,7 @@ class RadialProgress extends StatelessWidget {
     final textStyles = Theme.of(context).textTheme;
     return CustomPaint(
       painter: _RadialPainter(
-        progress: 0.7,
+        progress: progress,
         progressColor: colors.primary,
       ),
       child: SizedBox(
@@ -30,7 +32,7 @@ class RadialProgress extends StatelessWidget {
             text: TextSpan(
               children: [
                 TextSpan(
-                    text: '1731',
+                    text: '${leftAmount.round()}',
                     style: textStyles.titleMedium?.copyWith(
                       fontSize: 24.sp,
                       color: colors.primary,

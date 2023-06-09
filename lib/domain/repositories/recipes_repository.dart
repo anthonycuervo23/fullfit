@@ -15,4 +15,14 @@ abstract class RecipesRespository {
   Future<void> getTodayMealPlan(Future Function(DailyMeal? mealPlanner) closure,
       {int targetCalories = 2000});
   Future<MealPlanner?> getWeekMealPlan();
+
+  Stream<ConsumptionData?> getNutrients(
+      {required String userId,
+      required double dailyCalories,
+      required double dailyProtein,
+      required double dailyFat,
+      required double dailyCarbs});
+
+  Future<void> addMealToDB(Future Function(bool success) closure,
+      {required String userId, required Recipe recipe});
 }

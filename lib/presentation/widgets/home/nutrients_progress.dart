@@ -43,7 +43,7 @@ class NutrientesProgressBar extends StatelessWidget {
                 ),
                 Container(
                   height: 10.h,
-                  width: width * progress,
+                  width: progress < 0.1 ? width * progress : width,
                   decoration: BoxDecoration(
                     borderRadius: const BorderRadius.all(Radius.circular(5)),
                     color: progressColor,

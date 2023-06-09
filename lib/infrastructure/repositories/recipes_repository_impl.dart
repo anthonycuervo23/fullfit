@@ -1,11 +1,5 @@
 import 'package:fullfit_app/domain/datasources/datasources.dart';
-import 'package:fullfit_app/domain/entities/recipes/complex_search_recipe.dart';
-import 'package:fullfit_app/domain/entities/recipes/daily_meal.dart';
-import 'package:fullfit_app/domain/entities/recipes/equipment.dart';
-import 'package:fullfit_app/domain/entities/recipes/meal.dart';
-import 'package:fullfit_app/domain/entities/recipes/meal_planner.dart';
-import 'package:fullfit_app/domain/entities/recipes/recipe.dart';
-import 'package:fullfit_app/domain/entities/recipes/recipe_result.dart';
+import 'package:fullfit_app/domain/entities/entities.dart';
 import 'package:fullfit_app/domain/repositories/repositories.dart';
 
 class RecipesRepositoryImpl extends RecipesRespository {
@@ -59,5 +53,26 @@ class RecipesRepositoryImpl extends RecipesRespository {
   Future<void> getSimilarRecipes(
       int id, Future Function(List<Meal>? recipes) closure) {
     return _dataSource.getSimilarRecipes(id, closure);
+  }
+
+  @override
+  Future<void> addMealToDB(Future Function(bool success) closure,
+      {required String userId, required Recipe recipe}) {
+    return _dataSource.addMealToDB(closure, userId: userId, recipe: recipe);
+  }
+
+  @override
+  Stream<ConsumptionData?> getNutrients(
+      {required String userId,
+      required double dailyCalories,
+      required double dailyProtein,
+      required double dailyFat,
+      required double dailyCarbs}) {
+    return _dataSource.getNutrients(
+        userId: userId,
+        dailyCalories: dailyCalories,
+        dailyProtein: dailyProtein,
+        dailyFat: dailyFat,
+        dailyCarbs: dailyCarbs);
   }
 }

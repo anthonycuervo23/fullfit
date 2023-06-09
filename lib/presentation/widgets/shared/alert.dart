@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fullfit_app/config/config.dart';
 import 'package:fullfit_app/domain/repositories/repositories.dart';
 
 class Alert extends StatelessWidget {
@@ -51,6 +52,72 @@ class Alert extends StatelessWidget {
     return error(ctx,
         msg:
             'Sin conexión a Internet. Por favor, inténtelo de nuevo más tarde.');
+  }
+
+  static Future<void> promtWithOptions(BuildContext context,
+      {String confirmTitle = 'Confirm',
+      String cancelTitle = 'Cancel',
+      Widget? content,
+      required String title,
+      required void Function()? onConfirm,
+      required void Function()? onCancel}) {
+    Widget yesButton = Platform.isIOS
+        ? TextButton(
+            onPressed: () {
+              onConfirm?.call();
+              Navigator.pop(rootNavigatorKey.currentContext!);
+            },
+            child: Text(confirmTitle),
+          )
+        : CupertinoDialogAction(
+            onPressed: () {
+              onConfirm?.call();
+              Navigator.pop(rootNavigatorKey.currentContext!);
+            },
+            child: Text(confirmTitle),
+          );
+
+    Widget noButton = Platform.isIOS
+        ? TextButton(
+            onPressed: () {
+              onCancel?.call();
+              Navigator.pop(rootNavigatorKey.currentContext!);
+            },
+            child: Text(cancelTitle),
+          )
+        : CupertinoDialogAction(
+            onPressed: () {
+              onCancel?.call();
+              Navigator.pop(rootNavigatorKey.currentContext!);
+            },
+            child: Text(cancelTitle),
+          );
+
+    if (Platform.isIOS) {
+      return showCupertinoDialog(
+        context: context,
+        builder: (context) => CupertinoAlertDialog(
+          title: Text(title),
+          content: content,
+          actions: <Widget>[
+            yesButton,
+            noButton,
+          ],
+        ),
+      );
+    } else {
+      return showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(title),
+          content: content,
+          actions: <Widget>[
+            yesButton,
+            noButton,
+          ],
+        ),
+      );
+    }
   }
 
   static Future<void> promptEnableBiometrics(BuildContext context,

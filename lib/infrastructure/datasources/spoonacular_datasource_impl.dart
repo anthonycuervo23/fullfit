@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fullfit_app/config/api/api_client.dart';
@@ -222,6 +223,144 @@ class SpoonacularDataSourceImpl extends RecipesDataSource {
         closure([]);
       }
     });
+  }
+
+  @override
+  Future<void> addMealToDB(Future Function(bool success) closure,
+      {required String userId, required Recipe recipe}) async {
+    final DateTime now = DateTime.now();
+    final String date = '${now.year}-${now.month}-${now.day}';
+
+    try {
+      final DocumentReference docRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('DailyConsumption')
+          .doc(date);
+
+      double calories = 0.0;
+      double protein = 0.0;
+      double fat = 0.0;
+      double carbs = 0.0;
+
+      for (final nutrient in recipe.nutrients) {
+        switch (nutrient.name) {
+          case 'Calories':
+            calories = nutrient.amount;
+            break;
+          case 'Protein':
+            protein = nutrient.amount;
+            break;
+          case 'Fat':
+            fat = nutrient.amount;
+            break;
+          case 'Carbohydrates':
+            carbs = nutrient.amount;
+            break;
+          default:
+            break;
+        }
+      }
+
+      await FirebaseFirestore.instance.runTransaction((transaction) async {
+        DocumentSnapshot snapshot = await transaction.get(docRef);
+
+        if (!snapshot.exists) {
+          debugPrint("👨🏻‍💻 Document does not exist, creating new one...");
+          transaction.set(docRef, {
+            'caloriesConsumed': calories,
+            'proteinsConsumed': protein,
+            'fatsConsumed': fat,
+            'carbsConsumed': carbs,
+            'meals': [
+              {
+                'name': recipe.title,
+                'calories': calories,
+                'protein': protein,
+                'fat': fat,
+                'carbs': carbs
+              }
+            ]
+          });
+        } else {
+          debugPrint("👨🏻‍💻 Document exists, checking for duplicates...");
+          List meals = snapshot.get('meals');
+          for (var meal in meals) {
+            if (meal['name'] == recipe.title) {
+              debugPrint('Meal already exists, not updating');
+              closure(false);
+              return;
+            }
+          }
+          debugPrint('Meal does not exist, updating');
+          transaction.update(docRef, {
+            'caloriesConsumed': snapshot.get('caloriesConsumed') + calories,
+            'proteinsConsumed': snapshot.get('proteinsConsumed') + protein,
+            'fatsConsumed': snapshot.get('fatsConsumed') + fat,
+            'carbsConsumed': snapshot.get('carbsConsumed') + carbs,
+            'meals': FieldValue.arrayUnion([
+              {
+                'name': recipe.title,
+                'calories': calories,
+                'protein': protein,
+                'fat': fat,
+                'carbs': carbs
+              }
+            ])
+          });
+        }
+      });
+
+      closure(true);
+    } catch (e) {
+      debugPrint(e.toString());
+      closure(false);
+    }
+  }
+
+  @override
+  Stream<ConsumptionData?> getNutrients(
+      {required String userId,
+      required double dailyCalories,
+      required double dailyProtein,
+      required double dailyFat,
+      required double dailyCarbs}) {
+    final DateTime now = DateTime.now();
+    final String date = '${now.year}-${now.month}-${now.day}';
+
+    try {
+      return FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('DailyConsumption')
+          .doc(date)
+          .snapshots()
+          .map((snapshot) {
+        if (snapshot.exists) {
+          return ConsumptionDataMapper.snapshotDataToEntity(
+            snapshot,
+            dailyCalories: dailyCalories,
+            dailyProtein: dailyProtein,
+            dailyFat: dailyFat,
+            dailyCarbs: dailyCarbs,
+          );
+        } else {
+          return ConsumptionData(
+            caloriesConsumed: 0,
+            proteinConsumed: 0,
+            carbsConsumed: 0,
+            fatConsumed: 0,
+            remainingCalories: dailyCalories,
+            remainingProtein: dailyProtein,
+            remainingCarbs: dailyCarbs,
+            remainingFat: dailyFat,
+          );
+        }
+      });
+    } catch (e) {
+      debugPrint(e.toString());
+      return const Stream.empty();
+    }
   }
 }
 

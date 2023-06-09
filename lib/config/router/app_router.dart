@@ -5,7 +5,7 @@ import 'package:fullfit_app/presentation/providers/providers.dart';
 import 'package:fullfit_app/presentation/screens/screens.dart';
 import 'package:go_router/go_router.dart';
 
-final GlobalKey<NavigatorState> _rootNavigatorKey =
+final GlobalKey<NavigatorState> rootNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: 'root');
 
 final GlobalKey<NavigatorState> _sectionNavigatorKey =
@@ -16,7 +16,7 @@ final goRouterProvider = Provider((ref) {
 
   return GoRouter(
       refreshListenable: goRouterNotifier,
-      navigatorKey: _rootNavigatorKey,
+      navigatorKey: rootNavigatorKey,
       initialLocation: '/splash',
       routes: [
         //* primera pantalla

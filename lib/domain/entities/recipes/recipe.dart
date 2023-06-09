@@ -10,7 +10,6 @@ class Recipe {
   final List<Ingredient> ingredients;
   final String instructions;
   final String summary;
-  // final List<Equipment> equipment;
   final List<Nutrient> nutrients;
 
   Recipe({
@@ -23,7 +22,6 @@ class Recipe {
     required this.ingredients,
     required this.instructions,
     required this.summary,
-    // required this.equipment,
     required this.nutrients,
   });
 }

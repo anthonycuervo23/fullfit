@@ -95,6 +95,16 @@ class IngredientsInfo extends StatelessWidget {
                             height: 100.h,
                             width: 100.w,
                             fit: BoxFit.contain,
+                            errorBuilder: (context, error, stackTrace) =>
+                                Center(
+                                  child: Text(
+                                    ingredient.name[0],
+                                    style: textStyles.titleMedium?.copyWith(
+                                      color: colors.primary,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ),
                             loadingBuilder: (context, child, loadingProgress) =>
                                 loadingProgress == null
                                     ? FadeIn(child: child)

@@ -267,7 +267,18 @@ class RecipeInfoScreenState extends ConsumerState<RecipeInfoScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          //TODO: el usuario ha consumido esta receta y se debe guardar en la base de datos para almacenar el historial de consumo de calorias, proteinas, etc.
+          Alert.promtWithOptions(
+            context,
+            title: '¿Desea agregar esta receta a tu historial de consumo?',
+            confirmTitle: 'Agregar',
+            cancelTitle: 'Cancelar',
+            onConfirm: () {
+              ref.read(nutritionTrackingProvider.notifier).addMealToDB(recipe);
+            },
+            onCancel: () {
+              print('meal not added');
+            },
+          );
         },
         child: const Icon(
           Icons.add,
