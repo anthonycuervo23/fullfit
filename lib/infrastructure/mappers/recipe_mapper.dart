@@ -90,4 +90,21 @@ class RecipeMapper {
             ))
         .toList();
   }
+
+  static similarRecipesToEntityList(Map<String, dynamic> json) {
+    final List<Meal> recipes = [];
+
+    for (final item in json['results']) {
+      recipes.add(Meal(
+        id: item['id'],
+        name: item['title'],
+        image: item["imageType"] != null
+            ? 'https://spoonacular.com/recipeImages/${item["id"]}-556x370.${item["imageType"]}'
+            : 'https://www.warnersstellian.com/Content/images/product_image_not_available.png',
+        cookingTime: item['readyInMinutes'],
+        servings: item['servings'],
+      ));
+    }
+    return recipes;
+  }
 }

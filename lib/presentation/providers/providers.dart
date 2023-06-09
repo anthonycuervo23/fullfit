@@ -8,3 +8,6 @@ export 'nutrition/meal_planner_provider.dart';
 export 'nutrition/recipes_providers.dart';
 export 'nutrition/nutrition_loading_provider.dart';
 export 'nutrition/recipe_info_provider.dart';
+export 'nutrition/similar_recipes_provider.dart';
+export 'nutrition/equipment_provider.dart';
+export 'nutrition/recipe_info_loader_provider.dart';

@@ -6,3 +6,4 @@ export 'nutrients_info.dart';
 export 'ingredients_info.dart';
 export 'recipe_card.dart';
 export 'recipe_tile.dart';
+export 'equipment_listview.dart';

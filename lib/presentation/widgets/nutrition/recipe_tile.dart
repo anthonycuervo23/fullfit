@@ -99,13 +99,15 @@ class RecipeTile extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Text(
-                            meal!.type!,
-                            style: textStyles.bodySmall?.copyWith(
-                                color: colors.primary.withOpacity(0.5),
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w700),
-                          ),
+                          meal != null
+                              ? Text(
+                                  meal!.type!,
+                                  style: textStyles.bodySmall?.copyWith(
+                                      color: colors.primary.withOpacity(0.5),
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w700),
+                                )
+                              : Container(),
                           Text(
                             recipe != null ? recipe!.title : meal!.name!,
                             maxLines: 2,
@@ -126,7 +128,7 @@ class RecipeTile extends StatelessWidget {
                                     fontWeight: FontWeight.bold),
                               ),
                               Icon(
-                                Icons.timer_outlined,
+                                Icons.access_time,
                                 color: colors.primary,
                               ),
                             ],

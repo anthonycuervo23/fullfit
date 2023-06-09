@@ -23,6 +23,10 @@ class RecipeInfoScreenState extends ConsumerState<RecipeInfoScreen> {
   void initState() {
     super.initState();
     ref.read(recipeInfoProvider.notifier).loadRecipe(widget.recipeId);
+    ref.read(equipmentProvider.notifier).loadEquipment(widget.recipeId);
+    ref
+        .read(similarRecipesInfoProvider.notifier)
+        .loadSimilarRecipes(widget.recipeId);
   }
 
   Widget _loading() {
@@ -35,17 +39,27 @@ class RecipeInfoScreenState extends ConsumerState<RecipeInfoScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final initialLoading = ref.watch(recipeInfoLoadingProvider);
+    if (initialLoading) {
+      return const Center(child: CircularProgressIndicator(strokeWidth: 2));
+    }
+
     final Recipe? recipe = ref.watch(recipeInfoProvider)[widget.recipeId];
+    final List<Equipment> equipment =
+        ref.watch(equipmentProvider)[widget.recipeId] ?? [];
+    final List<Meal> similarlist =
+        ref.watch(similarRecipesInfoProvider)[widget.recipeId] ?? [];
     final colors = Theme.of(context).colorScheme;
     final textStyles = Theme.of(context).textTheme;
     if (recipe == null) return _loading();
 
-    return CustomScrollView(
-      physics: const ClampingScrollPhysics(),
-      slivers: [
-        RecipeAppBar(info: recipe),
-        SliverToBoxAdapter(
-          child: Column(
+    return Scaffold(
+      body: CustomScrollView(
+        physics: const ClampingScrollPhysics(),
+        slivers: [
+          RecipeAppBar(info: recipe),
+          SliverToBoxAdapter(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -193,19 +207,19 @@ class RecipeInfoScreenState extends ConsumerState<RecipeInfoScreen> {
                       ],
                     ),
                   ),
-                // if (widget.equipment.isNotEmpty)
-                //   const Padding(
-                //     padding: EdgeInsets.all(26.0),
-                //     child: Text(
-                //       "Equipments",
-                //       style: TextStyle(
-                //           fontWeight: FontWeight.bold, fontSize: 20),
-                //     ),
-                //   ),
-                // if (widget.equipment.isNotEmpty)
-                //   EquipmentsListView(
-                //     equipments: widget.equipment,
-                //   ),
+                if (equipment.isNotEmpty)
+                  const Padding(
+                    padding: EdgeInsets.all(26.0),
+                    child: Text(
+                      "Equipments",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    ),
+                  ),
+                if (equipment.isNotEmpty)
+                  EquipmentsListView(
+                    equipments: equipment,
+                  ),
                 if (recipe.summary.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.symmetric(
@@ -235,22 +249,30 @@ class RecipeInfoScreenState extends ConsumerState<RecipeInfoScreen> {
                 const SizedBox(
                   height: 20,
                 ),
-                // if (widget.similarlist.isNotEmpty)
-                //   const Padding(
-                //     padding:
-                //         EdgeInsets.symmetric(horizontal: 30.0, vertical: 26),
-                //     child: Text("Similar items",
-                //         style: TextStyle(
-                //             fontWeight: FontWeight.bold, fontSize: 20)),
-                //   ),
-                // if (widget.similarlist.isNotEmpty)
-                //   SimilarListWidget(items: widget.similarlist),
-                // const SizedBox(
-                //   height: 40,
-                // ),
-              ]),
-        )
-      ],
+                if (similarlist.isNotEmpty)
+                  const Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 30.0, vertical: 26),
+                    child: Text("Similar Recipes",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20)),
+                  ),
+                if (similarlist.isNotEmpty)
+                  RecipesHorizontalListview(meals: similarlist),
+                SizedBox(height: 40.h),
+              ],
+            ),
+          )
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          //TODO: el usuario ha consumido esta receta y se debe guardar en la base de datos para almacenar el historial de consumo de calorias, proteinas, etc.
+        },
+        child: const Icon(
+          Icons.add,
+        ),
+      ),
     );
   }
 }

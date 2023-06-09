@@ -35,14 +35,9 @@ class SpoonacularDataSourceImpl extends RecipesDataSource {
       } else if (response.data is Map<String, dynamic>) {
         final T object = expecting(response.data);
         return completion(object);
-        // await completion(object);
       } else {
         throw Exception('Unexpected response type');
       }
-
-      // final T object = expecting(response.data);
-
-      // return completion(object);
     } on DioError catch (e) {
       debugPrint(e.toString());
       completion(null);
@@ -194,6 +189,39 @@ class SpoonacularDataSourceImpl extends RecipesDataSource {
   Future<MealPlanner?> getWeekMealPlan() {
     //obtenemos el plan de comidas guardado en el almacenamiento local
     return _localStorageDataSource.getWeeklyMealPlan();
+  }
+
+  @override
+  Future<void> getEquipmentInfo(
+      int id, Future Function(List<Equipment>? equipment) closure) async {
+    var request = build(
+        endpoint: '/recipes/$id/equipmentWidget.json',
+        requestType: RequestType.get);
+
+    await execute(request, EquipmentMapper.equipmentJsonToEntityList,
+        (result) async {
+      if (result != null) {
+        closure(result);
+      } else {
+        closure([]);
+      }
+    });
+  }
+
+  @override
+  Future<void> getSimilarRecipes(
+      int id, Future Function(List<Meal>? recipes) closure) async {
+    var request =
+        build(endpoint: '/recipes/$id/similar', requestType: RequestType.get);
+
+    await execute(request, RecipeMapper.similarRecipesToEntityList,
+        (result) async {
+      if (result != null) {
+        closure(result);
+      } else {
+        closure([]);
+      }
+    });
   }
 }
 

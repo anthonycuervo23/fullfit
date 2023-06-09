@@ -1,6 +1,8 @@
 import 'package:fullfit_app/domain/datasources/datasources.dart';
 import 'package:fullfit_app/domain/entities/recipes/complex_search_recipe.dart';
 import 'package:fullfit_app/domain/entities/recipes/daily_meal.dart';
+import 'package:fullfit_app/domain/entities/recipes/equipment.dart';
+import 'package:fullfit_app/domain/entities/recipes/meal.dart';
 import 'package:fullfit_app/domain/entities/recipes/meal_planner.dart';
 import 'package:fullfit_app/domain/entities/recipes/recipe.dart';
 import 'package:fullfit_app/domain/entities/recipes/recipe_result.dart';
@@ -45,5 +47,17 @@ class RecipesRepositoryImpl extends RecipesRespository {
   @override
   Future<MealPlanner?> getWeekMealPlan() {
     return _dataSource.getWeekMealPlan();
+  }
+
+  @override
+  Future<void> getEquipmentInfo(
+      int id, Future Function(List<Equipment>? equipment) closure) {
+    return _dataSource.getEquipmentInfo(id, closure);
+  }
+
+  @override
+  Future<void> getSimilarRecipes(
+      int id, Future Function(List<Meal>? recipes) closure) {
+    return _dataSource.getSimilarRecipes(id, closure);
   }
 }
