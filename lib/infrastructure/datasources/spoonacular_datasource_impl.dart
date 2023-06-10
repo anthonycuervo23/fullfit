@@ -91,7 +91,6 @@ class SpoonacularDataSourceImpl extends RecipesDataSource {
   @override
   Future<void> getTodayMealPlan(Future Function(DailyMeal? mealPlanner) closure,
       {int targetCalories = 2000}) async {
-    //TODO: obtener el total de calorias del usuario
     if (await _hasWeekPassed()) {
       debugPrint('👨🏻‍💻 Generando un nuevo Plan Semanal');
       //si ha pasado una semana desde el último plan de comidas, obtenemos uno nuevo plan de comidas

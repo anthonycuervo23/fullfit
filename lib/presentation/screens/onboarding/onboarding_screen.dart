@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fullfit_app/domain/enums/enums.dart';
 import 'package:fullfit_app/infrastructure/services/services.dart';
 import 'package:fullfit_app/presentation/providers/providers.dart';
 import 'package:fullfit_app/presentation/screens/screens.dart';
@@ -291,7 +292,7 @@ class OnBoardingScreenState extends ConsumerState<OnBoardingScreen>
       case ScreenId.gender:
         return onboardingProvider.genderSelected != 0;
       case ScreenId.age:
-        return onboardingProvider.ageRange != '';
+        return onboardingProvider.ageRange.range != '';
       default:
         return true;
     }

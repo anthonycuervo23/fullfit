@@ -8,6 +8,8 @@ import 'package:fullfit_app/presentation/providers/providers.dart';
 import 'package:fullfit_app/presentation/widgets/widgets.dart';
 import 'package:intl/intl.dart';
 
+//TODO: mostrar dialogo con la cantidad de nutrientes sugeridas, solo la primera vez que se inicia la app
+
 class WorkoutsScreen extends ConsumerStatefulWidget {
   const WorkoutsScreen({super.key});
 

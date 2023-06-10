@@ -6,7 +6,7 @@ class NutritionService {
 
   NutritionService({required this.person});
 
-  double calculateAverageAge(AgeRange ageRange) {
+  double _calculateAverageAge(AgeRange ageRange) {
     switch (ageRange) {
       case AgeRange.range18_24:
         return (18 + 24) / 2;
@@ -23,7 +23,7 @@ class NutritionService {
 
   double calculateDailyCaloricIntake() {
     double bmr;
-    double age = calculateAverageAge(person.ageRange);
+    double age = _calculateAverageAge(person.ageRange);
 
     if (person.gender == Gender.male) {
       bmr = 66.5 +

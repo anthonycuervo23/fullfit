@@ -9,6 +9,7 @@ import 'package:flutter/rendering.dart';
 import 'package:fullfit_app/domain/datasources/datasources.dart';
 import 'package:fullfit_app/domain/entities/entities.dart';
 import 'package:fullfit_app/infrastructure/mappers/mappers.dart';
+import 'package:fullfit_app/infrastructure/services/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class PersonDatasourceImpl extends PersonDatasource {
@@ -53,6 +54,12 @@ class PersonDatasourceImpl extends PersonDatasource {
   @override
   Future<void> saveUserData(Map<String, dynamic> personLike) async {
     checkLoggedUser();
+
+    final Map<String, dynamic> nutritionTargets =
+        _calculateNutritionTargets(personLike);
+
+    personLike.addAll(nutritionTargets);
+
     if (!isUserLogged) {
       debugPrint('No se ha podido obtener el usuario logueado');
       throw Exception('No se ha podido obtener el usuario logueado');
@@ -194,5 +201,24 @@ extension PersonDataSourceExtension on PersonDatasourceImpl {
       debugPrint(e.toString());
       return null;
     }
+  }
+
+  Map<String, dynamic> _calculateNutritionTargets(
+      Map<String, dynamic> personLike) {
+    final NutritionService nutritionService = NutritionService(
+        person:
+            PersonMapper.fromMap(personLike, id: _loggedUser?.uid ?? '123'));
+    final double targetCalories =
+        nutritionService.calculateDailyCaloricIntake();
+    final double targetProtein = nutritionService.calculateProteinIntake();
+    final double targetFat = nutritionService.calculateFatIntake();
+    final double targetCarbs = nutritionService.calculateCarbIntake();
+
+    return {
+      'target_calories': targetCalories,
+      'target_protein': targetProtein,
+      'target_fat': targetFat,
+      'target_carbs': targetCarbs,
+    };
   }
 }

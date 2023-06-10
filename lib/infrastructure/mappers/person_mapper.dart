@@ -28,4 +28,25 @@ class PersonMapper {
       fitnessGoal: stringListToFitnessGoalList(data?['fitness_goal'] ?? []),
     );
   }
+
+  static Person fromMap(Map<String, dynamic> map, {required String id}) {
+    return Person(
+      id: id,
+      name: map['name'],
+      lastname: map['lastname'],
+      email: map['email'],
+      profilePic: map['photo_URL'],
+      weight: map['weight'],
+      height: map['height'],
+      targetCalories: double.tryParse(map['target_calories'].toString()) ?? 0,
+      targetProtein: double.tryParse(map['target_protein'].toString()) ?? 0,
+      targetFat: double.tryParse(map['target_fat'].toString()) ?? 0,
+      targetCarbs: double.tryParse(map['target_carbs'].toString()) ?? 0,
+      gender: stringToGender(map['gender']),
+      trainingSpot: stringToTrainingSpot(map['training_spot']),
+      ageRange: stringToAgeRange(map['age_range']),
+      fitnessLevel: stringToFitnessLevel(map['fitness_level']),
+      fitnessGoal: stringListToFitnessGoalList(map['fitness_goal']),
+    );
+  }
 }

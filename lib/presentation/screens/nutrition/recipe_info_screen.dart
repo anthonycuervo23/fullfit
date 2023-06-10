@@ -276,7 +276,7 @@ class RecipeInfoScreenState extends ConsumerState<RecipeInfoScreen> {
               ref.read(nutritionTrackingProvider.notifier).addMealToDB(recipe);
             },
             onCancel: () {
-              print('meal not added');
+              debugPrint('meal not added');
             },
           );
         },
