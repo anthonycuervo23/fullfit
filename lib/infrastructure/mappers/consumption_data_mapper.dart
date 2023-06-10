@@ -10,14 +10,14 @@ class ConsumptionDataMapper {
     required double dailyCarbs,
   }) {
     return ConsumptionData(
-      caloriesConsumed: snapshot.get('caloriesConsumed'),
-      proteinConsumed: snapshot.get('proteinsConsumed'),
-      carbsConsumed: snapshot.get('carbsConsumed'),
-      fatConsumed: snapshot.get('fatsConsumed'),
-      remainingCalories: dailyCalories - snapshot.get('caloriesConsumed'),
-      remainingProtein: dailyProtein - snapshot.get('proteinsConsumed'),
-      remainingCarbs: dailyCarbs - snapshot.get('carbsConsumed'),
-      remainingFat: dailyFat - snapshot.get('fatsConsumed'),
+      caloriesConsumed: snapshot.get('calories_consumed'),
+      proteinConsumed: snapshot.get('proteins_consumed'),
+      carbsConsumed: snapshot.get('carbs_consumed'),
+      fatConsumed: snapshot.get('fats_consumed'),
+      remainingCalories: dailyCalories - snapshot.get('calories_consumed'),
+      remainingProtein: dailyProtein - snapshot.get('proteins_consumed'),
+      remainingCarbs: dailyCarbs - snapshot.get('carbs_consumed'),
+      remainingFat: dailyFat - snapshot.get('fats_consumed'),
     );
   }
 }

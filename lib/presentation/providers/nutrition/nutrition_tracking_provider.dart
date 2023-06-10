@@ -44,10 +44,10 @@ class NutritionTrackingNotifier extends StateNotifier<NutritionTrackingState> {
     _nutrientsStreamSub = _recipesRespository
         .getNutrients(
       userId: person!.id,
-      dailyCalories: 2000, //person.dailyCalories,
-      dailyProtein: 200, //person.dailyProtein,
-      dailyFat: 200, //person.dailyFat,
-      dailyCarbs: 200, //person.dailyCarbs,
+      dailyCalories: person.targetCalories,
+      dailyProtein: person.targetProtein,
+      dailyFat: person.targetFat,
+      dailyCarbs: person.targetCarbs,
     )
         .listen((consumptionData) {
       state =

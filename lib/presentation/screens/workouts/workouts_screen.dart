@@ -175,7 +175,7 @@ class PersonNutritionProgress extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final ConsumptionData? consumptionData =
         ref.watch(nutritionTrackingProvider).consumptionData;
-    //necesitamos el usuario para obtener los valores de consumo maximo diario permitido
+
     final person = ref.watch(personProvider.notifier).user;
 
     return ClipRRect(
@@ -195,7 +195,8 @@ class PersonNutritionProgress extends ConsumerWidget {
                 RadialProgress(
                   width: 140.w,
                   height: 140.w,
-                  progress: (consumptionData?.caloriesConsumed ?? 0) / 2000,
+                  progress: (consumptionData?.caloriesConsumed ?? 0) /
+                      (person?.targetCalories ?? 2000),
                   leftAmount: (consumptionData?.remainingCalories ?? 0).round(),
                 ),
                 const Spacer(),
@@ -206,7 +207,8 @@ class PersonNutritionProgress extends ConsumerWidget {
                   children: <Widget>[
                     NutrientesProgressBar(
                       ingredient: 'Protein',
-                      progress: (consumptionData?.proteinConsumed ?? 0) / 200,
+                      progress: (consumptionData?.proteinConsumed ?? 0) /
+                          (person?.targetProtein ?? 200),
                       progressColor: Colors.green,
                       leftAmount:
                           (consumptionData?.remainingProtein ?? 0).round(),
@@ -215,7 +217,8 @@ class PersonNutritionProgress extends ConsumerWidget {
                     const SizedBox(height: 10),
                     NutrientesProgressBar(
                       ingredient: 'Carbs',
-                      progress: (consumptionData?.carbsConsumed ?? 0) / 200,
+                      progress: (consumptionData?.carbsConsumed ?? 0) /
+                          (person?.targetCarbs ?? 200),
                       progressColor: Colors.red,
                       leftAmount:
                           (consumptionData?.remainingCarbs ?? 0).round(),
@@ -224,7 +227,8 @@ class PersonNutritionProgress extends ConsumerWidget {
                     const SizedBox(height: 10),
                     NutrientesProgressBar(
                       ingredient: 'Fat',
-                      progress: (consumptionData?.fatConsumed ?? 0) / 200,
+                      progress: (consumptionData?.fatConsumed ?? 0) /
+                          (person?.targetFat ?? 200),
                       progressColor: Colors.yellow,
                       leftAmount: (consumptionData?.remainingFat ?? 0).round(),
                       width: 100.w,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fullfit_app/domain/enums/enums.dart';
 import 'package:fullfit_app/presentation/providers/providers.dart';
 import 'package:fullfit_app/presentation/widgets/widgets.dart';
 
@@ -36,7 +37,7 @@ class GenderScreen extends ConsumerWidget {
                   .map(
                     (gender) => GestureDetector(
                       onTap: () {
-                        onboardingProvider.onGenderSelected(gender.title);
+                        onboardingProvider.onGenderSelected(gender.name);
                       },
                       child: Card(
                         color: colors.surface,
@@ -65,12 +66,12 @@ class GenderScreen extends ConsumerWidget {
                                     activeColor: colors.primary,
                                     inactiveColor:
                                         colors.onSurface.withOpacity(0.3),
-                                    value: gender.title == 'Male'
+                                    value: gender == Gender.male
                                         ? onboardingState.genderSelected == 1
                                         : onboardingState.genderSelected == 2,
                                     onChanged: (value) {
                                       onboardingProvider
-                                          .onGenderSelected(gender.title);
+                                          .onGenderSelected(gender.name);
                                     }),
                               ),
                             ],

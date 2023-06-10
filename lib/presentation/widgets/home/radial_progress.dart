@@ -20,8 +20,9 @@ class RadialProgress extends StatelessWidget {
     final textStyles = Theme.of(context).textTheme;
     return CustomPaint(
       painter: _RadialPainter(
-        progress: progress,
-        progressColor: colors.primary,
+        progress: progress == 0 ? 1 : progress,
+        progressColor:
+            progress == 0 ? colors.primary.withOpacity(0.1) : colors.primary,
       ),
       child: SizedBox(
         height: height,

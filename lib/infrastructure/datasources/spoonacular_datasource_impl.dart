@@ -268,10 +268,10 @@ class SpoonacularDataSourceImpl extends RecipesDataSource {
         if (!snapshot.exists) {
           debugPrint("👨🏻‍💻 Document does not exist, creating new one...");
           transaction.set(docRef, {
-            'caloriesConsumed': calories,
-            'proteinsConsumed': protein,
-            'fatsConsumed': fat,
-            'carbsConsumed': carbs,
+            'calories_consumed': calories,
+            'proteins_consumed': protein,
+            'fats_consumed': fat,
+            'carbs_consumed': carbs,
             'meals': [
               {
                 'name': recipe.title,
@@ -294,10 +294,10 @@ class SpoonacularDataSourceImpl extends RecipesDataSource {
           }
           debugPrint('Meal does not exist, updating');
           transaction.update(docRef, {
-            'caloriesConsumed': snapshot.get('caloriesConsumed') + calories,
-            'proteinsConsumed': snapshot.get('proteinsConsumed') + protein,
-            'fatsConsumed': snapshot.get('fatsConsumed') + fat,
-            'carbsConsumed': snapshot.get('carbsConsumed') + carbs,
+            'calories_consumed': snapshot.get('calories_consumed') + calories,
+            'proteins_consumed': snapshot.get('proteins_consumed') + protein,
+            'fats_consumed': snapshot.get('fats_consumed') + fat,
+            'carbs_consumed': snapshot.get('carbs_consumed') + carbs,
             'meals': FieldValue.arrayUnion([
               {
                 'name': recipe.title,

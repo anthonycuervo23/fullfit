@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fullfit_app/domain/enums/enums.dart';
 import 'package:fullfit_app/presentation/providers/providers.dart';
 import 'package:fullfit_app/presentation/widgets/widgets.dart';
 
@@ -12,7 +13,7 @@ class FitnessGoalScreen extends ConsumerWidget {
     final colors = Theme.of(context).colorScheme;
     final textStyles = Theme.of(context).textTheme;
 
-    final Map<String, bool> helpOptions =
+    final Map<FitnessGoal, bool> helpOptions =
         ref.watch(onBoardingNotifierProvider).fitnessGoals;
 
     return SingleChildScrollView(
@@ -41,7 +42,7 @@ class FitnessGoalScreen extends ConsumerWidget {
             itemCount: helpOptions.length,
             physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
-              String option = helpOptions.keys.elementAt(index);
+              FitnessGoal option = helpOptions.keys.elementAt(index);
               return Padding(
                 padding: const EdgeInsets.only(bottom: 15),
                 child: Container(
@@ -69,7 +70,7 @@ class FitnessGoalScreen extends ConsumerWidget {
                                 option, !(helpOptions[option] ?? true));
                       },
                       title: Text(
-                        helpOptions.keys.elementAt(index),
+                        helpOptions.keys.elementAt(index).goal,
                         style: textStyles.bodyMedium
                             ?.copyWith(color: colors.primary),
                       ),

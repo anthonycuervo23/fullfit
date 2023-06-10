@@ -6,24 +6,24 @@ import 'package:fullfit_app/presentation/providers/providers.dart';
 final mealPlannerProvider =
     StateNotifierProvider<MealPlannerNotifier, MealPlannerState>((ref) {
   final recipesRepository = ref.watch(recipesRepositoryProvider);
-  return MealPlannerNotifier(recipesRepository: recipesRepository);
+  return MealPlannerNotifier(recipesRepository: recipesRepository, ref: ref);
 });
-
-// typedef MealPlannerCallback = Future<void> Function(
-//     Future Function(DailyMeal? mealPlanner) closure,
-//     {int targetCalories});
 
 class MealPlannerNotifier extends StateNotifier<MealPlannerState> {
   final RecipesRespository _recipesRepository;
-  MealPlannerNotifier({required recipesRepository})
+  final Ref _ref;
+  MealPlannerNotifier({required recipesRepository, required ref})
       : _recipesRepository = recipesRepository,
+        _ref = ref,
         super(MealPlannerState());
 
   Future<void> loadTodaysMealPlan() async {
-    state = state.copyWith(isLoading: true);
+    final person = _ref.watch(personProvider.notifier).user;
 
+    state = state.copyWith(isLoading: true);
     await _recipesRepository.getTodayMealPlan(
-        targetCalories: state.targetCalories, (mealPlanner) async {
+        targetCalories: person?.targetCalories.round() ?? state.targetCalories,
+        (mealPlanner) async {
       if (mealPlanner != null) {
         state = state.copyWith(
           isLoading: false,

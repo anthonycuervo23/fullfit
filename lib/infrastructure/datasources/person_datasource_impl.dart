@@ -105,6 +105,7 @@ class PersonDatasourceImpl extends PersonDatasource {
 
       await userDocRef.update({
         'devices': devices,
+        'last_login': FieldValue.serverTimestamp(),
       });
 
       //obtenemos el ususario actualizado con la informacion del dispositivo
