@@ -4,11 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fullfit_app/domain/entities/entities.dart';
+import 'package:fullfit_app/infrastructure/services/services.dart';
 import 'package:fullfit_app/presentation/providers/providers.dart';
 import 'package:fullfit_app/presentation/widgets/widgets.dart';
 import 'package:intl/intl.dart';
-
-//TODO: mostrar dialogo con la cantidad de nutrientes sugeridas, solo la primera vez que se inicia la app
 
 class WorkoutsScreen extends ConsumerStatefulWidget {
   const WorkoutsScreen({super.key});
@@ -23,7 +22,29 @@ class WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(mealPlannerProvider.notifier).loadTodaysMealPlan();
+      showNutritionDialog();
     });
+  }
+
+  void showNutritionDialog() {
+    bool hasSeenDialog = const KeyValueStorageServiceImplementation()
+            .getValue<bool>(hasSeenNutritionDialogKey) ??
+        false;
+
+    if (!hasSeenDialog) {
+      final Person person = ref.read(personProvider.notifier).user!;
+      final targetCalories = person.targetCalories.round();
+      final targetProtein = person.targetProtein.round();
+      final targetCarbs = person.targetCarbs.round();
+      final targetFat = person.targetFat.round();
+      Alert.info(
+        context,
+        'Nutrition Recomendations',
+        'According to your goals, you should consume $targetCalories calories per day\n $targetProtein grams of protein\n $targetCarbs grams of carbs\n $targetFat grams of fat',
+        onConfirm: () => const KeyValueStorageServiceImplementation()
+            .setKeyValue<bool>(hasSeenNutritionDialogKey, true),
+      );
+    }
   }
 
   @override

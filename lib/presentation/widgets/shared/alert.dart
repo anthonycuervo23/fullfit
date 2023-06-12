@@ -10,42 +10,54 @@ class Alert extends StatelessWidget {
   final String title;
   final String? message;
   final String? errorMessage;
+
   final bool hasBackdrop;
+  final Function? onConfirm;
   final bool isLoadingAlert;
 
   const Alert._(
     this.title,
     this.message,
-    this.hasBackdrop, {
+    this.hasBackdrop,
+    this.onConfirm, {
     Key? key,
     this.isLoadingAlert = false,
     this.errorMessage,
   }) : super(key: key);
 
-  static Future<void> info(ctx, String title, String msg, {bool drop = true}) {
-    return Alert._(title, msg, drop)._show(ctx);
+  static Future<void> info(ctx, String title, String msg,
+      {bool drop = true, Function? onConfirm}) {
+    return Alert._(title, msg, drop, onConfirm)._show(ctx);
   }
 
-  static Future<void> error(ctx, {required String msg, bool drop = true}) {
-    return Alert._('Oh no! :(', msg, drop)._show(ctx);
+  static Future<void> error(ctx,
+      {required String msg, bool drop = true, Function? onConfirm}) {
+    return Alert._('Oh no! :(', msg, drop, onConfirm)._show(ctx);
   }
 
   static Future<void> detailedError(ctx,
-      {required String msg, bool drop = true, required String errorMessage}) {
+      {required String msg,
+      bool drop = true,
+      required String errorMessage,
+      Function? onConfirm}) {
     return Alert._(
       'Oh no! :(',
       msg,
       drop,
+      onConfirm,
       errorMessage: errorMessage,
     )._show(ctx);
   }
 
-  static Future<void> success(ctx, {required String msg, bool drop = true}) {
-    return Alert._('Éxito!', msg, drop)._show(ctx);
+  static Future<void> success(ctx,
+      {required String msg, bool drop = true, Function? onConfirm}) {
+    return Alert._('Éxito!', msg, drop, onConfirm)._show(ctx);
   }
 
-  static Future<void> loading(ctx, {required String title, bool drop = true}) {
-    return Alert._(title, null, drop, isLoadingAlert: true)._show(ctx);
+  static Future<void> loading(ctx,
+      {required String title, bool drop = true, Function? onConfirm}) {
+    return Alert._(title, null, drop, onConfirm, isLoadingAlert: true)
+        ._show(ctx);
   }
 
   static Future<void> noInternet(ctx) {
@@ -247,7 +259,10 @@ class Alert extends StatelessWidget {
         actions: [
           CupertinoDialogAction(
             child: const Text('OK'),
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () {
+              onConfirm?.call();
+              Navigator.of(context).pop();
+            },
           ),
         ],
       );

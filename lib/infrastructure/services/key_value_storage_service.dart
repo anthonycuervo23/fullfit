@@ -6,6 +6,8 @@ const String lastnameKey = 'last_name_key';
 
 const String hasBiometricLoginEnabledKey = "has_biometric_login_enabled_key";
 
+const String hasSeenNutritionDialogKey = "has_seen_nutrition_dialog_key";
+
 const String isRegisteredForPushNotificationsKey =
     "is_registered_for_push_notifications_key";
 

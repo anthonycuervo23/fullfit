@@ -41,9 +41,11 @@ class NutrientesProgressBar extends StatelessWidget {
                     color: colors.onSurface.withOpacity(0.1),
                   ),
                 ),
-                Container(
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 700),
+                  curve: Curves.easeIn,
                   height: 10.h,
-                  width: progress < 0.1 ? width * progress : width,
+                  width: progress < 1.0 ? width * progress : width,
                   decoration: BoxDecoration(
                     borderRadius: const BorderRadius.all(Radius.circular(5)),
                     color: progressColor,
