@@ -16,6 +16,7 @@ class GlobalConfig {
     await KeyValueStorageServiceImplementation.loadPreferences();
     await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     await Environment.initEnv();
+    await NotificationService().initialize();
     CustomLoader();
   }
 

@@ -54,4 +54,7 @@ class AppTheme {
             fontWeight: FontWeight.bold,
             color: isDarkMode ? Colors.white : Colors.black54),
       ));
+
+  AppTheme copyWith({bool? isDarkMode}) =>
+      AppTheme(isDarkMode: isDarkMode ?? this.isDarkMode);
 }

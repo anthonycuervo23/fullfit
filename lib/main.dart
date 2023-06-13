@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fullfit_app/presentation/providers/providers.dart';
 
 import 'config/config.dart';
 
@@ -15,12 +16,13 @@ class MainApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appRouter = ref.watch(goRouterProvider);
+    final AppTheme appTheme = ref.watch(themeNotifierProvider);
 
     return ScreenUtilInit(
       designSize: const Size(375, 812),
       builder: (context, child) => MaterialApp.router(
         debugShowCheckedModeBanner: false,
-        theme: AppTheme().getTheme(),
+        theme: appTheme.getTheme(),
         builder: GlobalConfig.materialAppBuilder(),
         scaffoldMessengerKey: GlobalConfig.scaffoldMessengerKey,
         routerConfig: appRouter,

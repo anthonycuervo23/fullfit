@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fullfit_app/presentation/providers/providers.dart';
+import 'package:fullfit_app/presentation/widgets/widgets.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    var isDark = ref.watch(themeNotifierProvider).isDarkMode;
     final colors = Theme.of(context).colorScheme;
     final textStyles = Theme.of(context).textTheme;
     final person = ref.watch(personProvider).person;
@@ -18,7 +19,8 @@ class ProfileScreen extends ConsumerWidget {
         title: const Text('Profile'),
         actions: [
           IconButton(
-              onPressed: () {},
+              onPressed: () =>
+                  ref.read(themeNotifierProvider.notifier).toggleDarkMode(),
               icon: Icon(isDark
                   ? Icons.dark_mode_outlined
                   : Icons.light_mode_outlined))
@@ -37,8 +39,9 @@ class ProfileScreen extends ConsumerWidget {
                       height: 120.h,
                       child: ClipRRect(
                           borderRadius: BorderRadius.circular(100),
-                          child:
-                              Image(image: NetworkImage(person!.profilePic)))),
+                          child: Image(
+                              image: NetworkImage(person?.profilePic ??
+                                  'https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png')))),
                   Positioned(
                     bottom: 0,
                     right: 0,
@@ -58,8 +61,8 @@ class ProfileScreen extends ConsumerWidget {
                 ],
               ),
               const SizedBox(height: 10),
-              Text(person.fullName, style: textStyles.titleMedium),
-              Text(person.email, style: textStyles.bodyMedium),
+              Text(person?.fullName ?? '', style: textStyles.titleMedium),
+              Text(person?.email ?? '', style: textStyles.bodyMedium),
               const SizedBox(height: 20),
 
               /// -- BUTTON
@@ -102,7 +105,10 @@ class ProfileScreen extends ConsumerWidget {
                   endIcon: false,
                   onPress: () {
                     //TODO: mostrar dialogo para confirmar logout
-                    authNotifier.logout();
+                    Alert.promtWithOptions(context,
+                        title: 'Are you sure you want to logout?',
+                        onConfirm: () => authNotifier.logout(),
+                        onCancel: () {});
                   }),
             ],
           ),

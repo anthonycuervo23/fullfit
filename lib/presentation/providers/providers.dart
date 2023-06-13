@@ -14,3 +14,4 @@ export 'nutrition/recipe_info_loader_provider.dart';
 export 'nutrition/nutrition_tracking_provider.dart';
 export 'workouts/workouts_repository_provider.dart';
 export 'workouts/workouts_provider.dart';
+export 'theme/theme_provider.dart';
