@@ -12,14 +12,16 @@ class ProfileScreen extends ConsumerWidget {
     final colors = Theme.of(context).colorScheme;
     final textStyles = Theme.of(context).textTheme;
     final person = ref.watch(personProvider).person;
+    final authNotifier = ref.watch(authProvider.notifier);
     return Scaffold(
       appBar: AppBar(
-        // leading: IconButton(onPressed: () {}, icon: const Icon(LineAwesomeIcons.angle_left)),
         title: const Text('Profile'),
         actions: [
           IconButton(
               onPressed: () {},
-              icon: Icon(isDark ? Icons.sunny : Icons.night_shelter))
+              icon: Icon(isDark
+                  ? Icons.dark_mode_outlined
+                  : Icons.light_mode_outlined))
         ],
       ),
       body: SingleChildScrollView(
@@ -63,12 +65,8 @@ class ProfileScreen extends ConsumerWidget {
               /// -- BUTTON
               SizedBox(
                 width: 200.w,
-                child: ElevatedButton(
+                child: FilledButton(
                   onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: colors.primary,
-                      side: BorderSide.none,
-                      shape: const StadiumBorder()),
                   child: const Text('Edit Profile'),
                 ),
               ),
@@ -77,29 +75,34 @@ class ProfileScreen extends ConsumerWidget {
               const SizedBox(height: 10),
 
               /// -- MENU
-              ProfileMenuWidget(
-                  title: "Settings", icon: Icons.offline_bolt, onPress: () {}),
-              ProfileMenuWidget(
-                  title: "Billing Details",
-                  icon: Icons.offline_bolt,
-                  onPress: () {}),
-              ProfileMenuWidget(
-                  title: "User Management",
-                  icon: Icons.offline_bolt,
-                  onPress: () {}),
+              _ProfileMenuWidget(
+                title: "Push Notifications",
+                icon: Icons.notifications,
+                isSwitch: true,
+                value: true,
+                onChanged: (value) {},
+              ),
+              _ProfileMenuWidget(
+                title: "Biometric Authentication",
+                icon: Icons.fingerprint,
+                isSwitch: true,
+                value: true,
+                onChanged: (value) {},
+              ),
+              // ProfileMenuWidget(
+              //     title: "Language", icon: Icons.offline_bolt, onPress: () {}),
               const Divider(),
               const SizedBox(height: 10),
-              ProfileMenuWidget(
-                  title: "Information",
-                  icon: Icons.offline_bolt,
-                  onPress: () {}),
-              ProfileMenuWidget(
+              _ProfileMenuWidget(
+                  title: "Information", icon: Icons.info, onPress: () {}),
+              _ProfileMenuWidget(
                   title: "Logout",
-                  icon: Icons.offline_bolt,
+                  icon: Icons.logout,
                   textColor: Colors.red,
                   endIcon: false,
                   onPress: () {
-                    //TODO: mostraa dialogo para confirmar logout
+                    //TODO: mostrar dialogo para confirmar logout
+                    authNotifier.logout();
                   }),
             ],
           ),
@@ -109,33 +112,37 @@ class ProfileScreen extends ConsumerWidget {
   }
 }
 
-class ProfileMenuWidget extends StatelessWidget {
-  const ProfileMenuWidget({
+class _ProfileMenuWidget extends StatelessWidget {
+  const _ProfileMenuWidget({
     Key? key,
     required this.title,
     required this.icon,
-    required this.onPress,
+    this.onPress,
+    this.onChanged,
+    this.isSwitch = false,
     this.endIcon = true,
+    this.value = false,
     this.textColor,
   }) : super(key: key);
 
   final String title;
   final IconData icon;
-  final VoidCallback onPress;
+  final VoidCallback? onPress;
   final bool endIcon;
   final Color? textColor;
+  final bool isSwitch;
+  final bool value;
+  final void Function(bool)? onChanged;
 
   @override
   Widget build(BuildContext context) {
+    final textSyles = Theme.of(context).textTheme;
     final colors = Theme.of(context).colorScheme;
-
-//    var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
-
     return ListTile(
-      onTap: onPress,
+      onTap: isSwitch ? null : onPress,
       leading: Container(
-        width: 40,
-        height: 40,
+        width: 40.w,
+        height: 40.h,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(100),
           color: colors.primary.withOpacity(0.1),
@@ -143,19 +150,25 @@ class ProfileMenuWidget extends StatelessWidget {
         child: Icon(icon, color: colors.primary),
       ),
       title: Text(title,
-          style:
-              Theme.of(context).textTheme.bodyText1?.apply(color: textColor)),
-      trailing: endIcon
+          style: textSyles.bodyMedium!
+              .copyWith(color: textColor, fontSize: 16.sp)),
+      trailing: endIcon && !isSwitch
           ? Container(
-              width: 30,
-              height: 30,
+              width: 30.w,
+              height: 30.h,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(100),
                 color: Colors.grey.withOpacity(0.1),
               ),
-              child: const Icon(Icons.arrow_forward_rounded,
+              child: const Icon(Icons.arrow_forward_ios_rounded,
                   size: 18.0, color: Colors.grey))
-          : null,
+          : isSwitch
+              ? Switch(
+                  value: value,
+                  onChanged: onChanged,
+                  activeColor: colors.primary,
+                )
+              : null,
     );
   }
 }
