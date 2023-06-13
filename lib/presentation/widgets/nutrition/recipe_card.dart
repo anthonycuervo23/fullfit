@@ -48,7 +48,7 @@ class RecipeCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 margin: const EdgeInsets.all(8),
-                width: 200,
+                width: 200.w,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -57,7 +57,7 @@ class RecipeCard extends StatelessWidget {
                           topLeft: Radius.circular(20),
                           topRight: Radius.circular(20)),
                       child: Container(
-                        width: 200,
+                        width: 200.w,
                         foregroundDecoration: const BoxDecoration(
                           borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(20),
@@ -81,7 +81,8 @@ class RecipeCard extends StatelessWidget {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.all(12.0.w),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 12.0.w, vertical: 10.h),
                       child: Text(
                         recipe != null ? recipe!.title : meal!.name!,
                         maxLines: 2,

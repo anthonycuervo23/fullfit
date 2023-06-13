@@ -15,7 +15,7 @@ class IngredientsInfo extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
     final textStyles = Theme.of(context).textTheme;
     return SizedBox(
-      height: 150.h,
+      height: 155.h,
       child: ListView(
         shrinkWrap: true,
         physics: const BouncingScrollPhysics(),

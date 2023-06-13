@@ -84,7 +84,7 @@ class MealCard extends StatelessWidget {
                       ),
                       const Spacer(),
                       Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0),
+                        padding: const EdgeInsets.only(bottom: 6.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -99,7 +99,7 @@ class MealCard extends StatelessWidget {
                             ),
                             Icon(
                               Icons.access_time,
-                              // size: 16.w,
+                              size: 18.w,
                               color: colors.primary,
                             ),
                           ],

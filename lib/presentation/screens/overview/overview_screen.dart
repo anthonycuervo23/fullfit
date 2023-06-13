@@ -184,7 +184,6 @@ class WorkoutContainer extends ConsumerWidget {
               },
             );
           }
-
           return const CustomContainer();
         });
   }
@@ -293,22 +292,26 @@ class HomeAppBar extends ConsumerWidget {
       toolbarHeight: 70.h,
       expandedHeight: 0,
       flexibleSpace: FlexibleSpaceBar(
+        centerTitle: true,
         title: SafeArea(
           bottom: false,
           child: ListTile(
-            dense: true,
-            title: Text(
-                '${DateFormat("EEEE").format(today)}, ${DateFormat("d MMMM").format(today)}',
-                style: textStyles.bodyLarge?.copyWith(fontSize: 16.sp)),
-            subtitle: Text(
-              'Hello, ${person?.name ?? 'User'}',
-              style: textStyles.titleMedium,
-            ),
-            trailing: ClipOval(
-                child: person != null
-                    ? Image.network(person.profilePic)
-                    : Image.asset("assets/temp/user.jpg")),
-          ),
+              dense: true,
+              title: Text(
+                  '${DateFormat("EEEE").format(today)}, ${DateFormat("d MMMM").format(today)}',
+                  style: textStyles.bodyLarge?.copyWith(fontSize: 16.sp)),
+              subtitle: Text(
+                'Hello, ${person?.name ?? 'User'}',
+                style: textStyles.titleMedium,
+              ),
+              trailing: ClipOval(
+                child: AspectRatio(
+                  aspectRatio: 1 / 1, // This forces the child to be a square
+                  child: person != null
+                      ? Image.network(person.profilePic, fit: BoxFit.cover)
+                      : Image.asset("assets/temp/user.jpg", fit: BoxFit.cover),
+                ),
+              )),
         ),
       ),
     );
