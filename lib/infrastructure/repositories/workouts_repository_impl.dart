@@ -12,4 +12,9 @@ class WorkoutsRepositoryImpl implements WorkoutsRepository {
   Stream<Workout?> getWorkoutStream(String workoutId) {
     return _workoutsDataSource.getWorkoutStream(workoutId);
   }
+
+  @override
+  Future<Workout?> getWorkout(String workoutId) {
+    return _workoutsDataSource.getWorkout(workoutId);
+  }
 }

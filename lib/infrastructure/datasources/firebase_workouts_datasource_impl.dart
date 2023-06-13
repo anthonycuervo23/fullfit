@@ -21,4 +21,20 @@ class FirebaseWorkoutsDataSource implements WorkoutsDataSource {
           : null;
     });
   }
+
+  @override
+  Future<Workout?> getWorkout(String workoutId) async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> workoutDoc =
+          await _firestore.collection('userWorkouts').doc(workoutId).get();
+
+      if (workoutDoc.exists) {
+        return WorkoutMapper.jsonWorkoutToEntity(workoutDoc.data()!);
+      } else {
+        throw Exception('No workout found for today');
+      }
+    } catch (e) {
+      throw Exception('Failed to fetch workout: $e');
+    }
+  }
 }

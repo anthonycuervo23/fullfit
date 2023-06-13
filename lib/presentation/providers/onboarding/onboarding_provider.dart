@@ -169,8 +169,6 @@ class OnBoardingNotifier extends StateNotifier<OnBoardingState> {
     state = state.copyWith(ageRange: value);
   }
 
-//TODO: calcular los targets nutricionales.
-
   Future<void> onFormSubmitted() async {
     final Map<String, dynamic> personLike = {
       'name': state.firstName.value,

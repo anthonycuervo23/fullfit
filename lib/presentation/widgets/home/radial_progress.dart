@@ -26,8 +26,6 @@ class _RadialProgressState extends State<RadialProgress>
   @override
   void initState() {
     super.initState();
-    print(widget.progress);
-
     _progressAnimationController = AnimationController(
       duration:
           const Duration(seconds: 2), // Define la duración de la animación aquí

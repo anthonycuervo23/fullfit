@@ -52,6 +52,7 @@ dependencies:
   sign_in_with_apple: ^4.3.0
   smooth_page_indicator: ^1.1.0
   step_progress_indicator: ^1.0.2
+  table_calendar: ^3.0.9
   twitter_login: ^4.4.0
   vector_math: ^2.1.4
 

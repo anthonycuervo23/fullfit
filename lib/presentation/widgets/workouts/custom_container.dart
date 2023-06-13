@@ -44,7 +44,7 @@ class CustomContainer extends StatelessWidget {
                           strokeWidth: 2.0,
                           color: colors.surface,
                         )
-                      : Image.asset('assets/icons/check_mark.png',
+                      : Image.asset('assets/icons/error.png',
                           width: 50.w, height: 50.h, color: Colors.white),
                 ),
               ),

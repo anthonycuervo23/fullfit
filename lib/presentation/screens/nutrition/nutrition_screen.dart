@@ -79,7 +79,6 @@ class NutritionScreenState extends ConsumerState<NutritionScreen> {
               CustomHeader(
                 title: 'Your Meal Plan for Today',
                 onPressed: () {
-                  //TODO: show weekly meal plan
                   context.push('/nutrition/mealplan');
                 },
               ),

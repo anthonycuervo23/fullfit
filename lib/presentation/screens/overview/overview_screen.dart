@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fullfit_app/domain/entities/entities.dart';
 import 'package:fullfit_app/infrastructure/services/services.dart';
 import 'package:fullfit_app/presentation/providers/providers.dart';
+import 'package:fullfit_app/presentation/screens/screens.dart';
 import 'package:fullfit_app/presentation/widgets/widgets.dart';
 import 'package:intl/intl.dart';
 
@@ -92,7 +93,7 @@ class WorkoutContainer extends ConsumerWidget {
     final colors = Theme.of(context).colorScheme;
     final textStyles = Theme.of(context).textTheme;
 
-    final streamWorkout = ref.watch(workoutProvider);
+    final streamWorkout = ref.watch(workoutStreamProvider);
 
     return streamWorkout.when(
         loading: () => const CustomContainer(),
@@ -106,10 +107,9 @@ class WorkoutContainer extends ConsumerWidget {
               closedElevation: 0,
               transitionType: ContainerTransitionType.fade,
               transitionDuration: const Duration(milliseconds: 1000),
-              closedColor: Colors.transparent,
+              closedColor: Theme.of(context).scaffoldBackgroundColor,
               openBuilder: (context, _) {
-                //TODO: show workout details
-                return Container();
+                return const WorkoutDetailsScreen();
               },
               closedBuilder: (context, VoidCallback openContainer) {
                 return GestureDetector(
