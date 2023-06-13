@@ -119,7 +119,6 @@ class FitnessMeterState extends ConsumerState<_FitnessMeter> {
     randomNumberGenerator();
   }
 
-//TODO: fix width of the bar
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
