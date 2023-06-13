@@ -1,3 +1,4 @@
+export 'package:fullfit_app/presentation/widgets/workouts/custom_container.dart';
 export 'package:fullfit_app/presentation/widgets/shared/expandable_panel.dart';
 export 'package:fullfit_app/presentation/widgets/shared/meal_card.dart';
 

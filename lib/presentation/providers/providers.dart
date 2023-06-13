@@ -12,3 +12,5 @@ export 'nutrition/similar_recipes_provider.dart';
 export 'nutrition/equipment_provider.dart';
 export 'nutrition/recipe_info_loader_provider.dart';
 export 'nutrition/nutrition_tracking_provider.dart';
+export 'workouts/workouts_repository_provider.dart';
+export 'workouts/workouts_provider.dart';

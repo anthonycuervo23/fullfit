@@ -60,6 +60,9 @@ class PersonDatasourceImpl extends PersonDatasource {
 
     personLike.addAll(nutritionTargets);
 
+    //add user Id
+    personLike['id'] = _loggedUser?.uid ?? '123';
+
     if (!isUserLogged) {
       debugPrint('No se ha podido obtener el usuario logueado');
       throw Exception('No se ha podido obtener el usuario logueado');
