@@ -20,17 +20,17 @@ class MealCard extends StatelessWidget {
     return FadeInRight(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Material(
-          borderRadius: const BorderRadius.all(Radius.circular(20)),
-          elevation: 4,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              Flexible(
-                flex: 2,
-                child: GestureDetector(
-                  onTap: () => context.push('/nutrition/recipe/${meal!.id}'),
+        child: GestureDetector(
+          onTap: () => context.push('/nutrition/recipe/${meal!.id}'),
+          child: Material(
+            borderRadius: const BorderRadius.all(Radius.circular(20)),
+            elevation: 4,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                Flexible(
+                  flex: 2,
                   child: ClipRRect(
                     borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(20),
@@ -59,57 +59,57 @@ class MealCard extends StatelessWidget {
                           ),
                   ),
                 ),
-              ),
-              Flexible(
-                flex: 1,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 5),
-                      Text(
-                        localMeal?.mealTime ?? meal!.type!.toUpperCase(),
-                        style: textStyles.bodyMedium?.copyWith(
-                          fontSize: 14.sp,
+                Flexible(
+                  flex: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 5),
+                        Text(
+                          localMeal?.mealTime ?? meal!.type!.toUpperCase(),
+                          style: textStyles.bodyMedium?.copyWith(
+                            fontSize: 14.sp,
+                          ),
                         ),
-                      ),
-                      Text(
-                        localMeal?.name ?? meal!.name!,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: textStyles.titleMedium?.copyWith(
-                          fontSize: 16.sp,
+                        Text(
+                          localMeal?.name ?? meal!.name!,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: textStyles.titleMedium?.copyWith(
+                            fontSize: 16.sp,
+                          ),
                         ),
-                      ),
-                      const Spacer(),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 6.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              localMeal != null
-                                  ? "Ready in ${localMeal!.timeTaken} min"
-                                  : "Ready in ${meal!.cookingTime} min",
-                              style: textStyles.bodyMedium?.copyWith(
-                                  fontSize: 14.sp,
-                                  color: colors.primary,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            Icon(
-                              Icons.access_time,
-                              size: 18.w,
-                              color: colors.primary,
-                            ),
-                          ],
+                        const Spacer(),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 6.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                localMeal != null
+                                    ? "Ready in ${localMeal!.timeTaken} min"
+                                    : "Ready in ${meal!.cookingTime} min",
+                                style: textStyles.bodyMedium?.copyWith(
+                                    fontSize: 14.sp,
+                                    color: colors.primary,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              Icon(
+                                Icons.access_time,
+                                size: 18.w,
+                                color: colors.primary,
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
