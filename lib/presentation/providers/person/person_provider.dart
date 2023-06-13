@@ -3,7 +3,8 @@ import 'package:fullfit_app/domain/entities/entities.dart';
 import 'package:fullfit_app/domain/repositories/repositories.dart';
 import 'package:fullfit_app/presentation/providers/providers.dart';
 
-final userProvider = StateNotifierProvider<PersonNotifier, PersonState>((ref) {
+final personProvider =
+    StateNotifierProvider<PersonNotifier, PersonState>((ref) {
   final personRepository = ref.watch(personRepositoryProvider);
   return PersonNotifier(personRepository: personRepository);
 });
@@ -21,7 +22,7 @@ class PersonNotifier extends StateNotifier<PersonState> {
   }
 
   void clearUser() {
-    state = state.copyWith(person: null);
+    state = state.copyWith(clear: true);
   }
 
   Person? get user => state.person;
@@ -38,7 +39,7 @@ class PersonState {
   final Person? person;
   PersonState({this.person});
 
-  PersonState copyWith({Person? person}) {
-    return PersonState(person: person ?? this.person);
+  PersonState copyWith({Person? person, bool clear = false}) {
+    return PersonState(person: clear ? null : person ?? this.person);
   }
 }

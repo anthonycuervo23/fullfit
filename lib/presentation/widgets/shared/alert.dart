@@ -3,54 +3,133 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fullfit_app/config/config.dart';
 import 'package:fullfit_app/domain/repositories/repositories.dart';
 
 class Alert extends StatelessWidget {
   final String title;
   final String? message;
   final String? errorMessage;
+
   final bool hasBackdrop;
+  final Function? onConfirm;
   final bool isLoadingAlert;
 
   const Alert._(
     this.title,
     this.message,
-    this.hasBackdrop, {
+    this.hasBackdrop,
+    this.onConfirm, {
     Key? key,
     this.isLoadingAlert = false,
     this.errorMessage,
   }) : super(key: key);
 
-  static Future<void> info(ctx, String title, String msg, {bool drop = true}) {
-    return Alert._(title, msg, drop)._show(ctx);
+  static Future<void> info(ctx, String title, String msg,
+      {bool drop = true, Function? onConfirm}) {
+    return Alert._(title, msg, drop, onConfirm)._show(ctx);
   }
 
-  static Future<void> error(ctx, {required String msg, bool drop = true}) {
-    return Alert._('Oh no! :(', msg, drop)._show(ctx);
+  static Future<void> error(ctx,
+      {required String msg, bool drop = true, Function? onConfirm}) {
+    return Alert._('Oh no! :(', msg, drop, onConfirm)._show(ctx);
   }
 
   static Future<void> detailedError(ctx,
-      {required String msg, bool drop = true, required String errorMessage}) {
+      {required String msg,
+      bool drop = true,
+      required String errorMessage,
+      Function? onConfirm}) {
     return Alert._(
       'Oh no! :(',
       msg,
       drop,
+      onConfirm,
       errorMessage: errorMessage,
     )._show(ctx);
   }
 
-  static Future<void> success(ctx, {required String msg, bool drop = true}) {
-    return Alert._('Éxito!', msg, drop)._show(ctx);
+  static Future<void> success(ctx,
+      {required String msg, bool drop = true, Function? onConfirm}) {
+    return Alert._('Éxito!', msg, drop, onConfirm)._show(ctx);
   }
 
-  static Future<void> loading(ctx, {required String title, bool drop = true}) {
-    return Alert._(title, null, drop, isLoadingAlert: true)._show(ctx);
+  static Future<void> loading(ctx,
+      {required String title, bool drop = true, Function? onConfirm}) {
+    return Alert._(title, null, drop, onConfirm, isLoadingAlert: true)
+        ._show(ctx);
   }
 
   static Future<void> noInternet(ctx) {
     return error(ctx,
         msg:
             'Sin conexión a Internet. Por favor, inténtelo de nuevo más tarde.');
+  }
+
+  static Future<void> promtWithOptions(BuildContext context,
+      {String confirmTitle = 'Confirm',
+      String cancelTitle = 'Cancel',
+      Widget? content,
+      required String title,
+      required void Function()? onConfirm,
+      required void Function()? onCancel}) {
+    Widget yesButton = Platform.isIOS
+        ? TextButton(
+            onPressed: () {
+              onConfirm?.call();
+              Navigator.pop(rootNavigatorKey.currentContext!);
+            },
+            child: Text(confirmTitle),
+          )
+        : CupertinoDialogAction(
+            onPressed: () {
+              onConfirm?.call();
+              Navigator.pop(rootNavigatorKey.currentContext!);
+            },
+            child: Text(confirmTitle),
+          );
+
+    Widget noButton = Platform.isIOS
+        ? TextButton(
+            onPressed: () {
+              onCancel?.call();
+              Navigator.pop(rootNavigatorKey.currentContext!);
+            },
+            child: Text(cancelTitle),
+          )
+        : CupertinoDialogAction(
+            onPressed: () {
+              onCancel?.call();
+              Navigator.pop(rootNavigatorKey.currentContext!);
+            },
+            child: Text(cancelTitle),
+          );
+
+    if (Platform.isIOS) {
+      return showCupertinoDialog(
+        context: context,
+        builder: (context) => CupertinoAlertDialog(
+          title: Text(title),
+          content: content,
+          actions: <Widget>[
+            yesButton,
+            noButton,
+          ],
+        ),
+      );
+    } else {
+      return showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(title),
+          content: content,
+          actions: <Widget>[
+            yesButton,
+            noButton,
+          ],
+        ),
+      );
+    }
   }
 
   static Future<void> promptEnableBiometrics(BuildContext context,
@@ -180,7 +259,10 @@ class Alert extends StatelessWidget {
         actions: [
           CupertinoDialogAction(
             child: const Text('OK'),
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () {
+              onConfirm?.call();
+              Navigator.of(context).pop();
+            },
           ),
         ],
       );

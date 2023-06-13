@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fullfit_app/domain/enums/enums.dart';
 import 'package:fullfit_app/presentation/providers/providers.dart';
 
 class AgeRangeScreen extends ConsumerStatefulWidget {
@@ -13,6 +14,7 @@ class AgeRangeScreen extends ConsumerStatefulWidget {
 class AgeRangeScreenState extends ConsumerState<AgeRangeScreen> {
   @override
   Widget build(BuildContext context) {
+    final gender = ref.watch(onBoardingNotifierProvider).gender;
     final ageRanges = ref.watch(onBoardingNotifierProvider).ageRanges;
 
     final textStyles = Theme.of(context).textTheme;
@@ -32,15 +34,16 @@ class AgeRangeScreenState extends ConsumerState<AgeRangeScreen> {
             direction: Axis.horizontal,
             spacing: 40,
             runSpacing: 39,
-            children:
-                ageRanges.map((interest) => _buildInterest(interest)).toList(),
+            children: ageRanges
+                .map((ageRanges) => _buildAgeRange(ageRanges, gender))
+                .toList(),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildInterest(AgeRange ageRange) {
+  Widget _buildAgeRange(AgeRange ageRange, Gender gender) {
     final colors = Theme.of(context).colorScheme;
     final textStyles = Theme.of(context).textTheme;
     final selectedAgeRange = ref.watch(onBoardingNotifierProvider).ageRange;
@@ -49,7 +52,7 @@ class AgeRangeScreenState extends ConsumerState<AgeRangeScreen> {
       onTap: () {
         ref
             .read(onBoardingNotifierProvider.notifier)
-            .onAgeRangeChanged(ageRange.range);
+            .onAgeRangeChanged(ageRange);
       },
       child: Column(
         children: <Widget>[
@@ -58,18 +61,18 @@ class AgeRangeScreenState extends ConsumerState<AgeRangeScreen> {
               decoration: BoxDecoration(
                   // backgroundBlendMode: BlendMode.darken,
                   shape: BoxShape.circle,
-                  color: ageRange.range == selectedAgeRange
+                  color: ageRange == selectedAgeRange
                       ? colors.primary.withOpacity(0.4)
                       : Colors.white),
               child: Image.asset(
-                ageRange.image,
+                ageRange.getAssethPath(gender),
                 width: 80.w,
                 fit: BoxFit.cover,
               )),
           SizedBox(height: 14.h),
           Text(ageRange.range,
               style: textStyles.titleSmall?.copyWith(
-                color: ageRange.range == selectedAgeRange
+                color: ageRange == selectedAgeRange
                     ? colors.primary
                     : colors.onBackground.withOpacity(0.6),
               ))

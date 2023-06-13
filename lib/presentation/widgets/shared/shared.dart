@@ -1,3 +1,4 @@
+export 'package:fullfit_app/presentation/widgets/shared/meal_plan_swiper.dart';
 export 'package:fullfit_app/presentation/widgets/shared/adaptive_action_sheet.dart';
 export 'package:fullfit_app/presentation/widgets/shared/check_box.dart';
 export 'package:fullfit_app/presentation/widgets/shared/custom_loader.dart';

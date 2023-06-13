@@ -5,7 +5,7 @@ import 'package:fullfit_app/presentation/providers/providers.dart';
 import 'package:fullfit_app/presentation/screens/screens.dart';
 import 'package:go_router/go_router.dart';
 
-final GlobalKey<NavigatorState> _rootNavigatorKey =
+final GlobalKey<NavigatorState> rootNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: 'root');
 
 final GlobalKey<NavigatorState> _sectionNavigatorKey =
@@ -16,7 +16,7 @@ final goRouterProvider = Provider((ref) {
 
   return GoRouter(
       refreshListenable: goRouterNotifier,
-      navigatorKey: _rootNavigatorKey,
+      navigatorKey: rootNavigatorKey,
       initialLocation: '/splash',
       routes: [
         //* primera pantalla
@@ -57,8 +57,18 @@ final goRouterProvider = Provider((ref) {
               routes: [
                 //* Rutas del primer tab (workouts)
                 GoRoute(
-                  path: '/',
+                  path: '/workouts',
                   builder: (context, state) => const WorkoutsScreen(),
+                  // routes: [
+                  // GoRoute(
+                  //   path: 'recipe/:id',
+                  //   builder: (context, state) {
+                  //     final recipeId = state.pathParameters['id'] ?? 'no-id';
+                  //     return RecipeInfoScreen(
+                  //         recipeId: int.tryParse(recipeId) ?? 0);
+                  //   },
+                  // ),
+                  // ],
                 ),
               ],
             ),
@@ -69,6 +79,32 @@ final goRouterProvider = Provider((ref) {
                 GoRoute(
                   path: '/nutrition',
                   builder: (context, state) => const NutritionScreen(),
+                  routes: [
+                    GoRoute(
+                      path: 'recipe/:id',
+                      builder: (context, state) {
+                        final recipeId = state.pathParameters['id'] ?? 'no-id';
+                        return RecipeInfoScreen(
+                            recipeId: int.tryParse(recipeId) ?? 0);
+                      },
+                    ),
+                    GoRoute(
+                      path: 'suggestions/:name',
+                      builder: (context, state) {
+                        final foodType =
+                            state.pathParameters['name'] ?? 'no-name';
+                        return SuggestedRecipesScreen(foodType: foodType);
+                      },
+                    ),
+                    GoRoute(
+                      path: 'mealplan',
+                      builder: (context, state) {
+                        // final foodType =
+                        //     state.pathParameters['name'] ?? 'no-name';
+                        return const MealPlanScreen();
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -128,7 +164,7 @@ final goRouterProvider = Provider((ref) {
               isGoingTo == '/splash' ||
               isGoingTo == '/intro' ||
               isGoingTo == '/ready-to-go') {
-            return '/';
+            return '/workouts';
           }
         }
         return null;

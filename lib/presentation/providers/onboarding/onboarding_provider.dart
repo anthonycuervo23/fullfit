@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
-import 'package:fullfit_app/config/extensions/string_extensions.dart';
+import 'package:fullfit_app/domain/enums/enums.dart';
 import 'package:fullfit_app/domain/repositories/repositories.dart';
 import 'package:fullfit_app/infrastructure/services/key_value_storage_service.dart';
 import 'package:fullfit_app/presentation/inputs/inputs.dart';
@@ -118,36 +118,29 @@ class OnBoardingNotifier extends StateNotifier<OnBoardingState> {
     );
   }
 
-  onFitnessGoalChanged(String goal, bool value) {
+  onFitnessGoalChanged(FitnessGoal goal, bool value) {
     // Crear un nuevo mapa y reemplazar el mapa anterior
-    final newFitnessGoals = Map<String, bool>.from(state.fitnessGoals);
+    final newFitnessGoals = Map<FitnessGoal, bool>.from(state.fitnessGoals);
     newFitnessGoals[goal] = value;
     state = state.copyWith(fitnessGoals: newFitnessGoals);
   }
 
   _onGenderChanged(String value) {
-    final gender = value.translate();
-    state = state.copyWith(
-        gender: gender,
-        ageRanges: gender == 'Mujer'
-            ? const [
-                AgeRange('18-24', 'assets/images/female_18.png'),
-                AgeRange('25-34', 'assets/images/female_25.png'),
-                AgeRange('35-54', 'assets/images/female_35.png'),
-                AgeRange('55+', 'assets/images/female_55.png'),
-              ]
-            : const [
-                AgeRange('18-24', 'assets/images/male_18.png'),
-                AgeRange('25-34', 'assets/images/male_25.png'),
-                AgeRange('35-54', 'assets/images/male_35.png'),
-                AgeRange('55+', 'assets/images/male_55.png'),
-              ]);
+    Gender genderEnum = stringToGender(value);
+
+    state = state.copyWith(gender: genderEnum, ageRanges: [
+      AgeRange.range18_24,
+      AgeRange.range25_34,
+      AgeRange.range35_54,
+      AgeRange.range55,
+    ]);
 
     // state = state.copyWith(gender: gender);
   }
 
   onGenderSelected(String gender) {
-    if (gender == 'Male') {
+    Gender genderEnum = stringToGender(gender);
+    if (genderEnum == Gender.male) {
       state.genderSelected != 1
           ? state = state.copyWith(genderSelected: 1)
           : state = state.copyWith(genderSelected: 0);
@@ -168,32 +161,38 @@ class OnBoardingNotifier extends StateNotifier<OnBoardingState> {
     state = state.copyWith(weight: value);
   }
 
-  onTrainingSpotChanged(String value) {
+  onTrainingSpotChanged(TrainingSpot value) {
     state = state.copyWith(selectedSpot: value);
   }
 
-  onAgeRangeChanged(String value) {
+  onAgeRangeChanged(AgeRange value) {
     state = state.copyWith(ageRange: value);
   }
 
   Future<void> onFormSubmitted() async {
     final Map<String, dynamic> personLike = {
       'name': state.firstName.value,
-      'login_type': _loginType,
+      'login_type': _loginType ?? 'email',
       'lastname': state.lastName.value,
       'email': state.email.value.isEmpty ? _loginEmail : state.email.value,
       'weight': state.weight,
       'height': state.height,
-      'gender': state.gender,
+      'gender': state.gender.name,
       'photo_URL': state.profilePic,
-      'training_spot': state.selectedSpot,
-      'age_range': state.ageRange,
+      'training_spot': state.selectedSpot.spot,
+      'age_range': state.ageRange.range,
       'fitness_level': state.fitnessLevel.level,
-      'fitness_goal': state.fitnessGoals.keys
-          .where((element) => state.fitnessGoals[element] == true)
+      'fitness_goal': state.fitnessGoals.entries
+          .where((entry) => entry.value == true)
+          .map((entry) => entry.key.goal)
           .toList(),
-      'createdAt': FieldValue.serverTimestamp(),
-      'updatedAt': FieldValue.serverTimestamp(),
+      'created_at': FieldValue.serverTimestamp(),
+      'updated_at': FieldValue.serverTimestamp(),
+      'last_login': FieldValue.serverTimestamp(),
+      'target_calories': 2000,
+      'target_protein': 200,
+      'target_fat': 200,
+      'target_carbs': 200,
     };
 
     state = state.copyWith(isPosting: true);
@@ -225,16 +224,16 @@ class OnBoardingState {
   final bool isLastNameValid;
   final String profilePic;
   final FitnessLevel fitnessLevel;
-  final Map<String, bool> fitnessGoals;
-  final String gender;
+  final Map<FitnessGoal, bool> fitnessGoals;
+  final Gender gender;
   final List<Gender> genders;
-  final String ageRange;
+  final AgeRange ageRange;
   final List<AgeRange> ageRanges;
   final int genderSelected;
   final int height;
   final int weight;
-  final List<String> trainingSpots;
-  final String selectedSpot;
+  final List<TrainingSpot> trainingSpots;
+  final TrainingSpot selectedSpot;
 
   OnBoardingState({
     this.checkingEmail = false,
@@ -249,38 +248,35 @@ class OnBoardingState {
     this.lastName = const Name.pure(),
     this.email = const Email.pure(),
     this.password = const Password.pure(),
-    this.gender = 'Masculino',
-    this.ageRange = '',
+    this.gender = Gender.male,
+    this.ageRange = AgeRange.range18_24,
     this.profilePic = 'assets/avatars/avatar1.png',
-    this.fitnessLevel = const FitnessLevel(
-        level: 'Average',
-        title: 'Intensidad Media',
-        description: 'Realizo alguna forma de ejercicio regularmente.'),
+    this.fitnessLevel = FitnessLevel.moderate,
     this.fitnessGoals = const {
-      'Perder peso': false,
-      'Mejorar la composición corporal': false,
-      'Ganar músculo': false,
-      'Aumentar la definición muscular': false
+      FitnessGoal.loseWeight: false,
+      FitnessGoal.improveBodyComposition: false,
+      FitnessGoal.gainMuscle: false,
+      FitnessGoal.increaseDefinitionMuscle: false
     },
     this.height = 170,
     this.weight = 70,
     this.genderSelected = 0,
     this.ageRanges = const [
-      AgeRange('18-24', 'assets/images/male_18.png'),
-      AgeRange('25-34', 'assets/images/male_25.png'),
-      AgeRange('35-54', 'assets/images/male_35.png'),
-      AgeRange('55+', 'assets/images/male_55.png'),
+      AgeRange.range18_24,
+      AgeRange.range25_34,
+      AgeRange.range35_54,
+      AgeRange.range55,
     ],
     this.genders = const [
-      Gender('Male', 'assets/images/male.png'),
-      Gender('Female', 'assets/images/female.png'),
+      Gender.male,
+      Gender.female,
     ],
     this.trainingSpots = const [
-      'Gimnasio',
-      'Casa',
-      'Parque',
+      TrainingSpot.gym,
+      TrainingSpot.home,
+      TrainingSpot.outdoor,
     ],
-    this.selectedSpot = 'Gimnasio',
+    this.selectedSpot = TrainingSpot.gym,
   });
 
   OnBoardingState copyWith({
@@ -298,16 +294,16 @@ class OnBoardingState {
     String? errorMessage,
     String? profilePic,
     FitnessLevel? fitnessLevel,
-    Map<String, bool>? fitnessGoals,
-    String? gender,
+    Map<FitnessGoal, bool>? fitnessGoals,
+    Gender? gender,
     List<Gender>? genders,
-    String? ageRange,
+    AgeRange? ageRange,
     List<AgeRange>? ageRanges,
     int? genderSelected,
     int? height,
     int? weight,
-    List<String>? trainingSpots,
-    String? selectedSpot,
+    List<TrainingSpot>? trainingSpots,
+    TrainingSpot? selectedSpot,
   }) {
     return OnBoardingState(
       checkingEmail: checkingEmail ?? this.checkingEmail,
@@ -338,71 +334,24 @@ class OnBoardingState {
   }
 }
 
-//* Modelos personalizados
-class FitnessLevel {
-  final String level;
-  final String title;
-  final String description;
-
-  const FitnessLevel(
-      {required this.level, required this.title, required this.description});
-}
-
-class Gender {
-  final String title;
-  final String image;
-
-  const Gender(this.title, this.image);
-}
-
-class AgeRange {
-  final String range;
-  final String image;
-
-  const AgeRange(this.range, this.image);
-}
-
 //* Metodos helpers
 extension OnBoardingNotifierExtension on OnBoardingNotifier {
 // muy baja, baja, moderada, buena, muy buena, excelente
   FitnessLevel _getFitnessLevel(double position) {
     if (position >= 40 && position < 93) {
-      return const FitnessLevel(
-          level: 'Muy Baja',
-          title: 'Intensidad Muy Baja',
-          description: 'Raramente hago ejercicio o actividad física.');
+      return FitnessLevel.veryLow;
     } else if (position >= 93 && position < 146) {
-      return const FitnessLevel(
-          level: 'Baja',
-          title: 'Intensidad Baja',
-          description: 'Ocasionalmente hago ejercicios ligeros.');
+      return FitnessLevel.low;
     } else if (position >= 146 && position < 199) {
-      return const FitnessLevel(
-          level: 'Moderada',
-          title: 'Intensidad Media',
-          description: 'Realizo alguna forma de ejercicio regularmente.');
+      return FitnessLevel.moderate;
     } else if (position >= 199 && position < 252) {
-      return const FitnessLevel(
-          level: 'Buena',
-          title: 'Buena Intensidad',
-          description: 'Hago ejercicio frecuentemente e intensivamente.');
+      return FitnessLevel.good;
     } else if (position >= 252 && position < 305) {
-      return const FitnessLevel(
-          level: 'Muy Buena',
-          title: 'Muy Buena Intensidad',
-          description:
-              'Participo en ejercicios o deportes de alta intensidad.');
+      return FitnessLevel.veryGood;
     } else if (position >= 305 && position <= 360) {
-      return const FitnessLevel(
-          level: 'Excelente',
-          title: 'Excelente Intensidad',
-          description:
-              'Participo regularmente en deportes competitivos y ejercicios de alta intensidad.');
+      return FitnessLevel.excellent;
     } else {
-      return const FitnessLevel(
-          level: 'N/A',
-          title: 'Intensidad Desconocida',
-          description: 'Nivel fitness desconocido.');
+      return FitnessLevel.moderate;
     }
   }
 }

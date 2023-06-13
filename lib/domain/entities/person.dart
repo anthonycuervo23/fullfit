@@ -1,4 +1,5 @@
 import 'package:fullfit_app/config/extensions/string_extensions.dart';
+import 'package:fullfit_app/domain/enums/enums.dart';
 
 class Person {
   final String id;
@@ -6,13 +7,17 @@ class Person {
   final String lastname;
   final int weight;
   final int height;
-  final String gender;
+  final Gender gender;
   final String email;
   final String profilePic;
-  final String trainingSpot;
-  final String ageRange;
-  final String fitnessLevel;
-  final List<String> fitnessGoal;
+  final TrainingSpot trainingSpot;
+  final AgeRange ageRange;
+  final FitnessLevel fitnessLevel;
+  final List<FitnessGoal> fitnessGoal;
+  final double targetCalories;
+  final double targetProtein;
+  final double targetFat;
+  final double targetCarbs;
 
   Person({
     required this.trainingSpot,
@@ -27,6 +32,10 @@ class Person {
     required this.lastname,
     required this.weight,
     required this.height,
+    required this.targetCalories,
+    required this.targetProtein,
+    required this.targetFat,
+    required this.targetCarbs,
   });
 
   get fullName => '${name.capitalize()} ${lastname.capitalize()}';

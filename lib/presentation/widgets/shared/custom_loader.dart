@@ -25,6 +25,11 @@ class CustomLoader {
     EasyLoading.show(status: text ?? 'Loading...');
   }
 
+  static void showSuccess([String? text]) {
+    EasyLoading.instance.userInteractions = false;
+    EasyLoading.showSuccess(text ?? 'Success!');
+  }
+
   static void toast(String text) {
     EasyLoading.showToast(text);
   }

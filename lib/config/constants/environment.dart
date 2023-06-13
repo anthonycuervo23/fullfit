@@ -11,4 +11,6 @@ class Environment {
       dotenv.env['TWITTER_API_KEY'] ?? 'Twitter API Key no configurada.';
   static String twitterApiSecret =
       dotenv.env['TWITTER_API_SECRET'] ?? 'Twitter API Secret no configurada.';
+  static String scoopnacularApiKey =
+      dotenv.env['RECIPES_API_KEY'] ?? 'Spoonacular API Key no configurada.';
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fullfit_app/domain/enums/enums.dart';
 import 'package:fullfit_app/presentation/providers/providers.dart';
 import 'package:fullfit_app/presentation/widgets/widgets.dart';
 
@@ -12,7 +13,7 @@ class TrainingSpotScreen extends ConsumerWidget {
     final colors = Theme.of(context).colorScheme;
     final textStyles = Theme.of(context).textTheme;
 
-    final List<String> trainingSpots =
+    final List<TrainingSpot> trainingSpots =
         ref.watch(onBoardingNotifierProvider).trainingSpots;
 
     return SingleChildScrollView(
@@ -41,7 +42,7 @@ class TrainingSpotScreen extends ConsumerWidget {
             itemCount: trainingSpots.length,
             physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
-              String option = trainingSpots[index];
+              TrainingSpot option = trainingSpots[index];
               return Padding(
                 padding: const EdgeInsets.only(bottom: 15),
                 child: Container(
@@ -61,7 +62,7 @@ class TrainingSpotScreen extends ConsumerWidget {
                         onChanged: (value) {
                           ref
                               .read(onBoardingNotifierProvider.notifier)
-                              .onFitnessGoalChanged(option, value ?? false);
+                              .onTrainingSpotChanged(option);
                         },
                       ),
                       onTap: () {
@@ -70,7 +71,7 @@ class TrainingSpotScreen extends ConsumerWidget {
                             .onTrainingSpotChanged(option);
                       },
                       title: Text(
-                        option,
+                        option.spot,
                         style: textStyles.bodyMedium
                             ?.copyWith(color: colors.primary),
                       ),
