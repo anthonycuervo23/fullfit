@@ -76,7 +76,7 @@ class _WorkoutDetailsScreenState extends ConsumerState<WorkoutDetailsScreen> {
                     child: Column(
                       children: [
                         Image.asset(
-                          'assets/icons/${workout.workout!.muscleGroups[index]}.png',
+                          'assets/icons/${workout.workout!.muscleGroups[index].replaceAll(' ', '_').toLowerCase()}.png',
                           height: 100.h,
                         ),
                         Chip(
