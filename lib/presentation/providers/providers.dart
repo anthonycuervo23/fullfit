@@ -15,3 +15,4 @@ export 'nutrition/nutrition_tracking_provider.dart';
 export 'workouts/workouts_repository_provider.dart';
 export 'workouts/workouts_provider.dart';
 export 'theme/theme_provider.dart';
+export 'chatbot/chatbot_provider.dart';

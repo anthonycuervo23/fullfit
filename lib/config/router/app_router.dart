@@ -113,9 +113,18 @@ final goRouterProvider = Provider((ref) {
             StatefulShellBranch(
               routes: [
                 GoRoute(
-                  path: '/profile',
-                  builder: (context, state) => const ProfileScreen(),
-                ),
+                    path: '/profile',
+                    builder: (context, state) => const ProfileScreen(),
+                    routes: [
+                      // GoRoute(
+                      //   path: 'edit',
+                      //   builder: (context, state) => const EditProfileScreen(),
+                      // ),
+                      GoRoute(
+                        path: 'chatbot',
+                        builder: (context, state) => const ChatBotScreen(),
+                      ),
+                    ]),
               ],
             ),
           ],

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fullfit_app/presentation/providers/providers.dart';
 import 'package:fullfit_app/presentation/widgets/widgets.dart';
+import 'package:go_router/go_router.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -92,19 +93,24 @@ class ProfileScreen extends ConsumerWidget {
                 value: true,
                 onChanged: (value) {},
               ),
-              // ProfileMenuWidget(
-              //     title: "Language", icon: Icons.offline_bolt, onPress: () {}),
+              _ProfileMenuWidget(
+                  title: "Chatbot",
+                  icon: Icons.chat,
+                  onPress: () => context.push('/profile/chatbot')),
               const Divider(),
               const SizedBox(height: 10),
               _ProfileMenuWidget(
                   title: "Information", icon: Icons.info, onPress: () {}),
+              _ProfileMenuWidget(
+                  title: "Licenses",
+                  icon: Icons.privacy_tip,
+                  onPress: () => showLicensePage(context: context)),
               _ProfileMenuWidget(
                   title: "Logout",
                   icon: Icons.logout,
                   textColor: Colors.red,
                   endIcon: false,
                   onPress: () {
-                    //TODO: mostrar dialogo para confirmar logout
                     Alert.promtWithOptions(context,
                         title: 'Are you sure you want to logout?',
                         onConfirm: () => authNotifier.logout(),

@@ -7,3 +7,4 @@ export 'auth/auth.dart';
 export 'onboarding/onboarding.dart';
 export 'nutrition/nutrition.dart';
 export 'home/home.dart';
+export 'profile/profile.dart';

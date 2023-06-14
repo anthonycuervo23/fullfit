@@ -11,6 +11,7 @@ dependencies:
   animate_do: ^3.0.2
   animations: ^2.0.7
   card_swiper: ^2.0.4
+  chat_gpt_sdk: ^2.2.0
   cloud_firestore: ^4.7.1
   crypto: ^3.0.3
   cupertino_icons: ^1.0.5
@@ -27,6 +28,7 @@ dependencies:
   flutter_easyloading: ^3.0.5
   flutter_html: ^3.0.0-beta.1
   flutter_local_notifications: ^14.1.1
+  flutter_markdown: ^0.6.15
   flutter_riverpod: ^2.3.6
   flutter_screenutil: ^5.8.2
   flutter_secure_storage: ^8.0.0
@@ -43,8 +45,10 @@ dependencies:
   intl: ^0.18.1
   isar: ^3.1.0+1
   isar_flutter_libs: ^3.1.0+1
+  loading_animation_widget: ^1.2.0+4
   local_auth: ^2.1.6
   local_auth_android: ^1.0.28
+  lottie: ^2.4.0
   package_info_plus: ^4.0.2
   path_provider: ^2.0.15
   permission_handler: ^10.2.0
@@ -72,6 +76,7 @@ flutter:
   assets:
     - .env
     - assets/
+    - assets/animation/
     - assets/icons/
     - assets/images/
     - assets/loaders/
