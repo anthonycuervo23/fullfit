@@ -8,14 +8,6 @@ class KeyValueStorageServiceImplementation extends KeyValueStorageService {
   static Future<void> loadPreferences() async =>
       _sharedPreferences = await SharedPreferences.getInstance();
 
-  // KeyValueStorageServiceImplementation() {
-  //   init();
-  // }
-
-  // void init() async {
-  //   sharedPreferences = await SharedPreferences.getInstance();
-  // }
-
   @override
   T? getValue<T>(String key) {
     switch (T) {
